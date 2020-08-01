@@ -1,0 +1,21 @@
+#!/bin/sh
+
+country=$(curl -s https://ipvigilante.com/$(curl -s https://ipinfo.io/ip) | jq '.data.country_name')
+file=$(curl -s https://ncovi.vnpt.vn/thongtindichbenh_v2?fbclid=IwAR2lXZ4T3pGJEHJiZqogQJVJUxbKyxe9-PYaOGTykKz8Dgxf-tvMy1jG3kE |
+	awk -F'[{|}]' '{ for (i = 1; i < 500; ++i) print $i;}' | grep $country |
+	awk -F',' '{ for (i = 1; i < 11; ++i) print $i;}')
+
+if [ $(echo "$file" | wc -l) -gt 0 ]; then
+	confirmed="$(echo "$file" | awk '/\yconfirmed\y/' | awk '{print $2}')"
+	inc_confirmed="$(echo "$file" | awk '/\yincrease_confirmed\y/' | awk '{print $2}')"
+	deaths="$(echo "$file" | awk '/\ydeaths\y/' | awk '{print $2}')"
+	inc_deaths="$(echo "$file" | awk '/\yincrease_deaths\y/' | awk '{print $2}')"
+	recovered="$(echo "$file" | awk '/\yrecovered\y/' | awk '{print $2}')"
+	inc_recovered="$(echo "$file" | awk '/\yincrease_recovered\y/' | awk '{print $2}')"
+	last_update="$(echo "$file" | awk '/\ylast_update\y/' | awk '{print $2}')"
+	lu=$(date --date=@"$last_update" '+%b %d %I:%M%p')
+	
+	echo " 😷 $confirmed(+$inc_confirmed), 💀 $deaths(+$inc_deaths), 😀 $recovered(+$inc_recovered) $lu"
+else
+	echo " CANNOT GET DATA!"
+fi

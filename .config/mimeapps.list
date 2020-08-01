@@ -1,0 +1,19 @@
+[Added Associations]
+x-scheme-handler/magnet=torrent.desktop;
+application/x.bittorrent=torrent.desktop;
+image/svg+xml=gimp.desktop;firefox.desktop;inkscape.desktop;
+application/x-php=code-oss-bin.desktop;
+application/pdf=firefox.desktop;
+application/x-desktop=vim.desktop;
+application/octet-stream=geany.desktop;
+
+[Default Applications]
+inode/directory=pcmanfm.desktop;
+video/x-matroska=mpv.desktop;
+video/mp4=mpv.desktop;
+image/gif=mpvgif.desktop
+image/png=img.desktop;
+image/jpeg=img.desktop;
+text/xml=firefox.desktop;
+application/json=editor.desktop
+application/pdf=org.pwmt.zathura.desktop;

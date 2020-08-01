@@ -1,0 +1,15 @@
+configuration {
+	modi: "run,drun,window";
+	width: 60;
+	lines: 12;
+	columns: 3;
+	font: "JetBrains Mono 12";
+	bw: 2;
+	location: 0;
+	padding: 24;
+	sidebar-mode: true;
+	hide-scrollbar: true;
+	theme: "theme";
+	show-icons: true;
+	icons: "Arc-X-D";
+}

@@ -1,0 +1,27 @@
+#!/bin/sh
+
+# rofi power menu
+cmd_logout=" Log out"
+cmd_lock=" Lock"
+cmd_suspend="鈴 Suspend"
+cmd_reboot=" Reboot"
+cmd_shutdown=" Shutdown"
+
+options="$cmd_logout\\n$cmd_lock\\n$cmd_suspend\\n$cmd_reboot\\n$cmd_shutdown"
+chosen=$(printf "$options" |
+    rofi -p "Power Menu" -dmenu -i -theme "~/.config/rofi/powermenu.rasi")
+
+case "$chosen" in
+    $cmd_logout)
+        pkill -x polybar && bspc quit;;
+    $cmd_lock)
+        #betterlockscreen --lock dimblur;;
+        ;;
+    $cmd_suspend)
+        #systemctl suspend;;
+        ;;
+    $cmd_reboot)
+        sudo /usr/bin/reboot;;
+    $cmd_shutdown)
+        sudo /usr/bin/shutdown -h now;;
+esac

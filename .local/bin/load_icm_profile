@@ -1,0 +1,6 @@
+#!/bin/bash
+
+# loads desktop icm monitor profile
+if command -v xcalib > /dev/null; then
+	xcalib -d :0 ~/.config/icm/desktop.icm
+fi
