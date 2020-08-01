@@ -1,0 +1,176 @@
+#!/bin/bash
+
+# My not-so minimal bspwm config!!!
+# This configuration is specifically targetted for my needs. Feel free to modify as you
+# see fit for your system.
+# USE AT YOUR OWN RISK! I will not be held responsible for any damages or pain from using this
+# config.
+
+xbps_install() {
+	sudo xbps-install -y "$@"
+}
+
+install_xorg() {
+	xbps_install xorg-minimal xorg-server xf86-video-intel xf86-input-libinput
+	xbps_install xinit xrdb xmodmap xrandr xset xsetroot xprop xcalib wireless_tools \
+        setxkbmap xauth xdg-utils xsel xdo bash-completion zsh wget curl ccache git
+}
+
+install_audio() {
+	xbps_install alsa-utils pulseaudio pamixer pulsemixer # audio
+}
+
+install_wm_bspwm() {
+	xbps_install bspwm
+	xbps_install sxhkd #simple X hotkey daemon
+	xbps_install kitty # terminal
+	xbps_install rofi # app launcher, help launcher
+	# xbps_install dmenu # run command, powermenu, usb/android mount handler and others
+	xbps_install polybar # panel
+}
+
+install_apps() {
+	xbps_install dunst # notification daemon
+	xbps_install picom # compositor, tryone144's picom dual_kawase branch is recommended
+	xbps_install feh # wallpaper setter / image viewer
+	xbps_install mpv # video player
+	xbps_install geany # text editors
+	xbps_install pcmanfm atool # file manager
+	xbps_install lxappearance # theme changer
+	xbps_install file-roller zip unzip p7zip # compression tools
+	# xbps_install unrar # requires nonfree repo
+	xbps_install meld ghex gnome-calculator # common tools
+	xbps_install fzf # fuzzy search
+	xbps_install ImageMagick # image viewer
+	xbps_install firefox # browser, just because no brave in repo
+	xbps_install viewnior # gtk image viewer
+	# xbps_install evince # gtk document viewer
+	xbps_install tumbler # dbus tumbnailer service
+	xbps_install ffmpeg 
+	xbps_install w3m w3m-img # text-based web browser and pager
+    
+    #terminal apps
+    xbps_install cava # audio visualizer
+    xbps_install neofetch htop # system info tools
+    xbps_install maim xclip # screenshot
+    xbps_install ranger # file manager
+    xbps_install vim # text editor
+    xbps_install mpd mpc ncmpcpp # music player and daemon
+    xbps_install zathura zathura-pdf-mupdf # pdf reader
+    # xbps_install simple-mtpfs # android mount
+    xbps_install python3-Pillow # image/video preview for ranger when using kitty terminal
+}
+
+install_fonts_themes() {
+	xbps_install fonts-croscore-ttf # for ms fonts alias
+    xbps_install font-libertine-ttf # sans / serif fonts
+	xbps_install noto-fonts-emoji # used for icons where applicable
+	xbps_install arc-icon-theme # icon theme
+	xbps_install gtk-engine-murrine #
+	# also required are nerd fonts for some other icons
+}
+
+install_rootless_xorg() {
+    xbps_install dbus-elogind dbus-elogind-libs dbus-elogind-x11  # required for rootless xorg
+    xbps_install elogind  # required for rootless xorg
+    sudo ln -sf /etc/sv/dbus /var/service/ # required for rootless xorg
+	sudo ln -sf /etc/sv/elogind /var/service/ # required for rootless xorg
+}
+
+install_system_utils() {
+	xbps_install android-tools # android automount
+	xbps_install gvfs gvfs-mtp gvfs-smb # usb auto mount on gtk file manager
+    xbps_install polkit-gnome gnome-keyring # ditto
+    # enable services
+	sudo ln -sf /etc/sv/polkitd /var/service/ # required for automounts through gvfs
+}
+
+install_other_apps() {
+	xbps_install libreoffice-calc libreoffice-draw libreoffice-math libreoffice-write
+	xbps_install vscode
+	xbps_install gimp
+}
+
+install_dev_tools() {
+	xbps_install base-devel xtools
+}
+
+install_networkmanager() {
+    xbps_install NetworkManager
+    
+    sudo sv d dhcpcd
+	sudo sv d wpa_supplicant
+	sudo rm /var/service/dhcpcd
+	sudo rm /var/service/wpa_supplicant
+    sudo ln -sf /etc/sv/dbus /var/service/
+	sudo ln -sf /etc/sv/NetworkManager /var/service/
+	sudo sv u NetworkManager
+
+	echo 'polkit.addRule(function(action, subject) {
+  if (action.id.indexOf("org.freedesktop.NetworkManager.") == 0 && subject.isInGroup("network")) {
+    return polkit.Result.YES;
+  }
+});' | sudo tee /etc/polkit-1/rules.d/50-org.freedesktop.NetworkManager.rules
+}
+
+configure_system() {
+	# configure fonts
+	sudo ln -sf /usr/share/fontconfig/conf.avail/10-hinting-slight.conf /etc/fonts/conf.d/
+	sudo ln -sf /usr/share/fontconfig/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d/
+    sudo ln -sf /usr/share/fontconfig/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d/
+	sudo ln -sf /usr/share/fontconfig/conf.avail/50-user.conf /etc/fonts/conf.d/
+	sudo ln -sf /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d/
+
+    # switch shell to zsh
+    chsh -s /bin/zsh $USERNAME
+}
+
+cleanup() {
+	# remove unnecessary services
+    remove_svc="agetty-tty3 agetty-tty4 agetty-tty5 agetty-tty6 sshd"
+    for svc in $remove_svc
+    do
+        if [ -d /var/service/$svc ] ; then
+            echo "Removing $svc"
+            sudo rm /var/service/$svc
+        fi
+    done
+}
+
+echo "Syncing repo."
+sudo xbps-install -S
+
+echo "Installing xorg and stuff"
+install_xorg
+
+echo "Installing window manager (bspwm)"
+install_wm_bspwm
+
+echo "Installing desktop apps"
+install_apps
+
+echo "Installing fonts and themes"
+install_fonts_themes
+
+echo "Installing development tools"
+install_dev_tools
+
+echo "Installing system utilities"
+install_system_utils
+
+echo "Configuring new system"
+configure_system
+
+echo "Configuring rootless Xorg."
+install_rootless_xorg
+
+echo "Finalizing and cleanup"
+cleanup
+
+echo "Finished."
+echo ""
+echo "To use rootless Xorg, xorg-server needs to be compiled with elogind support."
+echo "Compile: # './xbps-src pkg xorg-server -o elogind'"
+echo "Install: # 'sudo xbps-install --force --repository=hostdir/binpkgs xorg-server'"
+echo "Edit '/etc/X11/Xwapper.config' and change 'needs_root_rights' from 'yes' to 'no'"
+echo ""

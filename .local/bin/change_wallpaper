@@ -1,0 +1,8 @@
+#!/bin/sh
+
+# Sets a randomly selected wallpaper from a given directory
+
+WALLPAPER=~/Pictures/Wallpapers
+RAND=$(find "$WALLPAPER" -xtype f | sort -R | head -1)
+notify-send "Using wallpaper: $RAND"
+feh --bg-fill $RAND

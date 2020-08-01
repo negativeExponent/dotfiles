@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# loads desktop icm monitor profile
+if ! command -v xcalib > /dev/null; then
+	echo "xcalib not found, installing..."
+	sudo xbps-install -S --needed --noconfirm xcalib
+fi
+xcalib -d :0 ~/.config/icm/desktop.icm

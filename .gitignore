@@ -1,0 +1,13 @@
+.cache
+.ccache
+.config/yadm/repo.git
+.local/share/Trash
+.mozilla
+.config/Code - OSS
+.config/zplug
+.config/mpd/mpd.pid
+.config/mpd/mpd.log
+.config/mpd/mpdstate
+.config/dconf
+.dbus
+.local/share/gvfs-metadata

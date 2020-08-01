@@ -1,0 +1,13 @@
+#!/bin/sh
+
+
+if ! updates=$(xbps-install -Mun 2> /dev/null | wc -l ); then
+    updates=0
+fi
+
+if [ "$updates" -gt 0 ]; then
+    echo "📦 $updates"
+    notify-send -u low "📦 $updates updates available."
+else
+    echo "📦 0"
+fi

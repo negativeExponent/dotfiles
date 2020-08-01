@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# Launch rofi with custom configuration
+rofi -show drun -sidebar-mode \
+-modi run,drun,window \
+-hide-scrollbar true \
+-bw 2 \
+-lines 15 \
+-padding 24 \
+-width 60 \
+-location 0 \
+-columns 3 \
+-color-enabled true \
+-color-window "#282a36, #BD93F9, #282a36" \
+-color-normal "#282a36, #BD93F9, #282a36, #BD93F9, #282a36" \
+-color-active "#282a36, #BD93F9, #282a36, #BD93F9, #282a36" \
+-color-urgent "#282a36, #BD93F9, #282a36, #BD93F9, #282a36" \
+-show-icons true \
+-icon-theme "Papirus-Dark" \
+-font "Monospace 10"
+
+# Theming help
+# color window = background, border, separator
+# color normal = background, foreground, background-alt, highlight-background, highlight-foreground
+# color active = background, foreground, background-alt, highlight-background, highlight-foreground
+# color urgent = background, foreground, background-alt, highlight-background, highlight-foreground
