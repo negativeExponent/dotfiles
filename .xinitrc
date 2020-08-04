@@ -22,4 +22,5 @@ fi
 
 [ -f ~/.xprofile ] && . ~/.xprofile
 
-${cmd} bspwm
+#${cmd} bspwm
+${cmd} spectrwm
