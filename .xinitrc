@@ -11,13 +11,15 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
   unset f
 fi
 
+cmd="exec"
 # launched with DBUS
 # Without this, mounting, unmounting, trash, etc won't work in pcmanfm
-if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS";
+# https://github.com/flexibeast/guides
+if which dbus-run-session >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS";
 then
-	eval "$(dbus-launch --sh-syntax --exit-with-session)"
+	cmd="exec dbus-run-session"
 fi
 
 [ -f ~/.xprofile ] && . ~/.xprofile
 
-exec bspwm
+${cmd} bspwm
