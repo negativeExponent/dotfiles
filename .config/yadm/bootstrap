@@ -7,8 +7,8 @@
 # config.
 
 install_msg() {
-    echo ""
-    echo "$@"
+	echo ""
+	echo "$@"
 }
 
 # Creates a symlink for item1 to item2, deleting destination if it exists
@@ -17,7 +17,7 @@ link() {
 		status='!'
 		[ ! -e $2 ] || rm -rf $2
 		ln -sf $1 $2 && status='ok'
-		echo "$status - Symlinking $1 to $2"
+		install_msg "$status - Symlinking $1 to $2"
 	fi
 }
 
@@ -28,13 +28,13 @@ xbps_install() {
 
 install_xorg() {
 	xbps_install base-devel git curl wget xtools \
-        xorg-minimal xinit xauth xorg-server xf86-input-libinput xf86-video-intel \
+		xorg-minimal xinit xauth xorg-server xf86-input-libinput xf86-video-intel \
 		xrdb xrandr xset xsetroot xprop xcalib xdg-utils \
 		xsel xdo setxkbmap xmodmap bash-completion ccache git ntfs-3g wireless_tools
 }
 
 install_audio() {
-	xbps_install alsa-utils pulseaudio pamixer pulsemixer
+	xbps_install alsa-utils alsa-plugins-pulseaudio
 }
 
 install_bspwm_minimal() {
@@ -42,13 +42,13 @@ install_bspwm_minimal() {
 		lxappearance vim mpd mpc ncmpcpp mpv w3m w3m-img neofetch \
 		htop zathura zathura-pdf-mupdf maim xclip feh \
 		file-roller zip unzip p7zip meld ghex gnome-calculator jq \
-        font-libertine-ttf noto-fonts-emoji arc-icon-theme
+		font-libertine-ttf noto-fonts-emoji arc-icon-theme
 }
 
 install_misc_apps() {
-    xbps_install bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg \
-        atool ImageMagick python3-Pillow xdotool xdpyinfo ffmpegthumbnailer \
-        speedtest-cli geoip geoip-data
+	xbps_install bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg \
+		atool ImageMagick python3-Pillow xdotool xdpyinfo ffmpegthumbnailer \
+		speedtest-cli geoip geoip-data
 }
 
 install_extra_apps() {
@@ -67,7 +67,7 @@ install_system_utils() {
 }
 
 install_elogind() {
-    # required for rootless xorg
+	# required for rootless xorg
 	xbps_install dbus-elogind dbus-elogind-libs dbus-elogind-x11 elogind
 
 	sudo ln -sf /etc/sv/dbus /var/service/
@@ -99,7 +99,7 @@ install_networkmanager() {
 
 configure_system() {
 	# configure fonts
-    echo "Configuring system fonts config"
+	install_msg "Configuring system fonts config"
 	sudo ln -sf /usr/share/fontconfig/conf.avail/10-hinting-slight.conf /etc/fonts/conf.d/
 	sudo ln -sf /usr/share/fontconfig/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d/
 	sudo ln -sf /usr/share/fontconfig/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d/
@@ -111,9 +111,9 @@ check_intel() {
 	# Detect if we are on an Intel system
 	CPU_VENDOR=$(grep vendor_id /proc/cpuinfo | awk 'NR==1{print $3}')
 	if [ $CPU_VENDOR = "GenuineIntel" ]; then
-		echo "Installing Intel Video Driver"
+		install_msg "Installing Intel Video Driver"
 		xbps_install libva-intel-driver
-		echo "Install Intel Xorg config"
+		install_msg "Install Intel Xorg config"
 		sudo bash -c 'cat > /usr/share/X11/xorg.conf.d/20-intel.conf' << EOF
 # /usr/share/X11/xorg.conf.d/20-intel.conf
 
@@ -153,7 +153,7 @@ cleanup() {
 	for svc in $remove_svc
 	do
 		if [ -d /var/service/$svc ] ; then
-			echo "Removing $svc"
+			install_msg "Removing $svc"
 			sudo rm /var/service/$svc
 		fi
 	done

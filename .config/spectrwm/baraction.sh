@@ -13,7 +13,7 @@ hdd() {
 
 ## RAM
 mem() {
-  mem=`free | awk '/Mem/ {printf "%dM/%dM\n", $3 / 1024.0, $2 / 1024.0 }'`
+  mem=`free | awk '/Mem/ {printf "%dM/%dM\n", ($3+$5) / 1024.0, $2 / 1024.0 }'`
   echo -e "$mem"
 }
 
@@ -54,6 +54,6 @@ net() {
 
 SLEEP_SEC=1
 while :; do
-    echo "+@fg=2; $(cpu)+@fg=0; | +@fg=3;  $(mem)+@fg=0; | +@fg=4; $(hdd)+@fg=0; | +@fg=5; $(vol)+@fg=0; | +@fg=2;  $(net)+@fg=0; | "
+    echo "+@fg=2; $(cpu)+@fg=0; | +@fg=3;  $(mem)+@fg=0; | +@fg=4; $(vol)+@fg=0; | +@fg=5;  $(net)+@fg=0; | "
 	sleep $SLEEP_SEC
 done
