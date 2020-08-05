@@ -44,7 +44,16 @@ net() {
     eth=$(ip link | grep -m 1 -E '\b(en).*\b(state UP)' | awk '{print substr($2, 1, length($2)-1)}')
     wlan=$(ip link | grep -m 1 -E '\b(wl)' | awk '{print substr($2, 1, length($2)-1)}')
     if [ ! -z "$eth" ] ; then
-        echo -e "$eth"
+	rx1=`cat /sys/class/net/$eth/statistics/rx_bytes`
+	tx1=`cat /sys/class/net/$eth/statistics/tx_bytes`
+	sleep 0.5
+	rx2=`cat /sys/class/net/$eth/statistics/rx_bytes`
+	tx2=`cat /sys/class/net/$eth/statistics/tx_bytes`
+	rx=`expr $rx2 - $rx1`
+	tx=`expr $tx2 - $tx1`
+	downspeed=`expr $rx / 1024`
+	upspeed=`expr $tx / 1024`
+        echo -e "${downspeed}K / ${upspeed}K"
     elif [ ! -z "$wlan" ] ; then
         echo -e "$wlan"
     else
@@ -52,7 +61,7 @@ net() {
     fi
 }
 
-SLEEP_SEC=1
+SLEEP_SEC=3
 while :; do
     echo "+@fg=2; $(cpu)+@fg=0; | +@fg=3;  $(mem)+@fg=0; | +@fg=4; $(vol)+@fg=0; | +@fg=5;  $(net)+@fg=0; | "
 	sleep $SLEEP_SEC
