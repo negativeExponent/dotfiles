@@ -2,7 +2,7 @@
 
 # just a simple script to diplay aliases for commonly used fonts family
 
-for family in serif sans-serif monospace Arial Helvetica Verdana "Times New Roman" "Courier New"; do
+for family in serif sans-serif sans monospace Arial Helvetica Verdana "Times New Roman" "Courier New"; do
   echo -n "$family: "
   fc-match "$family"
 done
