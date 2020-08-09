@@ -1,8 +1,0 @@
-{
-    "workbench.startupEditor": "newUntitledFile",
-    "editor.fontFamily": "'JetBrainsMono Nerd Font Mono', 'Fira Code', 'Noto Color Emoji', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
-    "editor.fontLigatures": true,
-    "editor.fontSize": 13,
-    "editor.renderWhitespace": "all",
-    "workbench.colorTheme": "Dracula"
-}
