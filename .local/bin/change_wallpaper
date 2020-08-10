@@ -4,7 +4,11 @@
 
 WALLPAPER=~/Pictures/Wallpapers
 RAND=$(find "$WALLPAPER" -xtype f | sort -R | head -1)
-if [ ! -z "$(xbps-query -l | grep -w feh)" ] ; then
-	notify-send "Using wallpaper: $RAND"
-	feh --bg-fill $RAND
+
+if ! command -v feh >/dev/null; then
+    echo "feh not installed.";
+    exit 1
 fi
+
+notify-send "Using wallpaper: $RAND"
+feh --bg-fill $RAND
