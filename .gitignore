@@ -3,8 +3,7 @@
 .config/yadm/repo.git
 .local/share/Trash
 .mozilla
-.config/Code - OSS/Cache*
-.config/Code - OSS/log*
+.config/Code - OSS
 .config/zplug
 .config/mpd/mpd.pid
 .config/mpd/mpd.log
@@ -17,3 +16,4 @@
 .local/share/mime
 .thumbnails
 .fehbg
+.vscode-oss
