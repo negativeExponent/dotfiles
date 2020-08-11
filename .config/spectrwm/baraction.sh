@@ -64,6 +64,6 @@ net() {
 SLEEP_SEC=1
 while :; do
     #echo "+@fg=2; $(cpu)+@fg=0; | +@fg=3;  $(mem)+@fg=0; | +@fg=4; $(vol)+@fg=0; | +@fg=5;  $(net)+@fg=0; | "
-    echo "+@fg=3;$(cpu)+@fg=0; |  +@fg=4;$(mem)+@fg=0; |  +@fg=5;$(vol)+@fg=0; |  +@fg=6;$(net)+@fg=0; |"
+    echo "+@fg=8;+@bg=3;$(cpu) +@bg=0;+@bg=2; $(mem) +@bg=0;+@bg=5; $(vol) +@bg=0;+@bg=6; $(net) +@bg=0;"
 	sleep $SLEEP_SEC
 done
