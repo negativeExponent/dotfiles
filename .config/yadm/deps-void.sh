@@ -11,8 +11,7 @@ set -e
 PKGS=
 
 install_msg() {
-	echo ""
-	echo -e "\e[32m$@\e[0m\n"
+	echo -e "\e[32m$@\e[0m"
 }
 
 # Creates a symlink for item1 to item2, deleting destination if it exists
@@ -158,12 +157,6 @@ cleanup() {
 		fi
 	done
 }
-
-echo -e "\e[31mChecking permissions...\e[0m"
-if [ "$EUID" -eq 0 ]; then
-	echo "Please do not run this script as root (e.g. using sudo)"
-	exit
-fi
 
 install_msg "Updating and installing packages."
 sudo xbps-install -Su

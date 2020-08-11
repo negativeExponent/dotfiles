@@ -1,16 +1,22 @@
-#!/bin/sh
-
-set -e
-
-clear
+#!/bin/env bash
 
 system_type=
 scriptfile=
 
-if [ -f "/etc/void-release" ]; then
-    system_type="void"
-elif [ -f "/etc/artix-release" ]; then
+echo ""
+echo -e "\e[31mChecking permissions...\e[0m"
+if [ "$EUID" -eq 0 ]; then
+    echo ""
+	echo "Please do not run this script as root (e.g. using sudo)"
+	exit
+fi
+
+if [ -f "/etc/artix-release" ]; then
     system_type="artix"
+elif [ -f "/etc/os-release" ]; then
+    if grep -q "void" "/etc/os-release" ; then 
+        system_type="void"
+    fi
 fi
 
 case "$system_type" in
@@ -21,21 +27,26 @@ case "$system_type" in
         scriptfile="$HOME/.config/yadm/deps-artix.sh"
         ;;
     *)
+        echo ""
+        echo "Cannot identify system or system not supported."
+        exit 1
         ;;
 esac
 
 if [ -z "$scriptfile" ]; then
+    echo ""
     echo "Cannot find install script for ${system_type}Linux. Exiting."
     exit 1
 fi
 
-echo "Installing for ${system_type}Linux."
-echo -n "Do you want to proceed? "
-read reply
+echo ""
+echo -e "\e[31mInstalling for ${system_type}Linux.\e[0m"
+read -p "Do you want to proceed? " reply
 case "$reply" in
     y|yes|Y|YES)
         ;;
     *)
+        echo ""
         echo "Installation cancelled."
         exit 1
         ;;
