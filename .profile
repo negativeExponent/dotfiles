@@ -12,7 +12,7 @@ export XDG_CACHE_HOME="$HOME/.cache"
 
 export ZPLUG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/zplug"
 
-export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"  # Warning: This line will break some DMs. Remove this line if you're using DMs like lightdm, gdm, sddm,...
+#export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"  # Warning: This line will break some DMs. Remove this line if you're using DMs like lightdm, gdm, sddm,...
 export GTK2_RC_FILES="${XDG_CONFIG_HOME:-$HOME/.config}/gtk-2.0/gtkrc-2.0"
 export LESSHISTFILE="-"
 export WGETRC="${XDG_CONFIG_HOME:-$HOME/.config}/wget/wgetrc"
