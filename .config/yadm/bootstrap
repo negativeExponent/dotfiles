@@ -5,6 +5,7 @@ scriptfile=
 
 echo ""
 echo -e "\e[31mChecking permissions...\e[0m"
+
 if [ "$EUID" -eq 0 ]; then
     echo ""
 	echo "Please do not run this script as root (e.g. using sudo)"
@@ -12,18 +13,33 @@ if [ "$EUID" -eq 0 ]; then
 fi
 
 if [ -f "/etc/artix-release" ]; then
-    system_type="artix"
-elif [ -f "/etc/os-release" ]; then
-    if grep -q "void" "/etc/os-release" ; then 
-        system_type="void"
+    if [ -d "/etc/runit/runsvdir/default" ]; then
+        system_type="artix"
+    else
+        echo "Only Artix-runit is supported"
+        exit 1
     fi
+elif [ -f "/etc/arch-release" ]; then
+	system_type="arch"
+elif [ -f "/etc/os-release" ]; then
+	if grep -q "obarun" "/etc/os-release" >/dev/null; then
+		system_type="obarun"
+    elif grep -q "void" "/etc/os-release" >/dev/null; then 
+        system_type="void"
+	else
+		echo "Unknown system. Exiting.(1)"
+		exit 1
+	fi
+else
+	echo "Unknown syste. Exiting.(2)"
+	exit 1
 fi
 
 case "$system_type" in
     "void")
         scriptfile="$HOME/.config/yadm/deps-void.sh"
         ;;
-    "artix")
+    "arch"|"artix"|"obarun")
         scriptfile="$HOME/.config/yadm/deps-artix.sh"
         ;;
     *)
@@ -52,4 +68,4 @@ case "$reply" in
         ;;
 esac
 
-. $scriptfile
+. "$scriptfile" "$system_type"

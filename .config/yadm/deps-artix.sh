@@ -8,8 +8,15 @@
 
 set -e
 
-PKGS=
+ARCH="$1"
+
+PKGS=""
 RUNSVDIR="/etc/runit/runsvdir/default"
+
+
+
+echo ""
+echo -e "\e[34mDetected system = $ARCH\e[0m"
 
 install_msg() {
 	echo -e "\e[32m$@\e[0m"
@@ -20,8 +27,8 @@ link() {
 	if [ -d $1 ] ; then
 		status='!'
 		[ ! -e $2 ] || rm -rf $2
-		ln -sf $1 $2 && status='ok'
-		install_msg "$status - Symlinking $1 to $2"
+		ln -sfv $1 $2 && status='ok'
+		#install_msg "$status - Symlinking $1 to $2"
 	fi
 }
 
@@ -39,11 +46,15 @@ get_packages() {
 	PKGS="${PKGS} git curl wget xsel wireless_tools"
 
 	# Audio
-	PKGS="${PKGS} alsa-utils pulseaudio-alsa pamixer pulsemixer"
+	PKGS="${PKGS} alsa-utils"
+    # PKGS="${PKGS} pulseaudio-alsa pamixer pulsemixer"
+    # [ "$ARCH" = "obarun" ] && PKGS="${PKGS} pulseaudio-66serv"
 
 	# Minimal bspwm apps
 	PKGS="${PKGS} bspwm sxhkd kitty rofi polybar dunst geany pcmanfm"
-	PKGS="${PKGS} lxappearance perl vim mpd mpc ncmpcpp mpv w3m neofetch"
+	PKGS="${PKGS} lxappearance perl vim"
+	[ "$ARCH" = "obarun" ] || PKGS="${PKGS} mpd mpc ncmpcpp" # obarun does not have libsystemd, so these will fail to install
+	PKGS="${PKGS} mpv w3m neofetch"
 	PKGS="${PKGS} htop zathura zathura-pdf-mupdf maim xclip feh xcompmgr"
 	PKGS="${PKGS} file-roller zip unzip p7zip meld ghex gnome-calculator jq"
 	PKGS="${PKGS} ttf-linux-libertine noto-fonts-emoji arc-icon-theme"
@@ -58,14 +69,14 @@ get_packages() {
 
 	# System utilities
 	PKGS="${PKGS} android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring" # automounting of usb and android devices
-    
-    # Runit services
-    PKGS="${PKGS} haveged-runit cronie-runit ntp-runit"
+
+ 	# Runit services
+	[ "$ARCH" != "artix" ] || PKGS="${PKGS} haveged-runit cronie-runit ntp-runit"
 }
 
 install_networkmanager() {
-    # THIS IS INCOMPLETE AND UNUSED FOR ARTIX-RUNIT
-    # NO PLAN TO USE THIS FOR NOW, KEEPING IT JUST INCASE 
+	# THIS IS INCOMPLETE AND UNUSED FOR ARTIX-RUNIT
+	# NO PLAN TO USE THIS FOR NOW, KEEPING IT JUST INCASE
 	pac_install NetworkManager
 
 	sudo sv down dhcpcd
@@ -84,7 +95,7 @@ install_networkmanager() {
 }
 
 configure_system() {
-    # enable runit services
+	# enable runit services
 	svc_common="cronie dbus dhcpcd elogind haveged ntpd udevd"
 	for svc in $svc_common
 	do
@@ -126,7 +137,7 @@ create_symlinks() {
 
 	link /mnt/data/yay $HOME/.cache/yay
 
-	# symlinks to HOME    
+	# symlinks to HOME
 	link /mnt/data/Documents $HOME/Documents
 	link /mnt/data/Downloads $HOME/Downloads
 	link /mnt/data/Pictures $HOME/Pictures
@@ -176,17 +187,17 @@ install_msg "Creating symlinks for some common applications."
 create_symlinks
 
 if ! command -v yay >/dev/null; then
-    install_msg "Yay aur helper not found. We will compile this from AUR."
-    ! command -v yay >/dev/null && sudo pacman -S --needed --noconfirm git ccache
-    install_msg "Fetching yay-bin"
-    [ -d /tmp/yay-bin ] && rm -rf /tmp/yay-bin
-    git clone --depth 1 https://aur.archlinux.org/yay-bin /tmp/yay-bin
-    cd /tmp/yay-bin
-    makepkg -si --noconfirm
-    if ! command -v yay >/dev/null; then
-        echo "Failed to install yay-bin."
-        exit 1
-    fi
+	install_msg "Yay aur helper not found. We will compile this from AUR."
+	! command -v yay >/dev/null && sudo pacman -S --needed --noconfirm git ccache
+	install_msg "Fetching yay-bin"
+	[ -d /tmp/yay-bin ] && rm -rf /tmp/yay-bin
+	git clone --depth 1 https://aur.archlinux.org/yay-bin /tmp/yay-bin
+	cd /tmp/yay-bin
+	makepkg -si --noconfirm
+	if ! command -v yay >/dev/null; then
+		echo "Failed to install yay-bin."
+		exit 1
+	fi
 fi
 
 install_msg "Syncing pacman database"
@@ -206,8 +217,8 @@ install_msg "Installing aur packages."
 # Artix has polybar in repo, arch does not
 # so, install polybar from aur
 if ! command -v polybar >/dev/null; then
-    install_msg "Installing polybar froma AUR"
-    yay -S --needed --noconfirm polybar-git
+	install_msg "Installing polybar froma AUR"
+	yay -S --needed --noconfirm polybar-git
 fi
 
 install_msg "Configure Intel Video"
