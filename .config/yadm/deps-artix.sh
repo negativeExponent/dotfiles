@@ -51,13 +51,14 @@ get_packages() {
     # [ "$ARCH" = "obarun" ] && PKGS="${PKGS} pulseaudio-66serv"
 
 	# Minimal bspwm apps
-	PKGS="${PKGS} bspwm sxhkd kitty rofi polybar dunst geany pcmanfm"
+	PKGS="${PKGS} bspwm sxhkd kitty rofi dunst geany pcmanfm"
 	PKGS="${PKGS} lxappearance perl vim"
-	[ "$ARCH" = "obarun" ] || PKGS="${PKGS} mpd mpc ncmpcpp" # obarun does not have libsystemd, so these will fail to install
 	PKGS="${PKGS} mpv w3m neofetch"
 	PKGS="${PKGS} htop zathura zathura-pdf-mupdf maim xclip feh xcompmgr"
-	PKGS="${PKGS} file-roller zip unzip p7zip meld ghex gnome-calculator jq"
+	PKGS="${PKGS} xarchiver zip unzip p7zip meld ghex gnome-calculator jq"
 	PKGS="${PKGS} ttf-linux-libertine noto-fonts-emoji arc-icon-theme"
+	[ "$ARCH" = "obarun" ] || PKGS="${PKGS} mpd mpc ncmpcpp" # obarun does not have libsystemd, so these will fail to install
+    ! pacman -Qk polybar >/dev/null || PKGS="${PKGS} polybar"
 
 	# Misc apps
 	PKGS="${PKGS} bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg"
@@ -94,16 +95,67 @@ install_networkmanager() {
 });' | sudo tee /etc/polkit-1/rules.d/50-org.freedesktop.NetworkManager.rules
 }
 
+install_samba() {
+    if [ "$ARCH" = "artix" ]; then
+        pac_install samba-runit gvfs-smb
+    elif [ "$ARCH" = "obarun" ]; then
+        pac_install samba-66serv gvfs-smb
+    fi
+    sudo bash -c 'cat > /etc/samba/smb.conf' << EOF
+[global]
+workgroup = WORKGROUP
+server string = Samba Server
+server role = standalone server
+log file = /var/log/samba/smb.log
+log level = 0
+max log size = 300
+map to guest = Bad User
+[homes]
+comment = Home Directories
+browseable = no
+writable = yes
+[printers]
+comment = All Printers
+path = /usr/spool/samba
+guest ok = yes
+printable = yes
+browseable = yes
+writable = no
+[Anonymous]
+# comment = Public share folder
+browseable = yes
+# guest ok = yes
+read only = no
+create mask = 777
+writeable = yes
+path = /mnt/data/Public
+force user = nobody
+EOF
+}
+
+install_printer() {
+    local pkg="cups cups-pdf system-config-printer"
+    [ "$ARCH" = "artix" ] && pkg="${pkg} cups-runit"
+    [ "$ARCH" = "obarun" ] && pkg="${pkg} cupsd-66serv"
+    pac_install $pkg
+}
+
 configure_system() {
-	# enable runit services
-	svc_common="cronie dbus dhcpcd elogind haveged ntpd udevd"
-	for svc in $svc_common
-	do
-		if [ -d /etc/runit/sv/$svc ] ; then
-			install_msg "Enabling service: $RUNSVDIR/$svc"
-			sudo ln -sf "/etc/runit/sv/$svc" "$RUNSVDIR/$svc"
-		fi
-	done
+    # enable static DNS when using DHCP
+    if [ -f /etc/dhcpcd.conf ]; then
+        grep "static domain_name_servers" || echo "static domain_name_servers=1.1.1.1 1.0.0.1" | sudo tee -a /etc/dhcpcd.conf
+    fi
+    # enable runit services
+    if [ "$ARCH" = "artix" ]; then
+        svc_common="cronie dbus dhcpcd elogind haveged ntpd udevd smbd nmbd cupsd"
+        for svc in $svc_common
+        do
+            if [ -d /etc/runit/sv/$svc ] ; then
+                install_msg "Enabling service: $RUNSVDIR/$svc"
+                sudo ln -sf "/etc/runit/sv/$svc" "$RUNSVDIR/$svc"
+            fi
+        done
+    fi
 }
 
 configure_intel_video() {
@@ -155,6 +207,7 @@ create_symlinks() {
 
 cleanup() {
 	# remove unnecessary services
+    if [ "$ARCH" = "artix" ]; then
 	remove_svc="agetty-tty3 agetty-tty4 agetty-tty5 agetty-tty6 sshd"
 	for svc in $remove_svc
 	do
@@ -163,8 +216,8 @@ cleanup() {
 			sudo rm $RUNSVDIR/$svc
 		fi
 	done
+    fi
 }
-
 
 echo -e "\e[31mChecking permissions...\e[0m"
 if [ "$EUID" -eq 0 ]; then
@@ -201,7 +254,7 @@ if ! command -v yay >/dev/null; then
 fi
 
 install_msg "Syncing pacman database"
-yay -Sy --noconfirm
+yay -Syy --noconfirm
 
 # Get a list of packages to install
 get_packages
@@ -211,21 +264,28 @@ pac_install $PKGS
 
 # Install aur packages
 install_msg "Installing aur packages."
-! command -v "cava" >/dev/null && pac_install "cava-git"
-! command -v "brave" >/dev/null && pac_install "brave-bin"
+command -v "polybar" >/dev/null || pac_install "polybar"
+command -v "cava" >/dev/null || pac_install "cava-git"
+command -v "brave" >/dev/null || pac_install "brave-bin"
 
 # Artix has polybar in repo, arch does not
 # so, install polybar from aur
-if ! command -v polybar >/dev/null; then
-	install_msg "Installing polybar froma AUR"
-	yay -S --needed --noconfirm polybar-git
-fi
+#if ! command -v polybar >/dev/null; then
+#	install_msg "Installing polybar from AUR"
+#	yay -S --needed --noconfirm polybar-git
+#fi
 
 install_msg "Configure Intel Video"
 configure_intel_video
 
 install_msg "Configuring new system"
 configure_system
+
+install_msg "Installing samba"
+install_samba
+
+install_msg "Installing printer"
+install_printer
 
 install_msg "Finalizing and cleanup"
 cleanup
