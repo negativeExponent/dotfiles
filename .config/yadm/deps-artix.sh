@@ -101,6 +101,7 @@ install_samba() {
     elif [ "$ARCH" = "obarun" ]; then
         pac_install samba-66serv gvfs-smb
     fi
+    sudo mkdir /etc/samba 2>/dev/null
     sudo bash -c 'cat > /etc/samba/smb.conf' << EOF
 [global]
 workgroup = WORKGROUP
@@ -143,7 +144,7 @@ install_printer() {
 configure_system() {
     # enable static DNS when using DHCP
     if [ -f /etc/dhcpcd.conf ]; then
-        grep "static domain_name_servers" || echo "static domain_name_servers=1.1.1.1 1.0.0.1" | sudo tee -a /etc/dhcpcd.conf
+        grep "static domain_name_servers" /etc/dhcpcd.conf || echo "static domain_name_servers=1.1.1.1 1.0.0.1" | sudo tee -a /etc/dhcpcd.conf
     fi
     # enable runit services
     if [ "$ARCH" = "artix" ]; then
