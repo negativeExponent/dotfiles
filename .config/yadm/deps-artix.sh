@@ -125,7 +125,7 @@ writable = no
 [Anonymous]
 # comment = Public share folder
 browseable = yes
-# guest ok = yes
+guest ok = yes
 read only = no
 create mask = 777
 writeable = yes
