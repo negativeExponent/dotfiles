@@ -103,7 +103,7 @@ install_samba() {
     elif [ "$ARCH" = "obarun" ]; then
         pac_install samba-66serv gvfs-smb
     fi
-    sudo mkdir /etc/samba 2>/dev/null
+    [ -d /etc/samba ] || sudo mkdir /etc/samba 2>/dev/null
     sudo bash -c 'cat > /etc/samba/smb.conf' << EOF
 [global]
 workgroup = WORKGROUP
@@ -278,10 +278,10 @@ configure_intel_video
 install_msg "Configuring new system"
 configure_system
 
-#install_msg "Installing samba"
+install_msg "Installing samba"
 install_samba
 
-#install_msg "Installing printer"
+install_msg "Installing printer"
 install_printer
 
 install_msg "Finalizing and cleanup"

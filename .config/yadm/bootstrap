@@ -13,12 +13,7 @@ if [ "$EUID" -eq 0 ]; then
 fi
 
 if [ -f "/etc/artix-release" ]; then
-    if [ -d "/etc/runit/runsvdir/default" ]; then
-        system_type="artix"
-    else
-        echo "Only Artix-runit is supported"
-        exit 1
-    fi
+    system_type="artix"
 elif [ -f "/etc/arch-release" ]; then
 	system_type="arch"
 elif [ -f "/etc/os-release" ]; then
