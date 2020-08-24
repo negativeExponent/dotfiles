@@ -47,8 +47,8 @@ get_packages() {
 
 	# Audio
 	PKGS="${PKGS} alsa-utils"
-    # PKGS="${PKGS} pulseaudio-alsa pamixer pulsemixer"
-    # [ "$ARCH" = "obarun" ] && PKGS="${PKGS} pulseaudio-66serv"
+	# PKGS="${PKGS} pulseaudio-alsa pamixer pulsemixer"
+	# [ "$ARCH" = "obarun" ] && PKGS="${PKGS} pulseaudio-66serv"
 
 	# Minimal bspwm apps
 	PKGS="${PKGS} bspwm sxhkd kitty rofi dunst geany pcmanfm"
@@ -57,8 +57,10 @@ get_packages() {
 	PKGS="${PKGS} htop zathura zathura-pdf-mupdf maim xclip feh xcompmgr"
 	PKGS="${PKGS} xarchiver zip unzip p7zip meld ghex gnome-calculator jq"
 	PKGS="${PKGS} ttf-linux-libertine noto-fonts-emoji arc-icon-theme"
+
 	[ "$ARCH" = "obarun" ] || PKGS="${PKGS} mpd mpc ncmpcpp" # obarun does not have libsystemd, so these will fail to install
-    ! pacman -Qk polybar >/dev/null || PKGS="${PKGS} polybar"
+
+	! pacman -Qk polybar >/dev/null || PKGS="${PKGS} polybar"
 
 	# Misc apps
 	PKGS="${PKGS} bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg"
@@ -72,7 +74,7 @@ get_packages() {
 	PKGS="${PKGS} android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring" # automounting of usb and android devices
 
  	# Runit services
-	[ "$ARCH" != "artix" ] || PKGS="${PKGS} haveged-runit cronie-runit ntp-runit"
+	# [ "$ARCH" != "artix" ] || PKGS="${PKGS} haveged-runit cronie-runit ntp-runit"
 }
 
 install_networkmanager() {
@@ -208,16 +210,16 @@ create_symlinks() {
 
 cleanup() {
 	# remove unnecessary services
-    if [ "$ARCH" = "artix" ]; then
-	remove_svc="agetty-tty3 agetty-tty4 agetty-tty5 agetty-tty6 sshd"
-	for svc in $remove_svc
-	do
-		if [ -d $RUNSVDIR/$svc ] ; then
-			install_msg "Removing $RUNSVDIR/$svc"
-			sudo rm $RUNSVDIR/$svc
-		fi
-	done
-    fi
+	if [ "$ARCH" = "artix" ]; then
+		remove_svc="agetty-tty3 agetty-tty4 agetty-tty5 agetty-tty6 sshd"
+		for svc in $remove_svc
+		do
+			if [ -d $RUNSVDIR/$svc ] ; then
+				install_msg "Removing $RUNSVDIR/$svc"
+				sudo rm $RUNSVDIR/$svc
+			fi
+		done
+	fi
 }
 
 echo -e "\e[31mChecking permissions...\e[0m"
@@ -232,6 +234,7 @@ fi
 install_msg "Use max cores/threads when compiling."
 num=$(grep -c ^processor /proc/cpuinfo)
 sudo sed -i "s/#MAKEFLAGS=\"-j2\"/MAKEFLAGS=\"-j${num}\"/g" /etc/makepkg.conf
+
 # Make pacman and yay colorful and adds eye candy on the progress bar because why not.
 install_msg "Make paacman and yay colorful."
 grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
@@ -266,15 +269,8 @@ pac_install $PKGS
 # Install aur packages
 install_msg "Installing aur packages."
 command -v "polybar" >/dev/null || pac_install "polybar"
-command -v "cava" >/dev/null || pac_install "cava-git"
+# command -v "cava" >/dev/null || pac_install "cava-git"
 command -v "brave" >/dev/null || pac_install "brave-bin"
-
-# Artix has polybar in repo, arch does not
-# so, install polybar from aur
-#if ! command -v polybar >/dev/null; then
-#	install_msg "Installing polybar from AUR"
-#	yay -S --needed --noconfirm polybar-git
-#fi
 
 install_msg "Configure Intel Video"
 configure_intel_video
@@ -282,10 +278,10 @@ configure_intel_video
 install_msg "Configuring new system"
 configure_system
 
-install_msg "Installing samba"
+#install_msg "Installing samba"
 install_samba
 
-install_msg "Installing printer"
+#install_msg "Installing printer"
 install_printer
 
 install_msg "Finalizing and cleanup"
