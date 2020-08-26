@@ -17,9 +17,11 @@ xset -dpms &
 xset c off &
 # turn bell off
 xset b off &
+numlockx &
 
 # daemons
-/usr/libexec/polkit-gnome-authentication-agent-1 &
+run /usr/libexec/polkit-gnome-authentication-agent-1
+run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
 run "mpd"								# music player widget
 #run "udiskie" 							# automount removable storage,replaced with gvfs for usb and android automounting

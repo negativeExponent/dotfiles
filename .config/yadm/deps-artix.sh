@@ -66,6 +66,7 @@ get_packages() {
 	PKGS="${PKGS} bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg"
 	PKGS="${PKGS} atool imagemagick python-pillow xdotool xorg-xdpyinfo ffmpegthumbnailer ranger"
 	PKGS="${PKGS} speedtest-cli"
+	PKGS="${PKGS} numlockx"
 
 	# Additional fonts and themes
 	PKGS="${PKGS} ttf-croscore gtk-engine-murrine"
