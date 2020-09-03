@@ -9,14 +9,20 @@
 set -e
 
 ARCH="$1"
+INIT="systemd"
 
 PKGS=""
 RUNSVDIR="/etc/runit/runsvdir/default"
 
-
+if [[ "$ARCH" = "artix" ]]; then
+	sudo pacman -Qk openrc 2>/dev/null && INIT="openrc"
+	sudo pacman -Qk runit 2>/dev/null && INIT="runit"
+	sudo pacman -Qk s6 2>/dev/null && INIT="s6"
+fi
 
 echo ""
-echo -e "\e[34mDetected system = $ARCH\e[0m"
+echo -e "\e[34mDetected system = $ARCH ($INIT)\e[0m"
+
 
 install_msg() {
 	echo -e "\e[32m$@\e[0m"
@@ -73,93 +79,6 @@ get_packages() {
 
 	# System utilities
 	PKGS="${PKGS} android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring" # automounting of usb and android devices
-
- 	# Runit services
-	# [ "$ARCH" != "artix" ] || PKGS="${PKGS} haveged-runit cronie-runit ntp-runit"
-}
-
-install_networkmanager() {
-	# THIS IS INCOMPLETE AND UNUSED FOR ARTIX-RUNIT
-	# NO PLAN TO USE THIS FOR NOW, KEEPING IT JUST INCASE
-	pac_install NetworkManager
-
-	sudo sv down dhcpcd
-	sudo sv down wpa_supplicant
-	sudo rm /var/service/dhcpcd
-	sudo rm /var/service/wpa_supplicant
-	sudo ln -sf /etc/sv/dbus /var/service/
-	sudo ln -sf /etc/sv/NetworkManager /var/service/
-	sudo sv up NetworkManager
-
-	echo 'polkit.addRule(function(action, subject) {
-  if (action.id.indexOf("org.freedesktop.NetworkManager.") == 0 && subject.isInGroup("network")) {
-	return polkit.Result.YES;
-  }
-});' | sudo tee /etc/polkit-1/rules.d/50-org.freedesktop.NetworkManager.rules
-}
-
-install_samba() {
-    if [ "$ARCH" = "artix" ]; then
-        pac_install samba-runit gvfs-smb
-    elif [ "$ARCH" = "obarun" ]; then
-        pac_install samba-66serv gvfs-smb
-    fi
-    [ -d /etc/samba ] || sudo mkdir /etc/samba 2>/dev/null
-    sudo bash -c 'cat > /etc/samba/smb.conf' << EOF
-[global]
-workgroup = WORKGROUP
-server string = Samba Server
-server role = standalone server
-log file = /var/log/samba/smb.log
-log level = 0
-max log size = 300
-map to guest = Bad User
-[homes]
-comment = Home Directories
-browseable = no
-writable = yes
-[printers]
-comment = All Printers
-path = /usr/spool/samba
-guest ok = yes
-printable = yes
-browseable = yes
-writable = no
-[Anonymous]
-# comment = Public share folder
-browseable = yes
-guest ok = yes
-read only = no
-create mask = 777
-writeable = yes
-path = /mnt/data/Public
-force user = nobody
-EOF
-}
-
-install_printer() {
-    local pkg="cups cups-pdf system-config-printer"
-    [ "$ARCH" = "artix" ] && pkg="${pkg} cups-runit"
-    [ "$ARCH" = "obarun" ] && pkg="${pkg} cupsd-66serv"
-    pac_install $pkg
-}
-
-configure_system() {
-    # enable static DNS when using DHCP
-    if [ -f /etc/dhcpcd.conf ]; then
-        grep "static domain_name_servers" /etc/dhcpcd.conf || echo "static domain_name_servers=1.1.1.1 1.0.0.1" | sudo tee -a /etc/dhcpcd.conf
-    fi
-    # enable runit services
-    if [ "$ARCH" = "artix" ]; then
-        svc_common="cronie dbus dhcpcd elogind haveged ntpd udevd smbd nmbd cupsd"
-        for svc in $svc_common
-        do
-            if [ -d /etc/runit/sv/$svc ] ; then
-                install_msg "Enabling service: $RUNSVDIR/$svc"
-                sudo ln -sf "/etc/runit/sv/$svc" "$RUNSVDIR/$svc"
-            fi
-        done
-    fi
 }
 
 configure_intel_video() {
@@ -209,19 +128,9 @@ create_symlinks() {
 	link /mnt/data/myfiles/transmission-daemon $HOME/.config/transmission-daemon
 }
 
-cleanup() {
-	# remove unnecessary services
-	if [ "$ARCH" = "artix" ]; then
-		remove_svc="agetty-tty3 agetty-tty4 agetty-tty5 agetty-tty6 sshd"
-		for svc in $remove_svc
-		do
-			if [ -d $RUNSVDIR/$svc ] ; then
-				install_msg "Removing $RUNSVDIR/$svc"
-				sudo rm $RUNSVDIR/$svc
-			fi
-		done
-	fi
-}
+######################
+## Start of Script ###
+######################
 
 echo -e "\e[31mChecking permissions...\e[0m"
 if [ "$EUID" -eq 0 ]; then
@@ -244,6 +153,9 @@ grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/
 install_msg "Creating symlinks for some common applications."
 create_symlinks
 
+install_msg "Syncing pacman database"
+sudo pacman -Syu --noconfirm
+
 if ! command -v yay >/dev/null; then
 	install_msg "Yay aur helper not found. We will compile this from AUR."
 	! command -v yay >/dev/null && sudo pacman -S --needed --noconfirm git ccache
@@ -257,9 +169,6 @@ if ! command -v yay >/dev/null; then
 		exit 1
 	fi
 fi
-
-install_msg "Syncing pacman database"
-yay -Syy --noconfirm
 
 # Get a list of packages to install
 get_packages
@@ -275,18 +184,6 @@ command -v "brave" >/dev/null || pac_install "brave-bin"
 
 install_msg "Configure Intel Video"
 configure_intel_video
-
-install_msg "Configuring new system"
-configure_system
-
-install_msg "Installing samba"
-install_samba
-
-install_msg "Installing printer"
-install_printer
-
-install_msg "Finalizing and cleanup"
-cleanup
 
 if [ -f $HOME/.ssh/id_rsa ] ; then
 	eval "$(ssh-agent -s)"
