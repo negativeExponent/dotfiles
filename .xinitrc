@@ -17,10 +17,10 @@ cmd="exec"
 # https://github.com/flexibeast/guides
 if which dbus-run-session >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS";
 then
-	cmd="exec dbus-run-session"
+	cmd="exec dbus-run-session $@"
 fi
 
 [ -f ~/.xprofile ] && . ~/.xprofile
 
-#${cmd} bspwm
-${cmd} spectrwm
+${cmd} bspwm
+#${cmd} spectrwm
