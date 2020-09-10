@@ -61,7 +61,7 @@ get_packages() {
 	PKGS="${PKGS} lxappearance perl vim"
 	PKGS="${PKGS} mpv w3m neofetch"
 	PKGS="${PKGS} htop zathura zathura-pdf-mupdf maim xclip feh xcompmgr"
-	PKGS="${PKGS} xarchiver zip unzip p7zip meld ghex gnome-calculator jq"
+	PKGS="${PKGS} file-roller zip unzip p7zip meld ghex gnome-calculator jq"
 	PKGS="${PKGS} ttf-linux-libertine noto-fonts-emoji arc-icon-theme"
 
 	[ "$ARCH" = "obarun" ] || PKGS="${PKGS} mpd mpc ncmpcpp" # obarun does not have libsystemd, so these will fail to install
