@@ -117,10 +117,10 @@ create_symlinks() {
 	link /mnt/data/Downloads $HOME/Downloads
 	link /mnt/data/Pictures $HOME/Pictures
 
-	link /mnt/storage/Music $HOME/Music
+	link /mnt/data/Music $HOME/Music
 
 	link /mnt/data/myfiles/.mozilla $HOME/.mozilla
-	link /mnt/data/myfiles/#ssh_key/.ssh $HOME/.ssh
+	link /mnt/data/myfiles/ssh_key/.ssh $HOME/.ssh
 
 	# symlinks to .config
 	link /mnt/data/myfiles/BraveSoftware $HOME/.config/BraveSoftware
