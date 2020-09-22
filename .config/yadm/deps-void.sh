@@ -36,12 +36,12 @@ get_packages() {
 	PKGS="${PKGS} arandr xrdb xset xsetroot xprop xcalib xdg-utils"
 	PKGS="${PKGS} xdo setxkbmap xmodmap bash-completion ccache ntfs-3g "
 	PKGS="${PKGS} git curl wget xtools xsel wireless_tools"
-	PKGS="${PKGS} dcron" # lightweight cron daemon
-	PKGS="${PKGS} chrony" # ntp
+	# PKGS="${PKGS} dcron" # lightweight cron daemon
+	# PKGS="${PKGS} chrony" # ntp
 
 	# Audio
-	PKGS="${PKGS} alsa-utils alsa-plugins-pulseaudio"
-	PKGS="${PKGS} pamixer pulsemixer"
+	# PKGS="${PKGS} alsa-utils"
+	PKGS="${PKGS} alsa-plugins-pulseaudio pamixer pulsemixer"
 
 	# Minimal bspwm apps
 	PKGS="${PKGS} bspwm sxhkd kitty rofi polybar dunst geany pcmanfm firefox"
@@ -54,7 +54,7 @@ get_packages() {
 	PKGS="${PKGS} bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg"
 	PKGS="${PKGS} atool ImageMagick python3-Pillow xdotool xdpyinfo ffmpegthumbnailer"
     PKGS="${PKGS} cava ranger"
-	PKGS="${PKGS} speedtest-cli geoip geoip-data"
+	# PKGS="${PKGS} speedtest-cli geoip geoip-data"
 
 	# Additional fonts and themes
 	PKGS="${PKGS} fonts-croscore-ttf gtk-engine-murrine"
@@ -64,7 +64,7 @@ get_packages() {
 
 	# DBus
 	PKGS="${PKGS} elogind"
-	PKGS="${PKGS} dbus-elogind dbus-elogind-libs dbus-elogind-x11" 	# required for rootless xorg
+	# PKGS="${PKGS} dbus-elogind dbus-elogind-libs dbus-elogind-x11" 	# required for rootless xorg
 }
 
 install_networkmanager() {
@@ -130,6 +130,8 @@ EOF
 # symlinks to commonly used folders/apps
 
 create_symlinks() {
+	mkdir -p $HOME/.config
+
 	# symlinks to HOME
 	link /mnt/data/Documents $HOME/Documents
 	link /mnt/data/Downloads $HOME/Downloads

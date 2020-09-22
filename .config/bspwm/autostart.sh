@@ -29,6 +29,7 @@ run "picom" " -b --experimental-backend" 	# compositor
 run "dunst" 							# notification daemon
 run "sxhkd" 							# X hotkey daemon
 run "connman-gtk" "--tray" # network manager gtk ui
+run "volumeicon"
 
 # reload Xresources
 xrdb -merge "$HOME/.Xresources" &
