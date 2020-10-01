@@ -53,8 +53,8 @@ get_packages() {
 
 	# Audio
 	PKGS="${PKGS} alsa-utils"
-	# PKGS="${PKGS} pulseaudio-alsa pamixer pulsemixer"
-	# [ "$ARCH" = "obarun" ] && PKGS="${PKGS} pulseaudio-66serv"
+	PKGS="${PKGS} pulseaudio-alsa pamixer pulsemixer"
+	[ "$ARCH" = "obarun" ] && PKGS="${PKGS} pulseaudio-66serv"
 
 	# Minimal bspwm apps
 	PKGS="${PKGS} bspwm sxhkd kitty rofi dunst geany pcmanfm"
