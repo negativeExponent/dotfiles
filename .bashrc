@@ -18,7 +18,7 @@ if [ $EXIT != 0 ]; then
    PS1+=" ${Red}$EXIT"
 fi
 
-PS1+=" ${BBlu}\w \$${RCol} "
+PS1+="${BBlu}\w \$${RCol} "
 
 alias ls='ls --color=auto'
 alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
