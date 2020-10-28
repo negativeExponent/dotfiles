@@ -212,3 +212,10 @@ ex=:\
 *.cfg=:\
 *.key=:\
 "
+
+if [[ -d /opt/devkitpro ]]; then
+export DEVKITPRO=/opt/devkitpro
+[[ -d ${DEVKITPRO}/devkitARM ]] && export DEVKITARM=${DEVKITPRO}/devkitARM
+[[ -d ${DEVKITPRO}/devkitPPC ]] && export DEVKITPPC=${DEVKITPRO}/devkitPPC
+[[ -d ${DEVKITPRO}/libctru ]]   && export CTRULIB=${DEVKITPRO}/libctru
+fi
