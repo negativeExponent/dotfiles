@@ -30,6 +30,8 @@ run "dunst" 							# notification daemon
 run "sxhkd" 							# X hotkey daemon
 run "connman-gtk" "--tray" # network manager gtk ui
 run "volumeicon"
+run "nm-applet"
+run "blueman-applet"
 
 # reload Xresources
 xrdb -merge "$HOME/.Xresources" &
@@ -38,7 +40,7 @@ xrdb -merge "$HOME/.Xresources" &
 sh "$HOME/.fehbg" &
 
 # load monitor profile
-. "$HOME/.local/bin/load_icm_profile" &
+# . "$HOME/.local/bin/load_icm_profile" &
 
 # kill and relaunch panel
 . "$HOME/.local/bin/launch_polybar.sh" &
