@@ -79,6 +79,9 @@ get_packages() {
 
 	# System utilities
 	PKGS="${PKGS} android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring" # automounting of usb and android devices
+
+    # Power Manager
+    PKGS="${PKGS} xfce4-power-manager"    
 }
 
 configure_intel_video() {

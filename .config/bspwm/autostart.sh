@@ -10,13 +10,15 @@ run() {
 
 # general system settings
 xsetroot -cursor_name left_ptr &
-xset s noblank &
-xset s noexpose &
-xset -dpms &
+# xset s noblank &
+# xset s noexpose &
+# xset -dpms &
 # turn keyclick off
-xset c off &
+# xset c off &
 # turn bell off
-xset b off &
+# xset b off &
+run "xfce4-power-manager"
+
 numlockx &
 
 # daemons
