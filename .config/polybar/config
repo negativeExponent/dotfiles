@@ -48,7 +48,7 @@ height = 20
 background = ${colors.background}
 foreground = ${colors.foreground}
 
-line-size = 0
+line-size = 2
 
 border-size = 4
 border-color = ${colors.background}
@@ -57,7 +57,8 @@ padding = 0
 module-margin-left = 0
 module-margin-right = 0
 
-font-0 = JetBrainsMono Nerd Font Mono:style=Medium:size=8;2
+; font-0 = JetBrainsMono Nerd Font Mono:style=Medium:size=8;2
+font-0 = JetBrainsMono Nerd Font:style=Medium:size=9;2
 font-1 = NotoColorEmoji:fontformat=truetype:scale=14:antialias=false;2
 
 ;; Available modules
@@ -67,10 +68,10 @@ font-1 = NotoColorEmoji:fontformat=truetype:scale=14:antialias=false;2
 ; memory
 ; temperature
 
-modules-left = bspwm bspwm-mode
-modules-center = xwindow
+modules-left = bspwm xwindow
+modules-center =
 #modules-right = torrents sep cpu temperature memory sep network-eth sep weather sep pavolume-new sep date sep
-modules-right = torrents network-eth pavolume-new date
+modules-right = network-eth cpu memory torrents pavolume-new date sep bspwm-mode sep
 
 tray-position = right
 tray-padding = 2
