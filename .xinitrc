@@ -1,26 +1,7 @@
 #!/bin/sh
-#
-# ~/.xinitrc
-#
-# Executed by startx (run your window manager from here)
 
-if [ -d /etc/X11/xinit/xinitrc.d ]; then
-  for f in /etc/X11/xinit/xinitrc.d/*; do
-    [ -x "$f" ] && . "$f"
-  done
-  unset f
+if [ -f $HOME/.xprofile ]; then
+   . "$HOME/.xprofile"
 fi
 
-cmd="exec"
-# launched with DBUS
-# Without this, mounting, unmounting, trash, etc won't work in pcmanfm
-# https://github.com/flexibeast/guides
-if which dbus-run-session >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS";
-then
-	cmd="exec dbus-run-session $@"
-fi
-
-[ -f ~/.xprofile ] && . ~/.xprofile
-
-${cmd} bspwm
-#${cmd} spectrwm
+exec bspwm

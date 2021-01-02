@@ -1,5 +1,5 @@
 # Application Defaults
-export BROWSER="firefox"
+export BROWSER="brave"
 export TERMINAL="kitty"
 export EDITOR="vim"
 export VISUAL="vim"

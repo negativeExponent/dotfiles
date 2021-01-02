@@ -40,7 +40,7 @@ bottom = false
 separator =
 
 width = 100%
-height = 20
+height = 18
 ;offset-x = 0
 ;offset-y = 0
 ;radius = 0.0
@@ -58,7 +58,7 @@ module-margin-left = 0
 module-margin-right = 0
 
 ; font-0 = JetBrainsMono Nerd Font Mono:style=Medium:size=8;2
-font-0 = JetBrainsMono Nerd Font:style=Medium:size=9;2
+font-0 = monospace:style=Medium:size=8;2
 font-1 = NotoColorEmoji:fontformat=truetype:scale=14:antialias=false;2
 
 ;; Available modules
@@ -68,10 +68,10 @@ font-1 = NotoColorEmoji:fontformat=truetype:scale=14:antialias=false;2
 ; memory
 ; temperature
 
-modules-left = bspwm xwindow
+modules-left = bspwm bspwm-mode xwindow
 modules-center =
 #modules-right = torrents sep cpu temperature memory sep network-eth sep weather sep pavolume-new sep date sep
-modules-right = network-eth cpu memory torrents pavolume-new date sep bspwm-mode sep
+modules-right = pacman-packages torrents temperature memory network-eth weather pavolume-new date
 
 tray-position = right
 tray-padding = 2
