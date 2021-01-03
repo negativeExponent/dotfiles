@@ -11,9 +11,20 @@ options="$cmd_logout\\n$cmd_lock\\n$cmd_suspend\\n$cmd_reboot\\n$cmd_shutdown"
 chosen=$(printf "$options" |
     rofi -p "Power Menu" -dmenu -i -theme "~/.config/rofi/powermenu.rasi")
 
+killprogs() {
+    pkill -x polybar
+}
+
 case "$chosen" in
     $cmd_logout)
-        pkill -x polybar && bspc quit;;
+        # For each opened window
+        bspc query --nodes | while read -r winid; do
+            # Close it
+            xdotool windowkill "$winid"
+        done
+        killprogs
+        bspc quit 1
+        ;;
     $cmd_lock)
         #betterlockscreen --lock dimblur;;
         ;;
@@ -21,7 +32,14 @@ case "$chosen" in
         #systemctl suspend;;
         ;;
     $cmd_reboot)
-        sudo /usr/bin/reboot;;
+        killprogs
+        bspc quit 0
+        #sudo /usr/bin/reboot
+        systemctl reboot
+        ;;
     $cmd_shutdown)
-        sudo /usr/bin/shutdown -h now;;
+        killprogs
+        bspc quit 1
+        systemctl poweroff
+        ;;
 esac
