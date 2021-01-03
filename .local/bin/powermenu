@@ -11,6 +11,12 @@ options="$cmd_logout\\n$cmd_lock\\n$cmd_suspend\\n$cmd_reboot\\n$cmd_shutdown"
 chosen=$(printf "$options" |
     rofi -p "Power Menu" -dmenu -i -theme "~/.config/rofi/powermenu.rasi")
 
+# For non-systemd init systems.
+case "$(readlink -f /sbin/init)" in
+	*runit*) hib="sudo -A zzz" ;;
+	*openrc*) reb="sudo -A openrc-shutdown -r"; shut="sudo -A openrc-shutdown -p" ;;
+esac
+
 killprogs() {
     pkill -x polybar
 }
@@ -33,13 +39,10 @@ case "$chosen" in
         ;;
     $cmd_reboot)
         killprogs
-        bspc quit 0
-        #sudo /usr/bin/reboot
-        systemctl reboot
+        ${reb:-sudo -A reboot}
         ;;
     $cmd_shutdown)
         killprogs
-        bspc quit 1
-        systemctl poweroff
+        ${shut:-sudo -A shutdown -h now}
         ;;
 esac
