@@ -1,21 +1,24 @@
-#
-# wm independent hotkeys
-#
+##
+## wm independent hotkeys
+## NOTE: Comments should start with '##'
+## while hotket descriptions use only one '#'
+## This will make the modkey+F1 help menu more readable
+##
 
 # make sxhkd reload its configuration files:
 super + Escape
 	pkill -USR1 -x sxhkd
 
-#
-# bspwm hotkeys
-#
+##
+## bspwm hotkeys
+##
 
 # close bar then quit wm
 super + alt + Escape
 	pkill -x panel; bspc quit
 
 ## quit/restart bspwm
-##super + alt + {q,r}
+## super + alt + {q,r}
 ##	bspc {quit,wm -r}
 
 # close and kill
@@ -34,9 +37,9 @@ super + y
 super + g
 	bspc node -s biggest
 
-#
-# state/flags
-#
+##
+## state/flags
+##
 
 ## set the window state
 ##super + {t,shift + t,s,f}
@@ -54,9 +57,9 @@ super + {p,t}
 super + ctrl + {m,x,y,z}
 	bspc node -g {marked,locked,sticky,private}
 
-#
-# focus/swap
-#
+##
+## focus/swap
+##
 
 # focus the node in the given direction
 super + {_,shift + }{h,j,k,l}
@@ -88,9 +91,9 @@ super + {o,i}
 super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} '^{1-9,10}'
 
-#
-# preselect
-#
+##
+## preselect
+##
 
 # preselect the direction
 super + ctrl + {h,j,k,l}
@@ -108,9 +111,9 @@ super + ctrl + space
 super + ctrl + shift + space
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
-#
-# move/resize
-#
+##
+## move/resize
+##
 
 # expand a window by moving one of its side outward
 super + alt + {h,j,k,l}
@@ -136,9 +139,9 @@ XF86Audio{Next,Prev,Play,Stop}
 ##super + m
 ##	notify-send "Now Playing ♫" "$(mpc current)"
 
-#
-# non-bspwm bindings
-#
+##
+## non-bspwm bindings
+##
 
 # help
 super + F1
@@ -156,8 +159,8 @@ super + Return
 super + shift + Return
 	$TERMINAL --name floating
 
-super + BackSpace
-	st
+## super + BackSpace
+##	st
 
 # program launcher
 super + d
@@ -181,5 +184,3 @@ super + F10
 	rofi -show window -line-padding 4 \
                 -lines 6 -padding 50 -hide-scrollbar \
                 -show-icons -drun-icon-theme "Arc-X-D" -font "MesloLGS NF 10"
-
-## dmenu_run -nf '#F8F8F2' -nb '#282A36' -sb '#6272A4' -sf '#F8F8F2' -fn 'monospace-10' -p 'run:'

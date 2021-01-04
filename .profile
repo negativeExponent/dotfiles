@@ -20,7 +20,7 @@ export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/inputrc"
 export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
 export HISTFILE="${XDG_DATA_HOME:-$HOME/.local/share/zsh}/history"
 
-export SUDO_ASKPASS="$HOME/.local/bin/dmenupass"
+export SUDO_ASKPASS="$HOME/.local/bin/rofi_pass"
 export QT_QPA_PLATFORMTHEME="gtk2"	# Have QT use gtk2 theme.
 
 PATH="$PATH"
@@ -219,3 +219,5 @@ export DEVKITPRO=/opt/devkitpro
 [[ -d ${DEVKITPRO}/devkitPPC ]] && export DEVKITPPC=${DEVKITPRO}/devkitPPC
 [[ -d ${DEVKITPRO}/libctru ]]   && export CTRULIB=${DEVKITPRO}/libctru
 fi
+
+export LOCATION=""

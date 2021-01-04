@@ -3,12 +3,14 @@
 # Sets a randomly selected wallpaper from a given directory
 
 WALLPAPER=~/Pictures/Wallpapers
-RAND=$(find "$WALLPAPER" -xtype f | sort -R | head -1)
 
 if ! command -v feh >/dev/null; then
     echo "feh not installed.";
     exit 1
 fi
 
+RAND=$(find $WALLPAPER -xtype f | sort -R | head -1)
+
 notify-send "Using wallpaper: $RAND"
+
 feh --bg-fill $RAND
