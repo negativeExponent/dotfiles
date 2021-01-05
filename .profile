@@ -220,6 +220,7 @@ export DEVKITPRO=/opt/devkitpro
 [[ -d ${DEVKITPRO}/libctru ]]   && export CTRULIB=${DEVKITPRO}/libctru
 fi
 
+# load personal stuff
 [[ -x /mnt/data/myfiles/extrarc ]] && source /mnt/data/myfiles/extrarc
 
 # Start graphical server on tty1 if not already running.

@@ -22,7 +22,7 @@ _r /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
 _r "mpd"								# music player widget
 # _r "udiskie" 							# automount removable storage,replaced with gvfs for usb and android automounting
-# _r "picom" " -b --experimental-backend" 	# compositor
+_r "picom" " -b --experimental-backend" 	# compositor
 _r "dunst" 							# notification daemon
 _r "sxhkd" 							# X hotkey daemon
 _r "connman-gtk" "--tray" # network manager gtk ui

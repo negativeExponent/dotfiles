@@ -162,6 +162,18 @@ super + shift + Return
 ## super + BackSpace
 ##	st
 
+# launch browser
+super + w
+    $BROWSER
+
+# launch filemanager
+super + f
+    $FILEMANAGER
+
+# launch gui editor
+super + e
+    $EDITOR
+
 # program launcher
 super + d
 	launch_rofi
@@ -173,6 +185,14 @@ super + x
 # change wallpaper (random)
 super + F8
 	change_wallpaper
+
+# printscreen (full)
+Print
+    screenshot full
+
+# printscreen (window)
+super + Print
+    screenshot window
 
 # rofi bindings fancy menu
 super + F9

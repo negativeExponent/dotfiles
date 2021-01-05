@@ -5,7 +5,7 @@ dunst &
 xset r rate 300 50 &
 transmission-daemon &
 # picom -b --experimental-backends &
-xcompmgr &		# xcompmgr for transparency
+# xcompmgr &		# xcompmgr for transparency
 numlockx &
 unclutter &
 xsetroot -cursor_name left_ptr &
