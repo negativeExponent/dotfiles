@@ -20,9 +20,8 @@ fi
 
 PS1+="${BBlu}\w \$${RCol} "
 
-alias ls='ls --color=auto'
-alias ll='ls -lav --ignore=..'   # show long listing of all except ".."
-alias l='ls -lav --ignore=.?*'   # show long listing but no hidden dotfiles except "."
+# Source configs
+for f in ~/.config/shell/*; do source "$f"; done
 
 [[ "$(whoami)" = "root" ]] && return
 
@@ -37,9 +36,4 @@ eval $(dircolors -b $HOME/.config/dir_colours)
 
 [ ! -f /etc/bash/bashrc.d/bash_completion.sh ] || source /etc/bash/bashrc.d/bash_completion.sh
 
-term_emulator=$(ps -h -o comm -p $PPID)
-#if [[ $term_emulator == *"kitty"* ]]; then
-	#neofetch --backend 'kitty'
-#else
-	neofetch --backend 'ascii'
-#fi
+neofetch --backend 'ascii'

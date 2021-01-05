@@ -13,15 +13,7 @@ pkill -USR1 -x sxhkd
 
 # general system settings
 xsetroot -cursor_name left_ptr &
-# xset s noblank &
-# xset s noexpose &
-# xset -dpms &
-# turn keyclick off
-# xset c off &
-# turn bell off
-# xset b off &
 _r "xfce4-power-manager"
-
 numlockx &
 
 # daemons
@@ -29,8 +21,8 @@ _r /usr/libexec/polkit-gnome-authentication-agent-1
 _r /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
 _r "mpd"								# music player widget
-#_r "udiskie" 							# automount removable storage,replaced with gvfs for usb and android automounting
-_r "picom" " -b --experimental-backend" 	# compositor
+# _r "udiskie" 							# automount removable storage,replaced with gvfs for usb and android automounting
+# _r "picom" " -b --experimental-backend" 	# compositor
 _r "dunst" 							# notification daemon
 _r "sxhkd" 							# X hotkey daemon
 _r "connman-gtk" "--tray" # network manager gtk ui

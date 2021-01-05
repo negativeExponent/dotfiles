@@ -4,9 +4,11 @@ mpd &
 dunst &
 xset r rate 300 50 &
 transmission-daemon &
-picom &
+# picom -b --experimental-backends &
+xcompmgr &		# xcompmgr for transparency
 numlockx &
 unclutter &
+xsetroot -cursor_name left_ptr &
 
 ~/.fehbg &
 xrdb -merge "$HOME/.Xresources" &

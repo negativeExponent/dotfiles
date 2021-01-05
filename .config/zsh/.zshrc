@@ -80,16 +80,10 @@ zplug load
 #	ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=yellow,bold'
 #fi
 
-# Aliases
-alias la='ls -lah --color=auto'
-alias lh='ls -lh --color=auto'
-alias ls='ls --color=auto'
-alias l='ls --color=auto'
-alias grep='grep --color=auto'
+# Source configs
+for f in ~/.config/shell/*; do source "$f"; done
 
-term_emulator=$(ps -h -o comm -p $PPID)
-if [[ $term_emulator == *"kitty"* ]]; then
-	neofetch --backend 'kitty'
-else
-	neofetch --backend 'w3m'
-fi
+setopt autocd		# Automatically cd into typed directory.
+stty stop undef		# Disable ctrl-s to freeze terminal.
+
+neofetch --backend 'w3m'
