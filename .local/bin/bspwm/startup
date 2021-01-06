@@ -1,6 +1,6 @@
 #!/bin/sh
 
-_r() {
+run() {
     if command -v $1 >/dev/null; then
 	    if ! pgrep -x $1 >/dev/null; then
 		    $@&
@@ -13,23 +13,23 @@ pkill -USR1 -x sxhkd
 
 # general system settings
 xsetroot -cursor_name left_ptr &
-_r "xfce4-power-manager"
+run "xfce4-power-manager"
 numlockx &
 
 # daemons
-_r /usr/libexec/polkit-gnome-authentication-agent-1
-_r /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+run /usr/libexec/polkit-gnome-authentication-agent-1
+run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
-_r "mpd"								# music player widget
-# _r "udiskie" 							# automount removable storage,replaced with gvfs for usb and android automounting
-_r "picom" " -b --experimental-backend" 	# compositor
-_r "dunst" 							# notification daemon
-_r "sxhkd" 							# X hotkey daemon
-_r "connman-gtk" "--tray" # network manager gtk ui
+run "mpd"								# music player widget
+# run "udiskie" 							# automount removable storage,replaced with gvfs for usb and android automounting
+run "picom" " -b --experimental-backend" 	# compositor
+run "dunst" 							# notification daemon
+run "sxhkd" 							# X hotkey daemon
+run "connman-gtk" "--tray" # network manager gtk ui
 
-# _r "volumeicon"
-# _r "nm-applet"
-# _r "blueman-applet"
+# run "volumeicon"
+# run "nm-applet"
+# run "blueman-applet"
 
 # reload Xresources
 xrdb -merge "$HOME/.Xresources" &
@@ -42,6 +42,9 @@ sh "$HOME/.fehbg" &
 
 # kill and relaunch panel
 . "$HOME/.local/bin/launch_polybar.sh" &
+
+# redshift
+run "redshift" " -t 5500:4500 -l $LOCATION_RS"
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then

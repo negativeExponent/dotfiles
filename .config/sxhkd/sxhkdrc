@@ -186,13 +186,9 @@ super + x
 super + F8
 	change_wallpaper
 
-# printscreen (full)
-Print
-    screenshot full
-
-# printscreen (window)
-super + Print
-    screenshot window
+# printscreen (full, selection)
+super + {_,shift +} Print
+    screenshot {full, window}
 
 # rofi bindings fancy menu
 super + F9

@@ -1,5 +1,8 @@
 #!/bin/bash
 
+## autostart programs
+. $HOME/.local/bin/bspwm/startup &
+
 _c() { bspc config "$@"; }
 _m() { bspc monitor "$@"; }
 _r() { bspc rule "$@"; }
@@ -48,6 +51,3 @@ _r -a retroarch                 state=floating
 _r -a Brave-browser             desktop='^2'    follow=on
 _r -a Firefox                   desktop='^2'    follow=on
 _r -a "Code - OSS"              desktop='^3'    follow=on
-
-## autostart programs
-. ~/.config/bspwm/autostart.sh &

@@ -1,6 +1,6 @@
 .cache
 .ccache
-.config/yadm/repo.git
+.local/share/yadm/repo.git
 .local/share/Trash
 .mozilla
 .config/Code - OSS
