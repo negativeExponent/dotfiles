@@ -9,8 +9,10 @@ cmd_shutdown=" Shutdown"
 cmd_reload=" Reload"
 
 options="$cmd_logout\\n$cmd_lock\\n$cmd_suspend\\n$cmd_reboot\\n$cmd_shutdown\\n$cmd_reload"
-chosen=$(printf "$options" |
-    rofi -p "Power Menu" -dmenu -i -lines 6 -theme "~/.config/rofi/powermenu.rasi")
+# chosen=$(printf "$options" |
+    # rofi -p "Power Menu" -dmenu -i -lines 6 -theme "~/.config/rofi/powermenu.rasi")
+
+chosen=$(printf "$options" | rofi -theme "~/.config/rofi/powermenu.rasi" -p "Power Menu" -dmenu -i )
 
 # For non-systemd init systems.
 case "$(readlink -f /sbin/init)" in
@@ -21,6 +23,7 @@ esac
 killprogs() {
     pkill -x polybar
     pkill -x picom
+    pkill -x redshift
 }
 
 case "$chosen" in

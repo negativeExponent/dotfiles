@@ -1,5 +1,8 @@
 #!/bin/sh
 
+LOC=$LOCATION_RS
+CTEMP=5500:4500
+
 run() {
     if command -v $1 >/dev/null; then
 	    if ! pgrep -x $1 >/dev/null; then
@@ -8,43 +11,31 @@ run() {
     fi
 }
 
-# kill sxhkd first
-pkill -USR1 -x sxhkd
 
-# general system settings
-xsetroot -cursor_name left_ptr &
-run "xfce4-power-manager"
+xsetroot -cursor_name left_ptr &            # general system settings
 numlockx &
+xrdb -merge "$HOME/.Xresources" &           # reload Xresources
+sh "$HOME/.fehbg" &                         # restore background wallpaper
+# . "$HOME/.local/bin/load_icm_profile" &   # load monitor profile
 
 # daemons
-run /usr/libexec/polkit-gnome-authentication-agent-1
-run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+# run /usr/libexec/polkit-gnome-authentication-agent-1
+# run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
-run "mpd"								# music player widget
-# run "udiskie" 							# automount removable storage,replaced with gvfs for usb and android automounting
-run "picom" " -b --experimental-backend" 	# compositor
-run "dunst" 							# notification daemon
-run "sxhkd" 							# X hotkey daemon
-run "connman-gtk" "--tray" # network manager gtk ui
+run "mpd"                                   # music player widget
+# run "udiskie"                             # automount removable storage,replaced with gvfs for usb and android automounting
+run "picom" " -b --experimental-backend"    # compositor
+run "dunst"                                 # notification daemon
+run "sxhkd"                                 # X hotkey daemon
+run "redshift" " -t $CTEMP -l $LOC"         # redshift
 
-# run "volumeicon"
-# run "nm-applet"
-# run "blueman-applet"
+# tray icons
+# run "connman-gtk" "--tray"            # network manager gtk ui
+# run "volumeicon"                      # volume icon
+# run "nm-applet"                       # networkmanager
+# run "blueman-applet"                  # bluetooth
 
-# reload Xresources
-xrdb -merge "$HOME/.Xresources" &
-
-# restore background
-sh "$HOME/.fehbg" &
-
-# load monitor profile
-# . "$HOME/.local/bin/load_icm_profile" &
-
-# kill and relaunch panel
-. "$HOME/.local/bin/launch_polybar.sh" &
-
-# redshift
-run "redshift" " -t 5500:4500 -l $LOCATION_RS"
+"$HOME/.local/bin/launch_polybar" &  # kill and relaunch panel
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then

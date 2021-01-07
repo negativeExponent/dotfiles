@@ -45,9 +45,11 @@ _r -a *:show_help               state=floating
 _r -a *:floating                state=floating
 _r -a File-roller               state=floating
 _r -a Yad                       state=floating
-_r -a nmtui                   state=floating
+_r -a nmtui                     state=floating
 _r -a retroarch                 state=floating
 
 _r -a Brave-browser             desktop='^2'    follow=on
 _r -a Firefox                   desktop='^2'    follow=on
 _r -a "Code - OSS"              desktop='^3'    follow=on
+_r -a vscodium                  desktop='^3'    follow=on
+_r -a discord                   desktop='^6'    follow=on

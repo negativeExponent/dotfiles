@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# app launcher using rofi
+
+# Theming help for rofi
+# color window = background, border, separator
+# color normal = background, foreground, background-alt, highlight-background, highlight-foreground
+# color active = background, foreground, background-alt, highlight-background, highlight-foreground
+# color urgent = background, foreground, background-alt, highlight-background, highlight-foreground
+
+# Launch rofi with custom configuration
+rofi -show drun -theme "$HOME/.config/rofi/appmenu.rasi"

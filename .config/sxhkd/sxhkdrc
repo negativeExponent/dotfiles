@@ -145,7 +145,7 @@ XF86Audio{Next,Prev,Play,Stop}
 
 # help
 super + F1
-	sxhkd_showkeys
+	sxhkd-showkeys
 
 # reload bspwm
 super + F2
@@ -176,27 +176,16 @@ super + e
 
 # program launcher
 super + d
-	launch_rofi
+	rofi-appmenu
 
 # power menu
 super + x
-	powermenu
+	rofi-powermenu
 
 # change wallpaper (random)
 super + F8
-	change_wallpaper
+	wallpaper-changer
 
 # printscreen (full, selection)
 super + {_,shift +} Print
     screenshot {full, window}
-
-# rofi bindings fancy menu
-super + F9
-	rofi -modi drun -show drun -line-padding 4 \
-                -columns 2 -padding 50 -hide-scrollbar \
-                -show-icons -drun-icon-theme "Arc-X-D" -font "MesloLGS NF 10"
-
-super + F10
-	rofi -show window -line-padding 4 \
-                -lines 6 -padding 50 -hide-scrollbar \
-                -show-icons -drun-icon-theme "Arc-X-D" -font "MesloLGS NF 10"
