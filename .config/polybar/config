@@ -4,23 +4,14 @@ include-file = $XDG_CONFIG_HOME/polybar/modules.ini
 [settings]
 throttle-output = 5
 throttle-output-for = 10
-throttle-input-for = 30
+; throttle-input-for = 30 # to be deprecated
 screenchange-reload = true
 compositing-background = over
 compositing-foreground = over
 compositing-overline = over
 compositing-underline = over
 compositing-border = over
-
-; Define fallback values used by all module formats
-;format-foreground = ${colors.foreground}
-;format-background = ${colors.background}
-;format-underline =
-;format-overline =
-;format-spacing =
 format-padding = 1
-;format-margin =
-;format-offset =
 
 [global/wm]
 margin-top = 0
@@ -28,7 +19,7 @@ margin-bottom = 0
 
 [bar/example]
 monitor = ${env:MONITOR:-VGA1}
-;monitor-fallback =
+monitor-fallback = VGA1
 monitor-strict = false
 monitor-exact = true
 
@@ -37,39 +28,27 @@ wm-restack = bspwm
 enable-ipc = true
 fixed-center = true
 bottom = false
-separator =
+separator = |
 
 width = 100%
 height = 24
-;offset-x = 0
-;offset-y = 0
-;radius = 0.0
 
 background = ${colors.background}
 foreground = ${colors.foreground}
 
 line-size = 0
-
 border-size = 0
 border-color = ${colors.background}
-
 padding = 0
+
+font-0 = JetBrainsMono Nerd Font Mono:style=Medium:size=8;2
+font-1 = NotoColorEmoji:fontformat=truetype:scale=14:antialias=false;2
+
 module-margin-left = 0
 module-margin-right = 0
 
-font-0 = JetBrainsMono Nerd Font:style=Medium:size=8;2
-font-1 = NotoColorEmoji:fontformat=truetype:scale=14:antialias=false;2
-
-;; Available modules
-; alsa
-; xwindow
-; cpu
-; memory
-; temperature
-
 modules-left = bspwm bspwm-mode xwindow
 modules-center =
-#modules-right = torrents sep cpu temperature memory sep network-eth sep weather sep pavolume-new sep date sep
 modules-right = mpd pacman-packages torrents temperature memory network-eth weather pavolume popup-calendar
 
 tray-position = right
@@ -78,7 +57,7 @@ tray-offset-x = 0
 tray-offset-y = 0
 tray-scale = 1.0
 tray-maxsize = 16
-tray-background = ${colors.background-alt}
+tray-background = ${colors.background}
 
 cursor-click = pointer
 cursor-scroll = default
