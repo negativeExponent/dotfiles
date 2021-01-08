@@ -1,2 +1,2 @@
 #!/bin/sh
-/usr/bin/feh --no-fehbg --bg-scale '/mnt/data/Pictures/973428-gorgerous-beautiful-anime-wallpaper-1920x1080-hd.jpg'
+feh --no-fehbg --bg-fill '/home/negative/Pictures/Wallpapers/973428-gorgerous-beautiful-anime-wallpaper-1920x1080-hd.jpg' 

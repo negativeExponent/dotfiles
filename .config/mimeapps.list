@@ -6,6 +6,7 @@ application/x-php=code-oss-bin.desktop;
 application/pdf=firefox.desktop;
 application/x-desktop=vim.desktop;
 application/octet-stream=geany.desktop;
+inode/directory=mpv.desktop;
 
 [Default Applications]
 inode/directory=pcmanfm.desktop;
