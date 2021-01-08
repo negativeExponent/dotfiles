@@ -12,15 +12,14 @@ run() {
 }
 
 
-xsetroot -cursor_name left_ptr &            # general system settings
-numlockx &
 xrdb -merge "$HOME/.Xresources" &           # reload Xresources
 sh "$HOME/.fehbg" &                         # restore background wallpaper
 # . "$HOME/.local/bin/load_icm_profile" &   # load monitor profile
-
+run "xsetroot" " -cursor_name left_ptr"     # general system settings
+run "numlockx"
 # daemons
-# run /usr/libexec/polkit-gnome-authentication-agent-1
-# run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+run /usr/libexec/polkit-gnome-authentication-agent-1
+run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
 run "mpd"                                   # music player widget
 # run "udiskie"                             # automount removable storage,replaced with gvfs for usb and android automounting
@@ -30,12 +29,12 @@ run "sxhkd"                                 # X hotkey daemon
 run "redshift" " -t $CTEMP -l $LOC"         # redshift
 
 # tray icons
-# run "connman-gtk" "--tray"            # network manager gtk ui
-# run "volumeicon"                      # volume icon
-# run "nm-applet"                       # networkmanager
-# run "blueman-applet"                  # bluetooth
+# run "connman-gtk" "--tray"                # network manager gtk ui
+# run "volumeicon"                          # volume icon
+# run "nm-applet"                           # networkmanager
+# run "blueman-applet"                      # bluetooth
 
-"$HOME/.local/bin/launch_polybar" &  # kill and relaunch panel
+"$HOME/.local/bin/launch_polybar" &         # kill and relaunch panel
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then

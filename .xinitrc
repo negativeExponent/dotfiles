@@ -1,7 +1,1 @@
-#!/bin/sh
-
-if [ -f $HOME/.xprofile ]; then
-   . "$HOME/.xprofile"
-fi
-
-exec bspwm
+/home/negative/.config/x11/xinitrc

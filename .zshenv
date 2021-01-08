@@ -1,3 +1,1 @@
-export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
-
-[ -f ~/.aliases ] && source ~/.aliases
+/home/negative/.config/zsh/.zshenv
