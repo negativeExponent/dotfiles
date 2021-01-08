@@ -82,6 +82,9 @@ get_packages() {
 
     # redshift
     PKGS="${PKGS} redshift"
+
+    # for calendar popup
+    PKGS="${PKGS} yad"
 }
 
 configure_intel_video() {

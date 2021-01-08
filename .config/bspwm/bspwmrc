@@ -47,6 +47,7 @@ _r -a File-roller               state=floating
 _r -a Yad                       state=floating
 _r -a nmtui                     state=floating
 _r -a retroarch                 state=floating
+_r -a yad-calendar              state=floating
 
 _r -a Brave-browser             desktop='^2'    follow=on
 _r -a Firefox                   desktop='^2'    follow=on
