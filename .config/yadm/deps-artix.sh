@@ -184,7 +184,7 @@ pac_install $PKGS
 
 # Install aur packages
 install_msg "Installing aur packages."
-command -v "polybar" >/dev/null || pac_install "polybar"
+command -v "polybar" >/dev/null || pac_install "polybar-git"
 # command -v "cava" >/dev/null || pac_install "cava-git"
 command -v "brave" >/dev/null || pac_install "brave-bin"
 
