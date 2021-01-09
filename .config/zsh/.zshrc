@@ -23,9 +23,8 @@ zplug "dracula/zsh", as:theme # requires OH-MY-ZSH
 HISTSIZE=100000
 SAVEHIST=100000
 
-# Load aliases and personal configs
+# Load aliases
 [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
-[[ -f "/mnt/data/myfiles/extrarc" ]] && source "/mnt/data/myfiles/extrarc"
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check; then
