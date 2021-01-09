@@ -20,12 +20,6 @@ case "$(readlink -f /sbin/init)" in
 	*openrc*) reb="sudo -A openrc-shutdown -r"; shut="sudo -A openrc-shutdown -p" ;;
 esac
 
-killprogs() {
-    pkill -x polybar
-    pkill -x picom
-    pkill -x redshift
-}
-
 case "$chosen" in
     $cmd_logout)
         # For each opened window
@@ -34,25 +28,21 @@ case "$chosen" in
             xdotool windowkill "$winid"
         done
         killprogs
-        bspc quit 1
+        bspc quit
         ;;
-    $cmd_lock)
-        #betterlockscreen --lock dimblur;;
-        ;;
-    $cmd_suspend)
-        #systemctl suspend;;
-        ;;
+#    $cmd_lock)
+#        betterlockscreen --lock dimblur;;
+#        ;;
+#    $cmd_suspend)
+#        systemctl suspend;;
+#        ;;
     $cmd_reboot)
-        killprogs
         ${reb:-sudo -A reboot}
         ;;
     $cmd_shutdown)
-        killprogs
         ${shut:-sudo -A shutdown -h now}
         ;;
     $cmd_reload)
-        killprogs
-        pkill -USR1 -x sxhkd
         bspc wm -r
         ;;
 esac
