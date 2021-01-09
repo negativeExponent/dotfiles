@@ -1,5 +1,3 @@
-[pull]
-	rebase = false
 [user]
-	name = negativeExponent
-	email = negativeExponent@users.noreply.github.com
+    name = negativeExponent
+    email = negativeExponent@users.noreply.github.com

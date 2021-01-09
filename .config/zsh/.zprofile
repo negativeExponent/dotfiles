@@ -1,1 +1,1 @@
-/home/negative/.profile
+../shell/profile

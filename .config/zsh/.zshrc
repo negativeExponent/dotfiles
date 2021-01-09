@@ -19,9 +19,13 @@ zplug "zsh-users/zsh-syntax-highlighting", defer:2
 zplug "dracula/zsh", as:theme # requires OH-MY-ZSH
 
 # History
-HISTFILE="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zsh_history"
+# HISTFILE="${XDG_CONFIG_HOME:-$HOME/.config}/zsh/.zsh_history"
 HISTSIZE=100000
 SAVEHIST=100000
+
+# Load aliases and personal configs
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
+[[ -f "/mnt/data/myfiles/extrarc" ]] && source "/mnt/data/myfiles/extrarc"
 
 # Install plugins if there are plugins that have not been installed
 if ! zplug check; then
@@ -67,9 +71,6 @@ if zplug check "zsh-users/zsh-syntax-highlighting"; then
 	ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=magenta,bold'
 	ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=yellow,bold'
 fi
-
-# Source configs
-for f in ~/.config/shell/*; do source "$f"; done
 
 setopt autocd		# Automatically cd into typed directory.
 stty stop undef		# Disable ctrl-s to freeze terminal.

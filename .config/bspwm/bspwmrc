@@ -10,13 +10,14 @@ _r() { bspc rule "$@"; }
 ## add some colors to bspwm
 _c normal_border_color          "#44475a"
 _c active_border_color          "#6272A4"
-_c focused_border_color         "#ff79c6"
+_c focused_border_color         "#BD93F9"
 _c presel_feedback_color        "#6272a4"
 
 ## monitor settings
 _m -d                           1 2 3 4 5 6 7 8 9
 
 ## window settings
+_c border_radius		12
 _c border_width                 2
 _c window_gap                   10
 _c top_padding                  24

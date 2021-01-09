@@ -1,1 +1,0 @@
-/home/negative/.config/zsh/.zshrc
