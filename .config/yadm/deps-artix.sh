@@ -196,5 +196,7 @@ if [ -f $HOME/.ssh/id_rsa ] ; then
 	ssh-add $HOME/.ssh/id_rsa
 fi
 
+[[ ! -f "$HOME/.config/wall.jpg" ]] || feh --bg-center "$HOME/.config/wall.jpg"
+
 echo "Finished."
 echo ""
