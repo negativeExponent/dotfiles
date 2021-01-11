@@ -26,6 +26,7 @@ run "mpd"                                   # music player widget
 run "picom" " -b --experimental-backend"    # compositor
 run "dunst"                                 # notification daemon
 run "sxhkd"                                 # X hotkey daemon
+run "redshift" " -t $CTEMP -l $LOC"
 
 # tray icons
 # run "connman-gtk" "--tray"                # network manager gtk ui
@@ -34,8 +35,6 @@ run "sxhkd"                                 # X hotkey daemon
 # run "blueman-applet"                      # bluetooth
 
 "$HOME/.local/bin/launch_polybar" &         # kill and relaunch panel
-
-redshift -P -t "$CTEMP" -l "$LOC" &        # redshift
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then
