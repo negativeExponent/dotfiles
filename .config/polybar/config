@@ -35,10 +35,11 @@ height = 24
 
 line-size = 0
 border-size = 0
+border-bottom-size=1
 padding = 0
 
-font-0 = JetBrainsMono Nerd Font Mono:style=Medium:size=8;2
-font-1 = NotoColorEmoji:fontformat=truetype:scale=14:antialias=false;2
+font-0 = Monospace:style=Regular:size=10;2
+font-1 = NotoColorEmoji:fontformat=truetype:scale=10:antialias=false;2
 
 module-margin-left = 0
 module-margin-right = 0
@@ -56,8 +57,8 @@ tray-maxsize = 16
 
 foreground = ${colors.foreground}
 background = ${colors.background-panel}
-border-color = #00000000
-; tray-background = ${colors.background}
+border-color = #000
+tray-background = ${colors.background-panel}
 
 cursor-click = pointer
 cursor-scroll = default
