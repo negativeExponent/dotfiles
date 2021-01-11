@@ -84,7 +84,7 @@ alternative_header_first_line_format = "$b$1$aqqu$/a$9 {%t}|{%f} $1$atqq$/a$9$/b
 # song_columns_list_format = "(15)[yellow]{lr} (1)[black]{} (40)[red]{a} (40)[green]{t}"
 # song_columns_list_format = "(40)[magenta]{ar} (40)[green]{t}" # this one is like the one below, but not quite centered
 song_columns_list_format = "(50)[magenta]{ar} (50)[green]{t}"
-playlist_display_mode = "columns" #possible values: columns/classic
+playlist_display_mode = "classic" #possible values: columns/classic
 
 ###################
 ### Screen 2
