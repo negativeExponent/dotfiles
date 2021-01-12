@@ -126,27 +126,55 @@ EOF
 ## Start of Script ###
 ######################
 
+install_msg ""
 install_msg "Detected system = $ARCH ($INIT)"
 
+install_msg ""
+install_msg "Running symlinks to personal directories..."
+. "$HOME/.config/yadm/_symlink.sh"
+
+install_msg ""
+install_msg "Making pacman beautiful and colorful because why not..."
 grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
 grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
 
-. "$HOME/.config/yadm/_symlink.sh"
-
+install_msg ""
+install_msg "Updating pacman..."
 sudo pacman -Syu --noconfirm
 
+install_msg ""
+install_msg "Installing AUR helper..."
 install_aur_helper
+
+install_msg ""
+install_msg "Installing base packages..."
 install_packages
+
+install_msg ""
+install_msg "Installing AUR packages..."
 install_aur_packages
+
+install_msg ""
+install_msg "Installing and configuring intel gpu driver..."
 configure_intel_video
 
+install_msg ""
+install_msg "Enabling ssh key..."
 if [ -f $HOME/.ssh/id_rsa ] ; then
 	eval "$(ssh-agent -s)"
 	ssh-add $HOME/.ssh/id_rsa
 fi
 
-[[ ! -f "$HOME/.config/wall.jpg" ]] || feh --bg-center "$HOME/.config/wall.jpg"
+install_msg ""
+install_msg "Setting default wallpaper..."
+if [ ! -f "$HOME/.fehbg" ] ; then
+	cat > "$HOME/.fehbg" << EOF
+#!/bin/sh
+feh --no-fehbg --bg-fill $HOME/.config/wall.jpg
+EOF
+	chmod +x "$HOME/.fehbg"
+fi
 
-echo ""
+install_msg ""
 install_msg "Done."
-echo ""
+install_msg ""
