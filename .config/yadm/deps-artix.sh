@@ -118,7 +118,7 @@ configure_intel_video() {
 	fi
 	if [ ! -z  "$intel" ]; then
 	    echo 'Intel graphics detected'
-	    pac_install "xf86-video-intel libva-intel-driver"
+	    pac_install xf86-video-intel libva-intel-driver
 	fi
 	if [ ! -z  "$amd" ]; then
 	    echo 'AMD graphics detected'
