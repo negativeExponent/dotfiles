@@ -3,10 +3,5 @@
 # This script is the SUDO_ASKPASS variable, meaning that it will be used as a
 # password prompt if needed.
 
-rofi \
-    -color-enabled true \
-    -color-window "#282a36, #BD93F9, #282a36" \
-    -color-normal "#282a36, #BD93F9, #282a36, #BD93F9, #282a36" \
-    -color-active "#282a36, #BD93F9, #282a36, #BD93F9, #282a36" \
-    -color-urgent "#282a36, #BD93F9, #282a36, #BD93F9, #282a36" \
-     -fn Monospace-10 -dmenu -password -i -no-fixed-num-lines -p "Enter sudo password:" \
+rofi -theme ~/.config/rofi/askpass.rasi \
+	-dmenu -password -i -no-fixed-num-lines -p "Enter sudo password"

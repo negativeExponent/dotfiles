@@ -1,16 +1,16 @@
 configuration {
-	modi: "run,drun,window";
-	width: 30;
-	lines: 15;
+	modi: "drun";
+	width: 750;
+	lines: 34;
     columns: 1;
 	bw: 2;
 	location: 0;
-/*	padding: 24; */
+	padding: 24;
 	hide-scrollbar: true;
-/*	theme: "theme"; */
-	show-icons: true;
+	theme: "theme";
+	show-icons: false;
     icon-theme: "Arc";
-    sidebar-mode: true;
+    sidebar-mode: false;
 }
 
 @import "colors.rasi"
@@ -30,4 +30,3 @@ inputbar {
     text-color: var(normal-foreground);
     children:   [ textbox-prompt-colon,entry ];
 }
-

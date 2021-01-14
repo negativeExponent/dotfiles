@@ -1,30 +1,41 @@
+/* Dracula-based color scheme */
+
 * {
-    red:                         rgba ( 220, 50, 47, 100 % );
-    selected-active-foreground:  rgba ( 40, 42, 54, 100 % );
-    lightfg:                     rgba ( 88, 104, 117, 100 % );
-    separatorcolor:              rgba ( 40, 42, 54, 100 % );
-    urgent-foreground:           rgba ( 189, 147, 249, 100 % );
-    alternate-urgent-background: rgba ( 40, 42, 54, 100 % );
-    lightbg:                     rgba ( 238, 232, 213, 100 % );
-    spacing:                     2;
-    border-color:                rgba ( 189, 147, 249, 100 % );
-    normal-background:           rgba ( 40, 42, 54, 100 % );
-    background-color:            rgba ( 0, 0, 0, 0 % );
-    alternate-active-background: rgba ( 40, 42, 54, 100 % );
-    active-foreground:           rgba ( 189, 147, 249, 100 % );
-    blue:                        rgba ( 38, 139, 210, 100 % );
-    urgent-background:           rgba ( 40, 42, 54, 100 % );
-    alternate-normal-foreground: var(foreground);
-    selected-active-background:  rgba ( 189, 147, 249, 100 % );
-    background:                  rgba ( 40, 42, 54, 100 % );
-    selected-normal-foreground:  rgba ( 40, 42, 54, 100 % );
-    active-background:           rgba ( 40, 42, 54, 100 % );
-    alternate-active-foreground: var(active-foreground);
-    alternate-normal-background: rgba ( 40, 42, 54, 100 % );
-    foreground:                  rgba ( 189, 147, 249, 100 % );
-    selected-urgent-background:  rgba ( 189, 147, 249, 100 % );
-    selected-urgent-foreground:  rgba ( 40, 42, 54, 100 % );
     normal-foreground:           var(foreground);
+    normal-background:           var(background);
+    selected-normal-foreground:  var(background);
+	selected-normal-background:  var(border-color);
+	alternate-active-foreground: var(active-foreground);
+    alternate-active-background: var(background);
+
+
+    active-foreground:           var(active-fg);
+    active-background:           var(background);
+    selected-active-foreground:  var(background);
+    selected-active-background:  var(border-color);
+    alternate-normal-foreground: var(foreground);
+    alternate-normal-background: var(background);
+
+    urgent-foreground:           var(foreground);
+    urgent-background:           var(background);
+    selected-urgent-foreground:  var(background);
+	selected-urgent-background:  var(foreground);
     alternate-urgent-foreground: var(urgent-foreground);
-    selected-normal-background:  rgba ( 189, 147, 249, 100 % );
+    alternate-urgent-background: var(background);
+
+	lightfg:                     rgba ( 88, 104, 117, 100 % );
+    lightbg:                     rgba ( 238, 232, 213, 100 % );
+    separatorcolor:              var(background);
+	background-color:            var(background);
+
+    foreground:                  @fg;
+	background:                  @bg;
+	border-color:                @blue;
+	active-fg:                   @magenta;
+	
+	fg:                          #f8f8f2ff;
+	bg:                          #282a36ff;
+	red:                         #ff5555ff;
+	blue:                        #bd93f9ff;
+	magenta:                     #ff79c6ff;
 }
