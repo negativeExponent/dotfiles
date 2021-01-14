@@ -8,9 +8,10 @@
 
 set -e
 
+echo ""
+
 ARCH="$1"								# arch or artix
 INIT="systemd"							# init, systemd as default
-RUNSVDIR="/etc/runit/runsvdir/default" 	# artix-runit service directory
 
 if [ "$EUID" -eq 0 ]; then
 	echo "Please do not run this script as root (e.g. using sudo)"
@@ -18,9 +19,9 @@ if [ "$EUID" -eq 0 ]; then
 fi
 
 if [[ "$ARCH" = "artix" ]]; then
-	sudo pacman -Qk openrc 2>/dev/null && INIT="openrc"
-	sudo pacman -Qk runit 2>/dev/null && INIT="runit"
-	sudo pacman -Qk s6 2>/dev/null && INIT="s6"
+	pacman -Qk openrc 2>/dev/null && INIT="openrc"
+	pacman -Qk runit 2>/dev/null && INIT="runit"
+	pacman -Qk s6 2>/dev/null && INIT="s6"
 fi
 
 install_msg() {
@@ -47,65 +48,87 @@ install_aur_helper() {
 
 install_packages() {
 	local PKGS=
-	# Xorg
-	PKGS+=" base-devel xorg-server xorg-xinit xorg-xauth xf86-input-libinput"
-	PKGS+=" xf86-video-intel"
-	PKGS+=" arandr xorg-xrdb xorg-xset xorg-xsetroot xorg-xprop xcalib xdg-utils"
-	PKGS+=" xdo xorg-setxkbmap xorg-xmodmap bash-completion ccache ntfs-3g "
-	PKGS+=" git curl wget xsel wireless_tools"
+
+	# some essential apps
+	PKGS="base-devel "
+	PKGS+="openssh git curl wget xsel xdo ccache vim "
+
+	# X
+	PKGS+="xorg xorg-xinit "
 
 	# Audio
-	PKGS+=" alsa-utils"
-	PKGS+=" pulseaudio-alsa pamixer pulsemixer"
-	[ "$ARCH" = "obarun" ] && PKGS+=" pulseaudio-66serv"
+	PKGS+="alsa-utils alsa-firmware "
+	PKGS+="pulseaudio-alsa pamixer pulsemixer "
+	[ "$ARCH" = "obarun" ] && PKGS+="pulseaudio-66serv "
 
 	# Minimal bspwm apps
-	PKGS+=" bspwm sxhkd kitty rofi dunst geany pcmanfm"
-	PKGS+=" lxappearance perl vim"
-	PKGS+=" mpv w3m neofetch"
-	PKGS+=" htop zathura zathura-pdf-mupdf maim xclip feh xcompmgr"
-	PKGS+=" file-roller zip unzip p7zip meld ghex gnome-calculator jq"
-	PKGS+=" ttf-linux-libertine noto-fonts-emoji arc-icon-theme"
+	PKGS+="bspwm sxhkd kitty rofi dunst geany pcmanfm "
 
-	[ "$ARCH" = "obarun" ] || PKGS+=" mpd mpc ncmpcpp" # obarun does not have libsystemd, so these will fail to install
+	# other apps needed but not required for WM to start
+	PKGS+="mpv w3m neofetch lxappearance "
+	PKGS+="htop zathura zathura-pdf-mupdf maim xclip feh "
+	PKGS+="file-roller zip unzip p7zip meld ghex gnome-calculator jq "
+	PKGS+="ttf-linux-libertine noto-fonts-emoji arc-icon-theme "
 
-	# ! pacman -Qk polybar >/dev/null || PKGS+=" polybar"
+	# relies on libsystemd/systemd
+	[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
 
 	# Misc apps
-	PKGS+=" bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg"
-	PKGS+=" atool imagemagick python-pillow xdotool xorg-xdpyinfo ffmpegthumbnailer ranger"
-	PKGS+=" speedtest-cli"
-	PKGS+=" numlockx"
+	PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
+	PKGS+="atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger "
+	PKGS+="speedtest-cli "
+	PKGS+="numlockx "
 
 	# Additional fonts and themes
-	PKGS+=" ttf-croscore gtk-engine-murrine"
+	PKGS+="ttf-croscore gtk-engine-murrine "
 
 	# System utilities
-	PKGS+=" android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring" # automounting of usb and android devices
+	PKGS+="android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring " # automounting of usb and android devices
 
     # redshift
-    PKGS+=" redshift"
+    PKGS+="redshift "
 
     # for calendar popup
-    PKGS+=" yad"
-
-	PKGS+=" openssh"
+    PKGS+="yad "
 
 	pac_install $PKGS
 }
 
 install_aur_packages() {
 	command -v "polybar" >/dev/null || pac_install "polybar-git"
+	# relies on libsystemd
 	[ "$ARCH" = "obarun" ] || command -v "cava" >/dev/null || pac_install "cava-git"
 	command -v "brave" >/dev/null || pac_install "brave-bin"
 	command -v "tremc" >/dev/null || pac_install "tremc-git"
 }
 
 configure_intel_video() {
+	local ati=$(lspci | grep VGA | grep ATI)
+	local nvidia=$(lspci | grep VGA | grep NVIDIA)
+	local intel=$(lspci | grep VGA | grep Intel)
+	local amd=$(lspci | grep VGA | grep AMD)
+	
+	if [ ! -z "$ati" ]; then
+	    echo 'Ati graphics detected'
+	    pac_install xf86-video-ati
+	fi
+	if [ ! -z "$nvidia" ]; then
+	    echo 'Nvidia graphics detected'
+	    pac_install xf86-video-nouveau
+	fi
+	if [ ! -z  "$intel" ]; then
+	    echo 'Intel graphics detected'
+	    pac_install "xf86-video-intel libva-intel-driver"
+	fi
+	if [ ! -z  "$amd" ]; then
+	    echo 'AMD graphics detected'
+	    pac_install xf86-video-amdgpu
+	fi
+
 	# Detect if we are on an Intel system
-	CPU_VENDOR=$(grep vendor_id /proc/cpuinfo | awk 'NR==1{print $3}')
-	if [ $CPU_VENDOR = "GenuineIntel" ]; then
-		pac_install xf86-video-intel libva-intel-driver
+##	CPU_VENDOR=$(grep vendor_id /proc/cpuinfo | awk 'NR==1{print $3}')
+##	if [ $CPU_VENDOR = "GenuineIntel" ]; then
+	if [ ! -z  "$intel" ]; then
 		# gets rid of screen tearing if not using compositor/wm does not have vsync
 		sudo mkdir -p /usr/share/X11/xorg.conf.d/
 		sudo bash -c 'cat > /usr/share/X11/xorg.conf.d/20-intel.conf' << EOF
@@ -115,7 +138,7 @@ Section "Device"
    Identifier  "Intel Graphics"
    Driver      "intel"
 #   Option     "SwapbuffersWait"       "false"
-   Option "DRI" "3"
+#   Option "DRI" "3"
    Option      "TearFree"     "true"
 EndSection
 EOF
