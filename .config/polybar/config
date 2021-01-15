@@ -56,9 +56,9 @@ tray-scale = 1.0
 tray-maxsize = 16
 
 foreground = ${colors.foreground}
-background = ${colors.background-panel}
-border-color = ${colors.background-alt}
-tray-background = ${colors.background-panel}
+background = ${colors.background}
+border-color = ${colors.border}
+tray-background = ${colors.background}
 
 cursor-click = pointer
 cursor-scroll = default
