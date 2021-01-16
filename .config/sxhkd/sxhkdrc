@@ -151,6 +151,14 @@ super + F1
 super + F2
 	bspc wm -r
 
+# toggles compositor on or off
+super + F9
+	launch_picom toggle
+	
+# relaunch polybar
+super + F10
+	polybar-msg cmd restart
+
 # terminal emulator
 super + Return
 	$TERMINAL

@@ -15,8 +15,9 @@ run() {
 if [ -f "$HOME/.Xresources" ]; then
 	xrdb -merge "$HOME/.Xresources" &
 else
-	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources" &           # reload Xresources
+	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources" &
 fi
+
 [ -f "$HOME/.fehbg" ] && . "$HOME/.fehbg" & # restore background wallpaper
 # . "$HOME/.local/bin/load_icm_profile" &   # load monitor profile
 run "xsetroot" " -cursor_name left_ptr"     # general system settings
@@ -27,21 +28,24 @@ run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
 run "mpd"                                   # music player widget
 # run "udiskie"                             # automount removable storage,replaced with gvfs for usb and android automounting
-run "picom" " -b --experimental-backend"    # compositor
-run "dunst"                                 # notification daemon
+# run "picom" " -b --experimental-backend"    # compositor
 run "sxhkd"                                 # X hotkey daemon
 run "redshift" " -t $CTEMP -l $LOC"
 
 # tray icons
-# run "connman-gtk" "--tray"                # network manager gtk ui
-# run "volumeicon"                          # volume icon
-# run "nm-applet"                           # networkmanager
-# run "blueman-applet"                      # bluetooth
-
-"$HOME/.local/bin/launch_polybar" &         # kill and relaunch panel
+run "connman-gtk" "--tray"                # network manager gtk ui
+run "volumeicon"                          # volume icon
+run "nm-applet"                           # networkmanager
+run "blueman-applet"                      # bluetooth
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then
 		transmission-daemon &
 	fi
 fi
+
+. "$HOME/.local/bin/launch_polybar" &       # kills and relaunch panel
+. "$HOME/.local/bin/launch_dunst" &         # kills and relaunch notification daemon
+. "$HOME/.local/bin/launch_picom" &         # kills and relaunch compositor
+
+. "$HOME/.local/bin/setcolors" &			# exports color configs to rofi, kitty ...

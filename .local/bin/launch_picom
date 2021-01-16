@@ -1,0 +1,27 @@
+#!/bin/bash
+
+## toggles picom on or off
+## else kills picom if running and relaunch
+
+# check if picom is installed
+command -v picom > /dev/null || exit
+
+_t() {
+	if pidof -x picom > /dev/null; then
+		pkill -x picom
+	else
+		picom -b --experimental-backend
+	fi
+}
+
+cmd="$1"
+
+case "$cmd" in
+	toggle)
+		_t
+		;;
+	*)
+		! pidof -x picom > /dev/null || pkill -x picom
+		picom -b --experimental-backend
+		;;
+esac

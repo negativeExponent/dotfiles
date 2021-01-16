@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Source colors from xrdb
+
+color0="$(xrdb -query | grep 'color0:'| awk '{print $NF}')"
+color1="$(xrdb -query | grep 'color1:'| awk '{print $NF}')"
+color2="$(xrdb -query | grep 'color2:'| awk '{print $NF}')"
+color3="$(xrdb -query | grep 'color3:'| awk '{print $NF}')"
+color4="$(xrdb -query | grep 'color4:'| awk '{print $NF}')"
+color5="$(xrdb -query | grep 'color5:'| awk '{print $NF}')"
+color6="$(xrdb -query | grep 'color6:'| awk '{print $NF}')"
+color7="$(xrdb -query | grep 'color7:'| awk '{print $NF}')"
+color8="$(xrdb -query | grep 'color8:'| awk '{print $NF}')"
+color9="$(xrdb -query | grep 'color9:'| awk '{print $NF}')"
+color10="$(xrdb -query | grep 'color10:'| awk '{print $NF}')"
+color11="$(xrdb -query | grep 'color11:'| awk '{print $NF}')"
+color12="$(xrdb -query | grep 'color12:'| awk '{print $NF}')"
+color13="$(xrdb -query | grep 'color13:'| awk '{print $NF}')"
+color14="$(xrdb -query | grep 'color14:'| awk '{print $NF}')"
+color15="$(xrdb -query | grep 'color15:'| awk '{print $NF}')"
+
+foreground="$(xrdb -query | grep 'foreground:'| awk '{print $NF}')"
+background="$(xrdb -query | grep 'background:'| awk '{print $NF}')"

@@ -7,7 +7,7 @@
 !
 ! -----------------------------------
 
-#include "xcolors"
+#include "colors"
 
 Xft.dpi                     : 96
 Xft.antialias               : true

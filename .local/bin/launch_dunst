@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Launch notification daemon with colors
+
+. "$HOME/.local/bin/getcolors"
+
+kill -TERM "$(pidof dunst)"
+dunst -lb "$background" -lf "$foreground" -lfr "$color2" \
+	-nb "$background" -nf "$foreground" -nfr "$color4" \
+	-cb "$background" -cf "$foreground" -cfr "$color1"

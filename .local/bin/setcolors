@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# Sources colors from xrdb and export color configs for apps that do not support
+# reading xrdb
+
+. "$HOME/.local/bin/getcolors"
+
+termcolors() {
+	cat > "$HOME/.config/kitty/colors.conf" << EOF
+foreground            ${foreground}
+background            ${background}
+selection_foreground  #44475a
+selection_background  ${foreground}
+
+url_color #ffb86c
+
+# black
+color0  ${color0}
+color8  ${color8}
+
+# red
+color1  ${color1}
+color9  ${color9}
+
+# green
+color2  ${color2}
+color10 ${color10}
+
+# yellow
+color3  ${color3}
+color11 ${color11}
+
+# blue
+color4  ${color4}
+color12 ${color12}
+
+# magenta
+color5  ${color5}
+color13 ${color13}
+
+# cyan
+color6  ${color6}
+color14 ${color14}
+
+# white
+color7  ${color7}
+color15 ${color15}
+
+# Cursor colors
+cursor            ${color5}
+cursor_text_color ${background}
+
+# Tab bar colors
+active_tab_foreground   #44475a
+active_tab_background   ${foreground}
+inactive_tab_foreground ${background}
+inactive_tab_background ${color8}
+EOF
+}
+
+roficolors() {
+	cat > "$HOME/.config/rofi/colors.rasi" << EOF
+* {
+    normal-foreground:           var(foreground);
+    normal-background:           var(background);
+    selected-normal-foreground:  var(background);
+	selected-normal-background:  var(border-color);
+	alternate-active-foreground: var(active-foreground);
+    alternate-active-background: var(background);
+
+
+    active-foreground:           var(active-fg);
+    active-background:           var(background);
+    selected-active-foreground:  var(background);
+    selected-active-background:  var(border-color);
+    alternate-normal-foreground: var(foreground);
+    alternate-normal-background: var(background);
+
+    urgent-foreground:           var(foreground);
+    urgent-background:           var(background);
+    selected-urgent-foreground:  var(background);
+	selected-urgent-background:  var(foreground);
+    alternate-urgent-foreground: var(urgent-foreground);
+    alternate-urgent-background: var(background);
+
+	lightfg:                     rgba ( 88, 104, 117, 100 % );
+    lightbg:                     rgba ( 238, 232, 213, 100 % );
+    separatorcolor:              var(background);
+	background-color:            var(background);
+
+    foreground:                  @fg;
+	background:                  @bg;
+	selected:					 @blue;
+	border-color:                @blue;
+	active-fg:                   @magenta;
+	
+	fg:                          ${foreground}ff;
+	bg:                          ${background}ff;
+	red:                         ${color1}ff;
+	blue:                        ${color4}ff;
+	magenta:                     ${color5}ff;
+}
+EOF
+}
+
+termcolors
+roficolors
