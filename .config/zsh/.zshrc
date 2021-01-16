@@ -107,4 +107,5 @@ fi
 setopt autocd		# Automatically cd into typed directory.
 stty stop undef		# Disable ctrl-s to freeze terminal.
 
-neofetch --backend 'ascii'
+neofetch
+
