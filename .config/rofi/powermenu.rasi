@@ -18,7 +18,7 @@ configuration {
 inputbar {
     padding:    1px ;
     spacing:    0px ;
-    text-color: var(normal-foreground);
+    text-color: var(foreground);
     children:   [];
 }
 

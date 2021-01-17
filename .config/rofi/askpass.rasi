@@ -10,7 +10,7 @@ configuration {
 @import "font.rasi"
 
 entry {
-    text-color:        var(normal-foreground);
+    text-color:        var(foreground);
     spacing:           0;
     placeholder-color: var(background);
     placeholder:       "";
@@ -19,6 +19,6 @@ entry {
 inputbar {
     padding:    1px ;
     spacing:    0px ;
-    text-color: var(normal-foreground);
+    text-color: var(foreground);
     children:   [ prompt,textbox-prompt-colon,entry ];
 }
