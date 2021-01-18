@@ -13,9 +13,9 @@ run() {
 
 # load Xresources
 if [ -f "$HOME/.Xresources" ]; then
-	xrdb -merge "$HOME/.Xresources" &
+	xrdb -merge "$HOME/.Xresources"
 else
-	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources" &
+	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources"
 fi
 
 [ -f "$HOME/.fehbg" ] && . "$HOME/.fehbg" & # restore background wallpaper
@@ -44,8 +44,9 @@ if command -v transmission-daemon >/dev/null; then
 	fi
 fi
 
+sleep 0.5
+
+. "$HOME/.local/bin/launch_picom" &         # kills and relaunch compositor
 . "$HOME/.local/bin/launch_polybar" &       # kills and relaunch panel
 . "$HOME/.local/bin/launch_dunst" &         # kills and relaunch notification daemon
-. "$HOME/.local/bin/launch_picom" &         # kills and relaunch compositor
-
 . "$HOME/.local/bin/setcolors" &			# exports color configs to rofi, kitty ...
