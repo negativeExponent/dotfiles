@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# a very straight forward theme chooser using rofi
+# the arg should match the filename of the x-resource color theme to use
+
+X_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/shell"
+COLOR_SRC_DIR="$X_DIR/xcolors"
+
+options="dracula|gruvbox|nord|materia|onedark"
+chosen=$(rofi -sep "|" -theme "~/.config/rofi/theme.rasi" -p "Choose theme:" -lines 5 -dmenu -i <<< "$options")
+
+theme() {
+    local selected=$1
+    [ -f "$COLOR_SRC_DIR/$selected" ] || exit
+    ln -sf "$COLOR_SRC_DIR/$selected" "$X_DIR/colors"
+    bspc wm -r
+    notify-send "Theme: $1"
+}
+
+case "$chosen" in
+    "dracula" )
+        theme dracula
+        ;;
+    "gruvbox" )
+        theme gruvbox
+        ;;
+    "materia" )
+        theme materia
+        ;;
+    "nord" )
+        theme nord
+        ;;
+    "onedark" )
+        theme onedark
+        ;;
+esac

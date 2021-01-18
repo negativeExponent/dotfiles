@@ -1,0 +1,29 @@
+configuration {
+	width: 20;
+	lines: 4;
+	bw: 2;
+	location: 0;
+	padding: 24;
+	hide-scrollbar: true;
+	theme: "theme";
+	show-icons: true;
+    icon-theme: "Arc";
+    font: "Monospace 12";
+}
+
+@import "colors.rasi"
+@import "layout.rasi"
+@import "font.rasi"
+
+prompt {
+    spacing:    0;
+    text-color: var(foreground);
+}
+
+inputbar {
+    padding:    1px ;
+    spacing:    0px ;
+    text-color: var(foreground);
+    children:   [ prompt ];
+}
+
