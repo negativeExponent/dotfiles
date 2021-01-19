@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/env bash
 
 # rofi power menu
 cmd_logout=" Log out"
