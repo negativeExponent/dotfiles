@@ -46,7 +46,7 @@ module-margin-right = 0
 
 modules-left = bspwm sep bspwm-mode sep xwindow
 modules-center =
-modules-right = mpd sep pacman-packages torrents sep temperature memory sep network-eth weather sep pavolume popup-calendar help
+modules-right = mpd sep check-updates torrents sep temperature memory sep network-eth weather sep pavolume popup-calendar help
 
 tray-position = right
 tray-padding = 2

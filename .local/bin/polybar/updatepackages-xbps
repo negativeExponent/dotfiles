@@ -1,4 +1,0 @@
-#!/bin/bash
-
-# Opens a terminal to update pacman packages and handle updating polybar
-$TERMINAL -e bash -c 'sudo xbps-install -Su' && polybar-msg -p "$(pidof "polybar")" hook xbps-packages 1 #&& pkill -SIGRTMIN+3 i3blocks

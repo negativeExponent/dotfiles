@@ -1,0 +1,28 @@
+#!/bin/env bash
+
+
+# if ! updates_arch=$(checkupdates 2> /dev/null | wc -l ); then
+#    updates_arch=0
+# fi
+
+if command -v pacman >/dev/null; then
+	if ! updates=$(checkupdates 2> /dev/null | wc -l ); then
+		updates=0
+	fi
+	updates=$(("$updates_arch"))
+elif command -v xbps-install >/dev/null; then
+	if ! update_xbps=$(xbps-install -Mun 2> /dev/null | wc -l ); then
+		update_xbps=0
+	fi
+	updates=$(("$update_xbps"))
+else
+	echo "📦 NA"
+	exit
+fi
+
+if [ "$updates" -gt 0 ]; then
+	echo "📦 $updates"
+	notify-send "📦 $updates updates available."
+else
+	echo "📦 0"
+fi
