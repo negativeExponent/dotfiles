@@ -14,22 +14,12 @@ install_msg() {
 	echo -e "\e[32m$@\e[0m"
 }
 
-# Creates a symlink for item1 to item2, deleting destination if it exists
-link() {
-	if [ -d $1 ] ; then
-		status='!'
-		[ ! -e $2 ] || rm -rf $2
-		ln -sf $1 $2 && status='ok'
-		install_msg "$status - Symlinking $1 to $2"
-	fi
-}
-
 xbps_install() {
 	echo -e "\e[35mInstalling: $@...\e[0m"
 	sudo xbps-install -y "$@"
 }
 
-get_packages() {
+install_base_packages() {
 	# Xorg
 	PKGS="${PKGS} base-devel xorg-minimal xinit xauth xorg-server xf86-input-libinput" 
 	PKGS="${PKGS} xf86-video-intel"
@@ -40,7 +30,7 @@ get_packages() {
 	# PKGS="${PKGS} chrony" # ntp
 
 	# Audio
-	# PKGS="${PKGS} alsa-utils"
+	PKGS="${PKGS} alsa-utils"
 	PKGS="${PKGS} alsa-plugins-pulseaudio pamixer pulsemixer"
 
 	# Minimal bspwm apps
@@ -53,8 +43,8 @@ get_packages() {
 	# Misc apps
 	PKGS="${PKGS} bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg"
 	PKGS="${PKGS} atool ImageMagick python3-Pillow xdotool xdpyinfo ffmpegthumbnailer"
-    PKGS="${PKGS} cava ranger"
-	# PKGS="${PKGS} speedtest-cli geoip geoip-data"
+    PKGS="${PKGS} cava ranger geoip"
+	# PKGS="${PKGS} speedtest-cli geoip-data"
 
 	# Additional fonts and themes
 	PKGS="${PKGS} fonts-croscore-ttf gtk-engine-murrine"
@@ -62,47 +52,7 @@ get_packages() {
 	# System utilities
 	PKGS="${PKGS} android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring" # automounting of usb and android devices
 
-	# DBus
-	PKGS="${PKGS} elogind"
-	# PKGS="${PKGS} dbus-elogind dbus-elogind-libs dbus-elogind-x11" 	# required for rootless xorg
-}
-
-install_networkmanager() {
-	xbps_install NetworkManager
-
-	sudo sv down dhcpcd
-	sudo sv down wpa_supplicant
-	sudo rm /var/service/dhcpcd
-	sudo rm /var/service/wpa_supplicant
-	sudo ln -sf /etc/sv/dbus /var/service/
-	sudo ln -sf /etc/sv/NetworkManager /var/service/
-	sudo sv up NetworkManager
-
-	echo 'polkit.addRule(function(action, subject) {
-  if (action.id.indexOf("org.freedesktop.NetworkManager.") == 0 && subject.isInGroup("network")) {
-	return polkit.Result.YES;
-  }
-});' | sudo tee /etc/polkit-1/rules.d/50-org.freedesktop.NetworkManager.rules
-}
-
-configure_system() {
-	# enable services
-	dir="/etc/runit/runsvdir/default/"
-	common_srcs="crond dbus elogind ntpd polkitd uuid"
-	for svc in $common_srcs
-	do
-		if [ -d /etc/sv/$svc ] ; then
-			install_msg "Enabling service: $svc"
-			sudo ln -sf /etc/sv/$svc $dir
-		fi
-	done
-	# configure fonts
-	install_msg "Configuring system fonts config"
-	sudo ln -sf /usr/share/fontconfig/conf.avail/10-hinting-slight.conf /etc/fonts/conf.d/
-	sudo ln -sf /usr/share/fontconfig/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d/
-	sudo ln -sf /usr/share/fontconfig/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d/
-	sudo ln -sf /usr/share/fontconfig/conf.avail/50-user.conf /etc/fonts/conf.d/
-	# sudo ln -sf /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d/
+	xbps_install $PKGS
 }
 
 configure_intel_video() {
@@ -127,25 +77,24 @@ EOF
 	fi
 }
 
-# symlinks to commonly used folders/apps
-
-create_symlinks() {
-	mkdir -p $HOME/.config
-
-	# symlinks to HOME
-	link /mnt/data/Documents $HOME/Documents
-	link /mnt/data/Downloads $HOME/Downloads
-	link /mnt/data/Pictures $HOME/Pictures
-
-	link /mnt/data/Music $HOME/Music
-
-	link /mnt/data/myfiles/.mozilla $HOME/.mozilla
-	link /mnt/data/myfiles/ssh_key/.ssh $HOME/.ssh
-
-	# symlinks to .config
-	link /mnt/data/myfiles/BraveSoftware $HOME/.config/BraveSoftware
-	link /mnt/data/retroarch $HOME/.config/retroarch
-	link /mnt/data/myfiles/transmission-daemon $HOME/.config/transmission-daemon
+configure_system() {
+	# enable services
+	dir="/etc/runit/runsvdir/default/"
+	common_srcs="crond dbus elogind ntpd polkitd uuid"
+	for svc in $common_srcs
+	do
+		if [ -d /etc/sv/$svc ] ; then
+			install_msg "Enabling service: $svc"
+			sudo ln -sf /etc/sv/$svc $dir
+		fi
+	done
+	# configure fonts
+	install_msg "Configuring system fonts config"
+	sudo ln -sf /usr/share/fontconfig/conf.avail/10-hinting-slight.conf /etc/fonts/conf.d/
+	sudo ln -sf /usr/share/fontconfig/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d/
+	sudo ln -sf /usr/share/fontconfig/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d/
+	sudo ln -sf /usr/share/fontconfig/conf.avail/50-user.conf /etc/fonts/conf.d/
+	# sudo ln -sf /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d/
 }
 
 cleanup() {
@@ -160,37 +109,60 @@ cleanup() {
 	done
 }
 
-install_msg "Updating and installing packages."
+########
+# main #
+########
+
+install_msg ""
+install_msg "Installing VoidLinux..."
+install_msg ""
+
+install_msg ""
+install_msg "Running symlinks to personal directories..."
+. "$HOME/.config/yadm/_symlink.sh"
+
+install_msg ""
+install_msg "Updating xbps database..."
 sudo xbps-install -Su
 
-# Get a list of packages to install
-get_packages
+install_msg
+install_msg "Installing base packages..."
+install_base_packages
 
-# Install selected packages
-xbps_install $PKGS
-
-install_msg "Configure Intel Video"
+install_msg ""
+install_msg "Installing and configuring intel gpu driver..."
 configure_intel_video
 
-install_msg "Configuring new system"
+install_msg ""
+install_msg "Configuring system..."
 configure_system
 
-install_msg "Creating application symlinks"
-create_symlinks
-
+install_msg ""
 install_msg "Finalizing and cleanup"
 cleanup
 
+install_msg ""
+install_msg "Enabling ssh key..."
 if [ -f $HOME/.ssh/id_rsa ] ; then
 	eval "$(ssh-agent -s)"
 	ssh-add $HOME/.ssh/id_rsa
 fi
 
-# switch shell to zsh
-#chsh -s /bin/zsh $USERNAME
-#exec zsh
+install_msg ""
+install_msg "Setting default wallpaper..."
+if [ ! -f "$HOME/.fehbg" ] ; then
+	cat > "$HOME/.fehbg" << EOF
+#!/bin/sh
+feh --no-fehbg --bg-fill $HOME/.config/wall.jpg
+EOF
+	chmod +x "$HOME/.fehbg"
+fi
 
-echo "Finished."
+echo ""
+echo ""
+echo "============"
+echo "= Finished ="
+echo "============"
 echo ""
 echo "To use rootless Xorg, xorg-server needs to be compiled with elogind support."
 echo "Compile: # './xbps-src pkg xorg-server -o elogind'"
