@@ -31,15 +31,16 @@ bottom = false
 separator =
 
 width = 100%
-height = 20
+height = 22
 
 line-size = 0
 border-size = 0
-border-bottom-size=1
+border-top-size=0
+border-bottom-size=0
 padding = 0
 
-font-0 = Aileron:pixelsize=12;2
-font-1 = JetBrainsMono Nerd Font:size=10;3
+font-0 = Aileron:antialiasing=true:autohint=true:size=10;2
+font-1 = JetBrainsMono Nerd Font:size=13;3
 font-2 = NotoColorEmoji:fontformat=truetype:scale=12:antialias=false;2
 
 module-margin-left = 0
@@ -47,7 +48,7 @@ module-margin-right = 0
 
 modules-left = bspwm sep bspwm-mode sep xwindow
 modules-center =
-modules-right = mpd sep network-eth weather sep check-updates torrents sep temperature memory sep pavolume popup-calendar help
+modules-right = mpd sep network-eth weather sep check-updates torrents sep temperature memory sep alsa popup-calendar
 
 tray-position = right
 tray-padding = 2
@@ -58,7 +59,7 @@ tray-maxsize = 16
 
 foreground = ${colors.foreground}
 background = ${colors.background}
-border-color = ${colors.border}
+border-color = ${colors.background}
 tray-background = ${colors.background}
 
 cursor-click = pointer
