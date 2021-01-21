@@ -21,36 +21,42 @@ xbps_install() {
 
 install_base_packages() {
 	# Xorg
-	PKGS="${PKGS} base-devel xorg-minimal xinit xauth xorg-server xf86-input-libinput" 
-	PKGS="${PKGS} xf86-video-intel"
-	PKGS="${PKGS} arandr xrdb xset xsetroot xprop xcalib xdg-utils"
-	PKGS="${PKGS} xdo setxkbmap xmodmap bash-completion ccache ntfs-3g "
-	PKGS="${PKGS} git curl wget xtools xsel wireless_tools"
-	# PKGS="${PKGS} dcron" # lightweight cron daemon
-	# PKGS="${PKGS} chrony" # ntp
+	PKGS+=" base-devel xorg-minimal xinit xauth xorg-server xf86-input-libinput" 
+	PKGS+=" xf86-video-intel"
+	PKGS+=" arandr xrdb xset xsetroot xprop xcalib xdg-utils"
+	PKGS+=" xdo setxkbmap xmodmap bash-completion ccache ntfs-3g "
+	PKGS+=" git curl wget xtools xsel wireless_tools"
+	# PKGS+=" dcron" # lightweight cron daemon
+	# PKGS+=" chrony" # ntp
+	
+	# for killall amongst others
+	PKGS+=" psmisc"
 
 	# Audio
-	PKGS="${PKGS} alsa-utils"
-	PKGS="${PKGS} alsa-plugins-pulseaudio pamixer pulsemixer"
+	PKGS+=" alsa-utils"
+	PKGS+=" alsa-plugins-pulseaudio pamixer pulsemixer"
 
 	# Minimal bspwm apps
-	PKGS="${PKGS} bspwm sxhkd kitty rofi polybar dunst geany pcmanfm firefox"
-	PKGS="${PKGS} lxappearance vim mpd mpc ncmpcpp mpv w3m w3m-img neofetch"
-	PKGS="${PKGS} htop zathura zathura-pdf-mupdf maim xclip feh"
-	PKGS="${PKGS} file-roller zip unzip p7zip meld ghex gnome-calculator jq"
-	PKGS="${PKGS} font-libertine-ttf noto-fonts-emoji arc-icon-theme"
+	PKGS+=" bspwm sxhkd kitty rofi polybar dunst geany pcmanfm firefox"
+	PKGS+=" lxappearance vim mpd mpc ncmpcpp mpv w3m w3m-img neofetch"
+	PKGS+=" htop zathura zathura-pdf-mupdf maim xclip feh"
+	PKGS+=" file-roller zip unzip p7zip meld ghex gnome-calculator jq"
+	PKGS+=" font-libertine-ttf noto-fonts-emoji arc-icon-theme"
 
 	# Misc apps
-	PKGS="${PKGS} bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg"
-	PKGS="${PKGS} atool ImageMagick python3-Pillow xdotool xdpyinfo ffmpegthumbnailer"
-    PKGS="${PKGS} cava ranger geoip"
-	# PKGS="${PKGS} speedtest-cli geoip-data"
+	PKGS+=" bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg"
+	PKGS+=" atool ImageMagick python3-Pillow xdotool xdpyinfo ffmpegthumbnailer"
+    PKGS+=" cava ranger geoip"
+	# PKGS+=" speedtest-cli geoip-data"
 
 	# Additional fonts and themes
-	PKGS="${PKGS} fonts-croscore-ttf gtk-engine-murrine"
+	PKGS+=" fonts-croscore-ttf gtk-engine-murrine"
 
 	# System utilities
-	PKGS="${PKGS} android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring" # automounting of usb and android devices
+	PKGS+=" android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring" # automounting of usb and android devices
+	
+	# redshift
+	PKGS+=" redshift"
 
 	xbps_install $PKGS
 }
