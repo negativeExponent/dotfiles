@@ -32,10 +32,10 @@ fi
 
 case "$system_type" in
     "void")
-        scriptfile="$HOME/.config/yadm/deps-void.sh"
+        scriptfile="$HOME/.config/yadm/bootstrap-void.sh"
         ;;
     "arch"|"artix"|"obarun")
-        scriptfile="$HOME/.config/yadm/deps-artix.sh"
+        scriptfile="$HOME/.config/yadm/bootstrap-arch.sh"
         ;;
     *)
         echo ""

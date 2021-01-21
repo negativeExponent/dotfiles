@@ -8,6 +8,14 @@
 
 set -e
 
+# REPO='https://alpha.de.repo.voidlinux.org'
+# REPO='https://alpha.us.repo.voidlinux.org'
+# REPO='https://mirrors.servercentral.com/voidlinux'
+# REPO='https://alpha.us.repo.voidlinux.org'
+# REPO='https://mirror.clarkson.edu/voidlinux'
+# REPO='https://mirror.yandex.ru/mirrors/voidlinux'
+REPO='https://ftp.swin.edu.au/voidlinux'
+
 PKGS=
 INSTALL_TYPE="MINIMAL" 
 
@@ -17,14 +25,14 @@ install_msg() {
 
 xbps_install() {
 	echo -e "\e[35mInstalling: $@...\e[0m"
-	sudo xbps-install -y "$@"
+	sudo xbps-install -Sy -R ${REPO}/current -R ${REPO}/current/nonfree "$@"
 }
 
 install_base_packages() {
+	local PKGS=''
 	# xorg
 	PKGS='xorg-minimal '
 	PKGS+='xinit '
-	# PKGS+='xf86-video-intel '
 	PKGS+='xrdb '
 	PKGS+='xrandr '
 	PKGS+='xsetroot '
@@ -36,12 +44,14 @@ install_base_packages() {
 	PKGS+='kitty '
 	PKGS+='dunst '
 	# apps
-	PKGS+='geany '
-	PKGS+='pcmanfm '
-	PKGS+='feh '
+	PKGS+='geany '				# gtk text editor
+	PKGS+='pcmanfm '			# gtk file manager
+	PKGS+='lxappearance '		
+	PKGS+='feh '				# wallpaper setter
 	PKGS+='gnome-calculator '
 	PKGS+='mpv '
 	PKGS+='firefox '
+	PKGS+='maim '				# screenshot
 	# audio
 	PKGS+='alsa-utils '
 	PKGS+='pulseaudio '
@@ -51,55 +61,23 @@ install_base_packages() {
 	PKGS+='fonts-croscore-ttf '
 	PKGS+='font-libertine-ttf '
 	PKGS+='noto-fonts-emoji '
-	PKGS+='lxappearance '
 	# misc
 	PKGS+='gvfs '
 	PKGS+='gvfs-mtp '
 	PKGS+='mate-polkit '
+	# compression/decompression
+	PKGS+='xarchiver '
+	PKGS+='zip '
+	PKGS+='unzip '
+	PKGS+='p7zip '
+	# polybar module optional apps
+	PKGS+='yad '				# calendar popup
+	PKGS+='htop '
+	PKGS+='neofetch '			# fancy terminal
+	PKGS+='w3m-img '			# weather widget
 	# services
 	PKGS+='elogind '
 	PKGS+='dbus-elogind '
-		
-	
-	
-	
-	# Xorg
-#	PKGS+=" base-devel xorg-minimal xinit xauth xorg-server xf86-input-libinput" 
-#	PKGS+=" xf86-video-intel"
-#	PKGS+=" arandr xrdb xset xsetroot xprop xcalib xdg-utils"
-#	PKGS+=" xdo setxkbmap xmodmap bash-completion ccache ntfs-3g "
-#	PKGS+=" git curl wget xtools xsel wireless_tools"
-	# PKGS+=" dcron" # lightweight cron daemon
-	# PKGS+=" chrony" # ntp
-	
-	# for killall amongst others
-#	PKGS+=" psmisc"
-
-	# Audio
-#	PKGS+=" alsa-utils"
-#	PKGS+=" alsa-plugins-pulseaudio pamixer pulsemixer"
-
-	# Minimal bspwm apps
-#	PKGS+=" bspwm sxhkd kitty rofi polybar dunst geany pcmanfm firefox"
-#	PKGS+=" lxappearance vim mpd mpc ncmpcpp mpv w3m w3m-img neofetch"
-#	PKGS+=" htop zathura zathura-pdf-mupdf maim xclip feh"
-#	PKGS+=" file-roller zip unzip p7zip meld ghex gnome-calculator jq"
-#	PKGS+=" font-libertine-ttf noto-fonts-emoji arc-icon-theme"
-
-	# Misc apps
-#	PKGS+=" bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg"
-#	PKGS+=" atool ImageMagick python3-Pillow xdotool xdpyinfo ffmpegthumbnailer"
-#   PKGS+=" cava ranger geoip"
-	# PKGS+=" speedtest-cli geoip-data"
-
-	# Additional fonts and themes
-#	PKGS+=" fonts-croscore-ttf gtk-engine-murrine"
-
-	# System utilities
-#	PKGS+=" android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring" # automounting of usb and android devices
-	
-	# redshift
-#	PKGS+=" redshift"
 
 	xbps_install $PKGS
 }
@@ -220,6 +198,22 @@ echo "Compile: # './xbps-src pkg xorg-server -o elogind'"
 echo "Install: # 'sudo xbps-install --force --repository=hostdir/binpkgs xorg-server'"
 echo "Edit '/etc/X11/Xwapper.config' and change 'needs_root_rights' from 'yes' to 'no'"
 echo ""
+echo ""
+echo "Do you want to install extra applications? (yes/no):"
+read ans
+case $ans in
+	yes|y|YES|Yes)
+		echo ""
+		. "$HOME/.config/yadm/bootstrap-void-extra.sh"
+		echo ""
+		;;
+	*)
+		echo ""
+		echo "You can run bootstrap-void-extra.sh to install a more complete app package."
+		echo ""
+		echo ""
+		;;
+esac
 }
 
 main $@
