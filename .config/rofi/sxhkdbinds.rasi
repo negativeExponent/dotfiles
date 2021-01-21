@@ -1,7 +1,7 @@
 configuration {
 	modi: "drun";
 	width: 750;
-	lines: 34;
+	lines: 38;
     columns: 1;
 	bw: 2;
 	location: 0;
@@ -16,6 +16,10 @@ configuration {
 @import "colors.rasi"
 @import "layout.rasi"
 @import "font.rasi"
+
+* {
+	font: "Terminus 14";
+}
 
 entry {
     text-color:        var(foreground);
