@@ -2,9 +2,15 @@
 
 weather=$(curl -s "wttr.in/${LOCATION}?format=1")
 
-if [ $(echo "$weather" | grep -E "(Unknown|curl|HTML)" | wc -l) -gt 0 ]; then
-    echo "WEATHER UNAVAILABLE"
-else
-    echo "$weather" | awk '{print $1" "$2}'
-fi
+case "$1" in
+	"show")
+		curl -sf "wttr.in/$LOCATION" > ~/.cache/weather
+		$TERMINAL --hold --name floating -e cat ~/.cache/weather
+		;;
+esac
 
+if [ $(echo "$weather" | grep -E "(Unknown|curl|HTML)" | wc -l) -gt 0 ]; then
+	echo "WEATHER UNAVAILABLE"
+else
+	echo "$weather" | awk '{print $1" "$2}'
+fi
