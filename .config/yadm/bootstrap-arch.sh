@@ -54,7 +54,7 @@ install_packages() {
 	PKGS+="openssh git curl wget xsel xdo ccache vim "
 
 	# X
-	PKGS+="xorg xorg-xinit "
+	PKGS+="xorg-server xorg-xinit xorg-xrdb xorg-xrandr xorg-xsetroot xorg-xset "
 
 	# Audio
 	PKGS+="alsa-utils alsa-firmware "
