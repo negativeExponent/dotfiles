@@ -4,6 +4,9 @@ _c() { bspc config "$@"; }
 _m() { bspc monitor "$@"; }
 _r() { bspc rule "$@"; }
 
+BIN=${HOME}/.local/bin
+PATH=${PATH}:${BIN}:${BIN}/transmission
+
 ## autostart programs
 . "$HOME/.local/bin/bspwm/startup"
 

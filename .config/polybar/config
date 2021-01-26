@@ -48,7 +48,7 @@ module-margin-right = 0
 
 modules-left = bspwm sep bspwm-mode sep xwindow
 modules-center =
-modules-right = mpd sep network-eth weather sep check-updates torrents sep temperature memory sep pavolume popup-calendar
+modules-right = mpd sep network-eth weather sep check-updates torrents sep temperature memory sep alsa popup-calendar
 
 tray-position = right
 tray-padding = 2
