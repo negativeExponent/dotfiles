@@ -17,10 +17,6 @@ configuration {
 @import "layout.rasi"
 @import "font.rasi"
 
-* {
-	font: "Terminus 14";
-}
-
 entry {
     text-color:        var(foreground);
     spacing:           0;

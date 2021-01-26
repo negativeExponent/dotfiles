@@ -31,24 +31,23 @@ bottom = false
 separator =
 
 width = 100%
-height = 22
+height = 16
 
 line-size = 0
 border-size = 0
-border-top-size=0
-border-bottom-size=0
+border-top-size=5
+border-bottom-size=5
 padding = 0
 
-font-0 = Aileron:antialiasing=true:autohint=true:size=10;2
-font-1 = JetBrainsMono Nerd Font:size=13;3
-font-2 = NotoColorEmoji:fontformat=truetype:scale=12:antialias=false;2
+font-0 = Monospace:size=10;2
+font-1 = NotoColorEmoji:fontformat=truetype:scale=12:antialias=false;2
 
 module-margin-left = 0
 module-margin-right = 0
 
 modules-left = bspwm sep bspwm-mode sep xwindow
 modules-center =
-modules-right = mpd sep network-eth weather sep check-updates torrents sep temperature memory sep alsa popup-calendar
+modules-right = mpd sep network-eth sep weather sep check-updates sep torrents sep temperature sep memory sep pulseaudio sep date
 
 tray-position = right
 tray-padding = 2

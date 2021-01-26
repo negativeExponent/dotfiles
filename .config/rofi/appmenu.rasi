@@ -1,6 +1,6 @@
 configuration {
 	modi: "run,drun,window";
-	width: 30;
+	width: 750;
 	lines: 15;
     columns: 1;
 	bw: 2;
