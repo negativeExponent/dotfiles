@@ -44,7 +44,6 @@ install_base_packages() {
 	PKGS+='xrandr '
 	PKGS+='xsetroot '
 	
-	PKGS+='intel-video-accel '
 	PKGS+='mesa-vaapi '
 	PKGS+='mesa-vdpau '
 	
@@ -59,11 +58,12 @@ install_base_packages() {
 	PKGS+='rofi '
 	PKGS+='kitty '
 	PKGS+='dunst '
+	# apps
+	PKGS+='ranger '				# terminal filemanager
 	PKGS+='geany '				# gtk text editor
 	PKGS+='pcmanfm '			# gtk file manager
 	PKGS+='mpd mpc ncmpcpp '    # music player
 	PKGS+='mpv '				# video player
-	# apps
 	PKGS+='lxappearance '		
 	PKGS+='feh '				# wallpaper setter
 	PKGS+='gnome-calculator '
@@ -114,7 +114,7 @@ configure_intel_video() {
 	CPU_VENDOR=$(grep vendor_id /proc/cpuinfo | awk 'NR==1{print $3}')
 	if [ $CPU_VENDOR = "GenuineIntel" ]; then
 		install_msg "Installing Intel Video Acceleration"
-		xbps_install xf86-video-intel libva-intel-driver
+		xbps_install intel-ucode xf86-video-intel intel-video-accel libva-intel-driver intel-media-driver linux-firmware-intel
 		install_msg "Install Intel Xorg config"
 		# gets rid of screen tearing if not using compositor/wm does not have vsync
 		sudo bash -c 'cat > /usr/share/X11/xorg.conf.d/20-intel.conf' << EOF
@@ -145,7 +145,7 @@ configure_system() {
 		fi
 	done
 
-	common_srcs="NetworkManager crond dbus elogind ntpd polkitd uuid socklog-unit nanoklogd"
+	common_srcs="acpid NetworkManager crond cgmanager dbus elogind haveged ntpd polkitd uuid socklog-unix nanoklogd uuidd"
 	for svc in $common_srcs
 	do
 		if [ -d /etc/sv/$svc ] ; then
