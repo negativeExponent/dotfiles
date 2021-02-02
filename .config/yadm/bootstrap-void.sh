@@ -30,12 +30,28 @@ xbps_install() {
 
 install_base_packages() {
 	local PKGS=''
+	# misc
+	PKGS+='base-devel '
+	PKGS+='ccache '
+	PKGS+='git '
+	PKGS+='curl '
+	PKGS+='wget '
+	PKGS+='arandr '
 	# xorg
-	PKGS='xorg-minimal '
+	PKGS+='xorg-minimal '
 	PKGS+='xinit '
 	PKGS+='xrdb '
 	PKGS+='xrandr '
 	PKGS+='xsetroot '
+	
+	PKGS+='intel-video-accel '
+	PKGS+='mesa-vaapi '
+	PKGS+='mesa-vdpau '
+	
+	# audio
+	PKGS+='alsa-utils '
+	PKGS+='pulseaudio '
+	PKGS+='pulsemixer '
 	# wm
 	PKGS+='bspwm '
 	PKGS+='sxhkd '
@@ -43,28 +59,30 @@ install_base_packages() {
 	PKGS+='rofi '
 	PKGS+='kitty '
 	PKGS+='dunst '
-	# apps
 	PKGS+='geany '				# gtk text editor
 	PKGS+='pcmanfm '			# gtk file manager
+	PKGS+='mpd mpc ncmpcpp '    # music player
+	PKGS+='mpv '				# video player
+	# apps
 	PKGS+='lxappearance '		
 	PKGS+='feh '				# wallpaper setter
 	PKGS+='gnome-calculator '
-	PKGS+='mpv '
 	PKGS+='firefox '
 	PKGS+='maim '				# screenshot
-	# audio
-	PKGS+='alsa-utils '
-	PKGS+='pulseaudio '
-	PKGS+='pulsemixer '
+	PKGS+='gvfs '
+	PKGS+='gvfs-mtp '
+	PKGS+='android-tools '
+	PKGS+='polkit-gnome '
+	PKGS+='gnome-keyring '
+	PKGS+='gtk-engine-murrine '
+	PKGS+='picom '
+	PKGS+='redshift '
 	# themes, fonts
 	PKGS+='arc-icon-theme '
 	PKGS+='fonts-croscore-ttf '
 	PKGS+='font-libertine-ttf '
 	PKGS+='noto-fonts-emoji '
-	# misc
-	PKGS+='gvfs '
-	PKGS+='gvfs-mtp '
-	PKGS+='mate-polkit '
+	PKGS+='dejavu-fonts-ttf '
 	# compression/decompression
 	PKGS+='xarchiver '
 	PKGS+='zip '
@@ -76,8 +94,17 @@ install_base_packages() {
 	PKGS+='neofetch '			# fancy terminal
 	PKGS+='w3m-img '			# weather widget
 	# services
+	PKGS+='dbus '
+	PKGS+='dbus-x11 '
 	PKGS+='elogind '
-	PKGS+='dbus-elogind '
+	PKGS+='NetworkManager '
+	PKGS+='cronie '
+	PKGS+='openntpd '
+	PKGS+='haveged '
+	PKGS+='socklog-void '
+	PKGS+='vsv '
+	# killall
+	PKGS+='psmisc '
 
 	xbps_install $PKGS
 }
@@ -107,26 +134,9 @@ EOF
 configure_system() {
 	# enable services
 	dir="/etc/runit/runsvdir/default/"
-	common_srcs="crond dbus elogind ntpd polkitd uuid"
-	for svc in $common_srcs
-	do
-		if [ -d /etc/sv/$svc ] ; then
-			install_msg "Enabling service: $svc"
-			sudo ln -sf /etc/sv/$svc $dir
-		fi
-	done
-	# configure fonts
-	install_msg "Configuring system fonts config"
-	sudo ln -sf /usr/share/fontconfig/conf.avail/10-hinting-slight.conf /etc/fonts/conf.d/
-	sudo ln -sf /usr/share/fontconfig/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d/
-	sudo ln -sf /usr/share/fontconfig/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d/
-	sudo ln -sf /usr/share/fontconfig/conf.avail/50-user.conf /etc/fonts/conf.d/
-	# sudo ln -sf /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d/
-}
 
-cleanup() {
 	# remove unnecessary services
-	remove_svc="agetty-tty3 agetty-tty4 agetty-tty5 agetty-tty6 sshd"
+	remove_svc="agetty-tty3 agetty-tty4 agetty-tty5 agetty-tty6 dhcpcd sshd"
 	for svc in $remove_svc
 	do
 		if [ -d /var/service/$svc ] ; then
@@ -134,6 +144,31 @@ cleanup() {
 			sudo rm /var/service/$svc
 		fi
 	done
+
+	common_srcs="NetworkManager crond dbus elogind ntpd polkitd uuid socklog-unit nanoklogd"
+	for svc in $common_srcs
+	do
+		if [ -d /etc/sv/$svc ] ; then
+			install_msg "Enabling service: $svc"
+			sudo ln -sf /etc/sv/$svc $dir
+		fi
+	done
+
+	cat /etc/group | grep socklog >/dev/null && sudo usermod -a -G socklog $USER
+
+	# configure fonts
+	install_msg "Configuring system fonts config"
+	sudo ln -sf /usr/share/fontconfig/conf.avail/10-hinting-slight.conf /etc/fonts/conf.d/
+	sudo ln -sf /usr/share/fontconfig/conf.avail/10-sub-pixel-rgb.conf /etc/fonts/conf.d/
+	sudo ln -sf /usr/share/fontconfig/conf.avail/11-lcdfilter-default.conf /etc/fonts/conf.d/
+	sudo ln -sf /usr/share/fontconfig/conf.avail/50-user.conf /etc/fonts/conf.d/
+	# sudo ln -sf /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf /etc/fonts/conf.d/
+
+	sudo xbps-reconfigure -f fontconfig
+}
+
+cleanup() {
+	echo ""
 }
 
 ########

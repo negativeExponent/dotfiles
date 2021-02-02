@@ -20,7 +20,7 @@ xbps_install() {
 }	
 
 # Xorg
-PKGS+=" base-devel xorg-minimal xinit xauth xorg-server xf86-input-libinput" 
+PKGS=" base-devel xorg-minimal xinit xauth xorg-server xf86-input-libinput" 
 PKGS+=" xf86-video-intel"
 PKGS+=" arandr xrdb xset xsetroot xprop xcalib xdg-utils"
 PKGS+=" xdo setxkbmap xmodmap bash-completion ccache ntfs-3g "
