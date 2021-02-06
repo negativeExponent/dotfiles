@@ -7,7 +7,7 @@ unclutter &		# Remove mouse when idle
 # NOTE: Colors are derived from Xresources, so make sure
 # they are sourced out first before calling the rest of
 # scripts below
-xrdb ${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources
+xrdb ${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources
 . "$HOME/.local/bin/launch_dunst" &
 . "$HOME/.local/bin/launch_picom" &
 . "$HOME/.local/bin/setcolors" &
