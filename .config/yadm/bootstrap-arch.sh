@@ -202,22 +202,5 @@ if [ -f $HOME/.ssh/id_rsa ] ; then
 fi
 
 install_msg ""
-install_msg "Setting default wallpaper..."
-if [ ! -f "$HOME/.fehbg" ] ; then
-	cat > "$HOME/.fehbg" << EOF
-#!/bin/sh
-feh --no-fehbg --bg-fill $HOME/.config/wall.jpg
-EOF
-	chmod +x "$HOME/.fehbg"
-fi
-
-if [ ! -f "$HOME/.xinitrc" ]; then
-	ln -sf "$HOME/.config/x11/xinitrc" "$HOME/.xinitrc"
-	chmod +x "$HOME/.xinitrc"
-fi
-
-[ ! -f "$HOME/.xprofile" ] && ln -sf "$HOME/.config/x11/xprofile" "$HOME/.xprofile"
-
-install_msg ""
 install_msg "Done."
 install_msg ""
