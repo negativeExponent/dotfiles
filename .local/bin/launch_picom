@@ -21,7 +21,7 @@ case "$cmd" in
 		_t
 		;;
 	*)
-		! pidof -x picom > /dev/null || pkill -x picom
+		pidof -x picom > /dev/null && echo "Picom already launched." && exit
 		picom -b --experimental-backend
 		;;
 esac
