@@ -8,7 +8,7 @@
 
 set -e
 
-echo ""
+clear
 
 ARCH="$1"								# arch or artix
 INIT="systemd"							# init, systemd as default
@@ -51,10 +51,10 @@ install_packages() {
 
 	# some essential apps
 	PKGS="base-devel "
-	PKGS+="openssh git curl wget xsel xdo ccache vim "
+	PKGS+="openssh git curl wget ccache vim "
 
 	# X
-	PKGS+="xorg-server xorg-xinit xorg-xrdb xorg-xrandr xorg-xsetroot xorg-xset "
+	PKGS+="xorg-server xorg-xinit xorg-xrdb xorg-xrandr xorg-xsetroot xorg-xset xsel xdo unclutter htop neofetch zsh "
 
 	# Audio
 	PKGS+="alsa-utils alsa-firmware "
@@ -65,10 +65,13 @@ install_packages() {
 	PKGS+="bspwm sxhkd kitty rofi dunst geany pcmanfm "
 
 	# other apps needed but not required for WM to start
-	PKGS+="mpv w3m neofetch lxappearance "
-	PKGS+="htop zathura zathura-pdf-mupdf maim xclip feh "
-	PKGS+="file-roller zip unzip p7zip meld ghex gnome-calculator jq "
+	PKGS+="mpv w3m lxappearance "
+	PKGS+="zathura zathura-pdf-mupdf maim xclip feh "
+	PKGS+="xarchiver zip unzip p7zip jq "
 	PKGS+="ttf-linux-libertine noto-fonts-emoji arc-icon-theme "
+	
+	# some apps i personally use
+	PKGS+="meld ghex gnome-calculator "
 
 	# relies on libsystemd/systemd
 	[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
@@ -95,11 +98,21 @@ install_packages() {
 }
 
 install_aur_packages() {
-	command -v "polybar" >/dev/null || pac_install "polybar-git"
+	if ! command -v "polybar" >/dev/null; then
+		if pacman -Ssq polybar >/dev/null; then
+			install_msg "Installing polybar from repository..."
+			pac_install 'polybar'
+		else
+			install_msg "Installing polybar from aur..."
+			pac_install 'polybar-git'
+		fi
+	fi
 	# relies on libsystemd
-	[ "$ARCH" = "obarun" ] || command -v "cava" >/dev/null || pac_install "cava-git"
 	command -v "brave" >/dev/null || pac_install "brave-bin"
 	command -v "tremc" >/dev/null || pac_install "tremc-git"
+	command -v "picom" >/dev/null || pac_install "picom-tryone-git"
+	command -v "vscodium-bin" >/dev/null || pac_install "vscodium-bin"
+	[ "$ARCH" = "obarun" ] || command -v "cava" >/dev/null || pac_install "cava-git"
 }
 
 configure_intel_video() {
@@ -197,6 +210,13 @@ feh --no-fehbg --bg-fill $HOME/.config/wall.jpg
 EOF
 	chmod +x "$HOME/.fehbg"
 fi
+
+if [ ! -f "$HOME/.xinitrc" ]; then
+	ln -sf "$HOME/.config/x11/xinitrc" "$HOME/.xinitrc"
+	chmod +x "$HOME/.xinitrc"
+fi
+
+[ ! -f "$HOME/.xprofile" ] && ln -sf "$HOME/.config/x11/xprofile" "$HOME/.xprofile"
 
 install_msg ""
 install_msg "Done."

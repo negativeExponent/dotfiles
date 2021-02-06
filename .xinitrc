@@ -1,1 +1,0 @@
-/home/negative/.config/x11/xinitrc

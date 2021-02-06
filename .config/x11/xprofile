@@ -1,5 +1,12 @@
 #!/bin/sh
 
+# make sure we source our environment variables before starting X or a session,
+# coz the likes of obarun does not
+if [ -f "$HOME/.profile" ]; then
+	echo "Loading profile from $HOME/.profile"
+	. $HOME/.profile
+fi
+
 # Make Thunar always launched with DBUS
 # Without this, mounting, unmounting, trash, etc won't work in Thunar
 if which dbus-launch >/dev/null && test -z "$DBUS_SESSION_BUS_ADDRESS";
