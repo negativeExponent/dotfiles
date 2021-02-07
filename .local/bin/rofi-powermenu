@@ -1,12 +1,12 @@
 #!/bin/env bash
 
 # rofi power menu
-cmd_logout=" Log out"
-cmd_lock=" Lock"
-cmd_suspend="鈴 Suspend"
-cmd_reboot=" Reboot"
-cmd_shutdown=" Shutdown"
-cmd_reload=" Reload"
+cmd_logout="🚀 Log out"
+cmd_lock="🔒 Lock"
+cmd_suspend="💤 Suspend"
+cmd_reboot="🔄 Reboot"
+cmd_shutdown="💻 Shutdown"
+cmd_reload="🔃 Reload"
 
 options="$cmd_reload|$cmd_logout|$cmd_lock|$cmd_suspend|$cmd_reboot|$cmd_shutdown"
 chosen=$(rofi -sep "|" -theme "~/.config/rofi/powermenu.rasi" -p "Power Menu" -dmenu -i <<< "$options")
@@ -19,13 +19,18 @@ esac
 
 case "$chosen" in
     $cmd_logout)
-        # For each opened window
-        bspc query --nodes | while read -r winid; do
-            # Close it
-            xdotool windowkill "$winid"
-        done
-        killprogs
-        bspc quit
+        if pgrep -u $USER bspwm >/dev/null; then
+            # For each opened window
+            bspc query --nodes | while read -r winid; do
+                # Close it
+                xdotool windowkill "$winid"
+            done
+        fi
+        if pgrep -u $USER bspwm >/dev/null; then
+            bspc quit
+        elif pgrep -u $USER dwm >/dev/null; then
+            kill -TERM $(pgrep -u $USER "\bdwm$")
+        fi
         ;;
 #    $cmd_lock)
 #        betterlockscreen --lock dimblur;;
@@ -37,9 +42,13 @@ case "$chosen" in
         ${reb:-sudo -A reboot}
         ;;
     $cmd_shutdown)
-        ${shut:-sudo -A shutdown -h now}
+        ${shut:-sudo -A shutdown -p now}
         ;;
     $cmd_reload)
-        bspc wm -r
+        if pgrep -u $USER bspwm >/dev/null; then
+            bspc wm -r
+        elif pgrep -u $USER dwm >/dev/null; then
+            kill -HUP $(pgrep -u $USER "\bdwm$")
+        fi
         ;;
 esac

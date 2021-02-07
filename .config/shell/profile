@@ -27,6 +27,7 @@ PATH="$PATH"
 [ ! -d /usr/lib/ccache ] || PATH="/usr/lib/ccache/bin:$PATH"
 [ ! -d $HOME/.local/bin ] || PATH="$PATH:$HOME/.local/bin"
 [ ! -d $HOME/.local/bin/transmission ] || PATH="$PATH:$HOME/.local/bin/transmission"
+[ ! -d $HOME/.local/bin/statusbar ] || PATH="$PATH:$HOME/.local/bin/statusbar"
 
 export PATH
 
