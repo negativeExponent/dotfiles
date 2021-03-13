@@ -32,8 +32,8 @@ case "$chosen" in
             kill -TERM $(pgrep -u $USER "\bdwm$")
         fi
         ;;
-#    $cmd_lock)
-#        betterlockscreen --lock dimblur;;
+    $cmd_lock)
+        betterlockscreen --lock dimblur;;
 #        ;;
 #    $cmd_suspend)
 #        systemctl suspend;;

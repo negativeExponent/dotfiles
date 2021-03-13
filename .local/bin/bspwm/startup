@@ -2,14 +2,20 @@
 
 LOC=$LOCATION_RS
 CTEMP=5500:4500
+AUTOLOCK_TIMEOUT=10 # timeout in minutes
+LOCKSCREEN_CMD="betterlockscreen -l"
 
 run() {
     if command -v $1 >/dev/null; then
 	    if ! pgrep -x $1 >/dev/null; then
+			echo "$@"
 		    $@&
 	    fi
     fi
 }
+
+xset s off
+xset -dpms 
 
 # load Xresources
 if [ -f "$HOME/.Xresources" ]; then
@@ -20,15 +26,14 @@ fi
 
 [ -f "$HOME/.fehbg" ] && . "$HOME/.fehbg" & # restore background wallpaper
 # . "$HOME/.local/bin/load_icm_profile" &   # load monitor profile
-run "xsetroot" " -cursor_name left_ptr"     # general system settings
-run "numlockx"
+xsetroot -cursor_name left_ptr &     # general system settings
+numlockx &
 # daemons
 run /usr/libexec/polkit-gnome-authentication-agent-1
 run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
+
 run "mpd"                                   # music player widget
-# run "udiskie"                             # automount removable storage,replaced with gvfs for usb and android automounting
-# run "picom" " -b --experimental-backend"    # compositor
 run "sxhkd"                                 # X hotkey daemon
 run "redshift" " -t $CTEMP -l $LOC"
 
@@ -50,3 +55,4 @@ sleep 0.5
 . "$HOME/.local/bin/launch_polybar" &       # kills and relaunch panel
 . "$HOME/.local/bin/launch_dunst" &         # kills and relaunch notification daemon
 . "$HOME/.local/bin/setcolors" &			# exports color configs to rofi, kitty ...
+. "$HOME/.local/bin/autolock" 5 &

@@ -62,10 +62,10 @@ install_packages() {
 	[ "$ARCH" = "obarun" ] && PKGS+="pulseaudio-66serv "
 
 	# Minimal bspwm apps
-	PKGS+="bspwm sxhkd kitty rofi dunst geany pcmanfm "
+	PKGS+="bspwm sxhkd kitty rofi dunst geany pcmanfm-gtk3 "
 
 	# other apps needed but not required for WM to start
-	PKGS+="mpv w3m lxappearance "
+	PKGS+="mpv w3m lxappearance-gtk3 "
 	PKGS+="zathura zathura-pdf-mupdf maim xclip feh "
 	PKGS+="xarchiver zip unzip p7zip jq "
 	PKGS+="ttf-linux-libertine noto-fonts-emoji arc-icon-theme "
@@ -111,8 +111,11 @@ install_aur_packages() {
 	command -v "brave" >/dev/null || pac_install "brave-bin"
 	command -v "tremc" >/dev/null || pac_install "tremc-git"
 	command -v "picom" >/dev/null || pac_install "picom-tryone-git"
-	command -v "vscodium-bin" >/dev/null || pac_install "vscodium-bin"
+	command -v "vscodium" >/dev/null || pac_install "vscodium-bin"
 	[ "$ARCH" = "obarun" ] || command -v "cava" >/dev/null || pac_install "cava-git"
+	# lockscreen
+	command -v "betterlockscreen" >/dev/null || pac_install "betterlockscreen"
+	command -v "xautolock" >/dev/null || pac_install "xautolock"
 }
 
 configure_intel_video() {
@@ -193,6 +196,13 @@ install_aur_packages
 install_msg ""
 install_msg "Installing and configuring intel gpu driver..."
 configure_intel_video
+
+if command -v "betterlockscreen" >/dev/null; then
+	if [ -f "$HOME/.config/wall.jpg" ]; then
+		install_msg "Preparing lockscreen config..."
+		betterlockscreen -u ~/.config/wall.jpg
+	fi
+fi
 
 install_msg ""
 install_msg "Enabling ssh key..."
