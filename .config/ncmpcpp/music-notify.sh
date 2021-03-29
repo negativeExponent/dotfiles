@@ -5,8 +5,7 @@
 #	Depends:
 #		- mpc, mpd, ncmpcpp, imagemagick, ffmpeg or perl-image-exiftool
 
-# MUSIC_DIR="${HOME}/Music"
-MUSIC_DIR="/mnt/storage/Music"
+MUSIC_DIR="${HOME}/Music"
 TMP_DIR="/tmp/ncmpcpp_${USER}"
 TMP_COVER_PATH="${TMP_DIR}/ncmpcpp_cover.jpg"
 TMP_SONG="/tmp/current-song"
