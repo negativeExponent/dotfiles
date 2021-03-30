@@ -3,12 +3,12 @@
  */
 
 * {
-    foreground:         #d5c4a1;
-	background:         #282828;
-    background-color:   #282828;
-	urgent-color:       #fb4934;
-	selected-color:     #83a598;
-    border-color:       #83a598;
-	active-color:       #d3869b;
+    foreground:         #F8F8F2;
+	background:         #282A36;
+    background-color:   #282A36;
+	urgent-color:       #FF5555;
+	selected-color:     #BD93F9;
+    border-color:       #BD93F9;
+	active-color:       #FF79C6;
     alpha:              #00000000;
 }
