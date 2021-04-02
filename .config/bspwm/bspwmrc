@@ -4,15 +4,14 @@ _c() { bspc config "$@"; }
 _m() { bspc monitor "$@"; }
 _r() { bspc rule "$@"; }
 
-BIN=${HOME}/.local/bin
-PATH=${PATH}:${BIN}:${BIN}/transmission
+PATH=${PATH}:${HOME}/.local/bin:${HOME}/.local/bin/transmission
 
 ## autostart programs
-. "$HOME/.local/bin/bspwm/startup"
+. "$HOME/.config/bspwm/autostart"
 
 . "$HOME/.local/bin/getcolors"
 
-_c normal_border_color          "$color0" #
+_c normal_border_color          "$color8" #
 _c active_border_color          "$color6" #
 _c focused_border_color         "$color4" #
 _c presel_feedback_color        "$color3" # apply colors to windows
@@ -23,7 +22,7 @@ _m -d                           1 2 3 4 5 6 7 8 9
 ## window settings
 _c border_width                 2
 _c window_gap                   10
-_c top_padding                  26
+_c top_padding                  34
 _c bottom_padding               0
 _c split_ratio                  0.52
 _c borderless_monocle           true

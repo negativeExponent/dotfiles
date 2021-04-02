@@ -31,7 +31,7 @@ bottom = false
 separator =
 
 width = 100%
-height = 16
+height = 24
 
 line-size = 0
 border-size = 0
