@@ -24,7 +24,7 @@ else
 	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources"
 fi
 
-[ -f "$HOME/.fehbg" ] && . "$HOME/.fehbg" & # restore background wallpaper
+nitrogen --restore & # restore background wallpaper
 # . "$HOME/.local/bin/load_icm_profile" &   # load monitor profile
 xsetroot -cursor_name left_ptr &     # general system settings
 numlockx &

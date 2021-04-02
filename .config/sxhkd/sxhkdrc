@@ -193,9 +193,13 @@ super + F2
 super + F7
 	rofi-theme
 
-# change wallpaper (random)
+## change wallpaper (random)
+## super + F8
+##	wallpaper-changer
+
+# change wallpaper (nitroge)
 super + F8
-	wallpaper-changer
+	nitrogen
 
 # toggles compositor on or off
 super + F9
