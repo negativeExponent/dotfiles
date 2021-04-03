@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# session autolocker
+
+AUTOLOCK_TIMER="$1" # in mins
+LOCKSCREEN_APP="betterlockscreen -l"
+
+if pgrep -x dunst >/dev/null; then
+	NOTIFIER_APP="dunstify"
+else
+	NOTIFIER_APP="notify-send"
+fi
+
+if [ ! -d ~/.cache/i3lock ]; then
+	# If betterlockscreen has not been configured, then use default image in ~/.config/wall.jpg
+	# to cache a default lockscreen image
+	bash -c "betterlockscreen -u ~/.config/wall.jpg"
+fi
+
+if ! command -v xautolock >/dev/null; then
+	$NOTIFIER_APP "xautolock not installed."
+	exit
+fi
+
+if [ -z "$AUTOLOCK_TIMER" ]; then
+	AUTOLOCK_TIMER=1
+fi
+
+xautolock -time "$AUTOLOCK_TIMER" -locker "$LOCKSCREEN_APP" -detectsleep -resetsaver -corners 00-- -cornersize 1000 \
+-notifier "$NOTIFIER_APP 'Lockscreen will be locked 10s from now'" -notify 10
