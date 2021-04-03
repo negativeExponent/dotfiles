@@ -1,0 +1,2 @@
+1 */4 * * * /home/negative/.local/bin/transmission/transclr
+*/30 * * * * polybar-msg hook check-updates 1
