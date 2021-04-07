@@ -70,6 +70,8 @@ install_packages() {
 	PKGS+="xarchiver zip unzip p7zip jq "
 	PKGS+="ttf-linux-libertine noto-fonts-emoji ttf-jetbrains-mono "
 	PKGS+="arc-icon-theme "
+	PKGS+="nitrogen " # wallpaper setter and changer
+	PKGS+="mlocate pacman-contrib "
 	
 	# some apps i personally use
 	PKGS+="meld ghex gnome-calculator "
