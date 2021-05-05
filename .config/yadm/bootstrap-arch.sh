@@ -116,7 +116,7 @@ install_aur_packages() {
 	# relies on libsystemd
 	command -v "brave" >/dev/null || pac_install "brave-bin"
 	command -v "tremc" >/dev/null || pac_install "tremc-git"
-	command -v "picom" >/dev/null || pac_install "picom-tryone-git"
+	command -v "picom" >/dev/null || pac_install "picom-git"
 	command -v "vscodium" >/dev/null || pac_install "vscodium-bin"
 	[ "$ARCH" = "obarun" ] || command -v "cava" >/dev/null || pac_install "cava-git"
 	# lockscreen
