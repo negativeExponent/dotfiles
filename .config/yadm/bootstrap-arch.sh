@@ -62,7 +62,10 @@ install_packages() {
 	[ "$ARCH" = "obarun" ] && PKGS+="pulseaudio-66serv "
 
 	# Minimal bspwm apps
-	PKGS+="bspwm sxhkd kitty rofi dunst geany pcmanfm-gtk3 "
+	PKGS+="bspwm sxhkd kitty rofi geany pcmanfm-gtk3 "
+
+	# arch has forced systemd crap as dunst dependency
+	[ "$ARCH" = "obarun" ] || PKGS+="dunst "
 
 	# other apps needed but not required for WM to start
 	PKGS+="mpv w3m lxappearance-gtk3 "
