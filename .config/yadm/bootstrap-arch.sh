@@ -94,6 +94,9 @@ install_packages() {
 	# System utilities
 	PKGS+="android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring " # automounting of usb and android devices
 
+	# Needed by zshrc
+	PKGS+="thefuck "
+
     # redshift
     PKGS+="redshift "
 
