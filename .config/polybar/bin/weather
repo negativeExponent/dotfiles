@@ -5,7 +5,7 @@ weather=$(curl -s "wttr.in/${LOCATION}?format=1")
 case "$1" in
 	"show")
 		curl -sf "wttr.in/$LOCATION" > ~/.cache/weather
-		$TERMINAL --hold --name floating -e cat ~/.cache/weather
+		setsid -f $TERMINAL --hold --name term_float -e cat ~/.cache/weather
 		;;
 esac
 

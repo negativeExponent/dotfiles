@@ -45,7 +45,7 @@ element-text {
 }
 element-icon {
     background-color: var(alpha);
-    size:             1.2000ch ;
+    size:             24px;
     text-color:       inherit;
 }
 window {
@@ -122,8 +122,10 @@ entry {
     placeholder:       "Type to filter";
 }
 prompt {
+	enabled: true;
     spacing:    0;
     text-color: var(foreground);
+    padding: 	0px 10px 0px 0px;
 }
 textbox-prompt-colon {
     margin:     0px 0.3000em 0.0000em 0.0000em ;

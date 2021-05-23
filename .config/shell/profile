@@ -31,10 +31,6 @@ PATH="$PATH"
 
 export PATH
 
-# Make sure everything is set to exectuable
-chmod +x ~/.local/bin/*
-chmod +x ~/.local/bin/*/*
-
 export LESS=-R
 export LESS_TERMCAP_mb="$(printf '%b' '[1;31m')"
 export LESS_TERMCAP_md="$(printf '%b' '[1;36m')"

@@ -2,8 +2,8 @@
 
 # Opens a terminal to update pacman packages and handle updating polybar
 if command -v pacman >/dev/null; then
-	$TERMINAL --name floating -e bash -c 'sudo pacman -Syu; read -p "Press any key to close window..."'
+	term_float bash -c 'sudo pacman -Syu; read -p "Press any key to close window..."'
 elif command -v xbps-install >/dev/null; then
-	$TERMINAL --name floating -e bash -c 'sudo xbps-install -Su; read -p "Press any key to close window..."'
+	term_float bash -c 'sudo xbps-install -Su; read -p "Press any key to close window..."'
 fi
 

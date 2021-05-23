@@ -1,3 +1,7 @@
+# Enable colors and change prompt:
+autoload -U colors && colors	# Load colors
+PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+
 # .zshrc
 
 ## Generic Requirements
@@ -129,8 +133,6 @@ zstyle ":history-search-multi-word" page-size "11"
 zinit ice wait"1" lucid
 zinit light zdharma/history-search-multi-word
 
-zinit light denysdovhan/spaceship-prompt
-
 zinit light skywind3000/z.lua # navigate faster by learning your habits
 zinit snippet OMZP::command-not-found # provide suggested packages to be installed if a command cannot be found
 zinit snippet OMZP::extract # extracts a wide variety of archive filetypes
@@ -146,56 +148,6 @@ export LESS_TERMCAP_so=$(tput bold; tput setaf 3; tput setab 4)
 export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
 
 
-	#ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=10'
-	ZSH_HIGHLIGHT_HIGHLIGHTERS=(main brackets pattern cursor)
-	ZSH_HIGHLIGHT_PATTERNS=('rm -rf *' 'fg=white,bold,bg=red')
-
-	typeset -A ZSH_HIGHLIGHT_STYLES
-	ZSH_HIGHLIGHT_STYLES[cursor]='bg=yellow'
-	ZSH_HIGHLIGHT_STYLES[globbing]='none'
-	ZSH_HIGHLIGHT_STYLES[path]='fg=white'
-	ZSH_HIGHLIGHT_STYLES[path_pathseparator]='fg=grey'
-	ZSH_HIGHLIGHT_STYLES[alias]='fg=cyan'
-	ZSH_HIGHLIGHT_STYLES[builtin]='fg=cyan'
-	ZSH_HIGHLIGHT_STYLES[function]='fg=cyan'
-	ZSH_HIGHLIGHT_STYLES[command]='fg=green'
-	ZSH_HIGHLIGHT_STYLES[precommand]='fg=green'
-	ZSH_HIGHLIGHT_STYLES[hashed-command]='fg=green'
-	ZSH_HIGHLIGHT_STYLES[commandseparator]='fg=yellow'
-	ZSH_HIGHLIGHT_STYLES[redirection]='fg=magenta'
-	ZSH_HIGHLIGHT_STYLES[bracket-level-1]='fg=cyan,bold'
-	ZSH_HIGHLIGHT_STYLES[bracket-level-2]='fg=green,bold'
-	ZSH_HIGHLIGHT_STYLES[bracket-level-3]='fg=magenta,bold'
-	ZSH_HIGHLIGHT_STYLES[bracket-level-4]='fg=yellow,bold'
-
-	SPACESHIP_PROMPT_ADD_NEWLINE=false
-	SPACESHIP_PROMPT_SEPARATE_LINE=false
-	SPACESHIP_CHAR_SYMBOL=❯
-	SPACESHIP_CHAR_SUFFIX=" "
-	SPACESHIP_HG_SHOW=false
-	SPACESHIP_PACKAGE_SHOW=false
-	SPACESHIP_NODE_SHOW=false
-	SPACESHIP_RUBY_SHOW=false
-	SPACESHIP_ELM_SHOW=false
-	SPACESHIP_ELIXIR_SHOW=false
-	SPACESHIP_XCODE_SHOW_LOCAL=false
-	SPACESHIP_SWIFT_SHOW_LOCAL=false
-	SPACESHIP_GOLANG_SHOW=false
-	SPACESHIP_PHP_SHOW=false
-	SPACESHIP_RUST_SHOW=false
-	SPACESHIP_JULIA_SHOW=false
-	SPACESHIP_DOCKER_SHOW=false
-	SPACESHIP_DOCKER_CONTEXT_SHOW=false
-	SPACESHIP_AWS_SHOW=false
-	SPACESHIP_CONDA_SHOW=false
-	SPACESHIP_VENV_SHOW=false
-	SPACESHIP_PYENV_SHOW=false
-	SPACESHIP_DOTNET_SHOW=false
-	SPACESHIP_EMBER_SHOW=false
-	SPACESHIP_KUBECONTEXT_SHOW=false
-	SPACESHIP_TERRAFORM_SHOW=false
-	SPACESHIP_TERRAFORM_SHOW=false
-	SPACESHIP_VI_MODE_SHOW=false
-	SPACESHIP_JOBS_SHOW=false
-
-# eval "$(starship init zsh)"
+## install starship first
+## sh -c "$(curl -fsSL https://starship.rs/install.sh)"
+#eval "$(starship init zsh)"

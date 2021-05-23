@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+term=${TERMINAL:-kitty}
+
+if [ "$term" = "urxvt" ]; then
+	$term -name term_float -e "$@"
+else
+	$term --class=term_float -e "$@"
+fi
