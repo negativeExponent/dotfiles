@@ -2,22 +2,23 @@
 
 # Source colors from xrdb
 
-color0="$(xrdb -query | grep 'color0:'| awk '{print $NF}')"
-color1="$(xrdb -query | grep 'color1:'| awk '{print $NF}')"
-color2="$(xrdb -query | grep 'color2:'| awk '{print $NF}')"
-color3="$(xrdb -query | grep 'color3:'| awk '{print $NF}')"
-color4="$(xrdb -query | grep 'color4:'| awk '{print $NF}')"
-color5="$(xrdb -query | grep 'color5:'| awk '{print $NF}')"
-color6="$(xrdb -query | grep 'color6:'| awk '{print $NF}')"
-color7="$(xrdb -query | grep 'color7:'| awk '{print $NF}')"
-color8="$(xrdb -query | grep 'color8:'| awk '{print $NF}')"
-color9="$(xrdb -query | grep 'color9:'| awk '{print $NF}')"
-color10="$(xrdb -query | grep 'color10:'| awk '{print $NF}')"
-color11="$(xrdb -query | grep 'color11:'| awk '{print $NF}')"
-color12="$(xrdb -query | grep 'color12:'| awk '{print $NF}')"
-color13="$(xrdb -query | grep 'color13:'| awk '{print $NF}')"
-color14="$(xrdb -query | grep 'color14:'| awk '{print $NF}')"
-color15="$(xrdb -query | grep 'color15:'| awk '{print $NF}')"
+FOREGROUND=$(xrdb -query | egrep -m1 '^\*\.?foreground:'| awk '{print $NF}')
+BACKGROUND=$(xrdb -query | egrep -m1 '^\*\.?background:'| awk '{print $NF}')
 
-foreground="$(xrdb -query | grep 'foreground:'| awk '{print $NF}')"
-background="$(xrdb -query | grep 'background:'| awk '{print $NF}')"
+BLACK=$(xrdb -query | egrep -m1 '^\*\.?color0:'| awk '{print $NF}')
+RED=$(xrdb -query | egrep -m1 '^\*\.?color1:'| awk '{print $NF}')
+GREEN=$(xrdb -query | egrep -m1 '^\*\.?color2:'| awk '{print $NF}')
+YELLOW=$(xrdb -query | egrep -m1 '^\*\.?color3:'| awk '{print $NF}')
+BLUE=$(xrdb -query | egrep -m1 '^\*\.?color4:'| awk '{print $NF}')
+MAGENTA=$(xrdb -query | egrep -m1 '^\*\.?color5:'| awk '{print $NF}')
+CYAN=$(xrdb -query | egrep -m1 '^\*\.?color6:'| awk '{print $NF}')
+GRAY=$(xrdb -query | egrep -m1 '^\*\.?color7:'| awk '{print $NF}')
+
+ALTBLACK=$(xrdb -query | egrep -m1 '^\*\.?color8:'| awk '{print $NF}')
+ALTRED=$(xrdb -query | egrep -m1 '^\*\.?color9:'| awk '{print $NF}')
+ALTGREEN=$(xrdb -query | egrep -m1 '^\*\.?color10:'| awk '{print $NF}')
+ALTYELLOW=$(xrdb -query | egrep -m1 '^\*\.?color11:'| awk '{print $NF}')
+ALTBLUE=$(xrdb -query | egrep -m1 '^\*\.?color12:'| awk '{print $NF}')
+ALTMAGENTA=$(xrdb -query | egrep -m1 '^\*\.?color13:'| awk '{print $NF}')
+ALTCYAN=$(xrdb -query | egrep -m1 '^\*\.?color14:'| awk '{print $NF}')
+WHITE=$(xrdb -query | egrep -m1 '^\*\.?color15:'| awk '{print $NF}')

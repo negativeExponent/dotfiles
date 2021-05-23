@@ -152,7 +152,7 @@ super + Return
 
 # floating terminal emulator
 super + shift + Return
-	$TERMINAL --name floating
+	term_float
 
 ## super + BackSpace
 ##	st

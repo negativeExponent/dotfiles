@@ -5,6 +5,6 @@
 . "$HOME/.local/bin/getcolors"
 
 kill -TERM "$(pidof dunst)"
-dunst -lb "$background" -lf "$foreground" -lfr "$color2" \
-	-nb "$background" -nf "$foreground" -nfr "$color4" \
-	-cb "$background" -cf "$foreground" -cfr "$color1"
+dunst -lb "$BACKGROUND" -lf "$FOREGROUND" -lfr "$GREEN" \
+	-nb "$BACKGROUND" -nf "$FOREGROUND" -nfr "$BLUE" \
+	-cb "$BACKGROUND" -cf "$FOREGROUND" -cfr "$RED"

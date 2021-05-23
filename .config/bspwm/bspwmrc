@@ -4,17 +4,18 @@ _c() { bspc config "$@"; }
 _m() { bspc monitor "$@"; }
 _r() { bspc rule "$@"; }
 
-PATH=${PATH}:${HOME}/.local/bin:${HOME}/.local/bin/transmission
+export PATH=${PATH}:${HOME}/.local/bin:${HOME}/.local/bin/transmission
 
 ## autostart programs
 . "$HOME/.config/bspwm/autostart"
-
+## get colors from xrdb
 . "$HOME/.local/bin/getcolors"
 
-_c normal_border_color          "$color8" #
-_c active_border_color          "$color6" #
-_c focused_border_color         "$color4" #
-_c presel_feedback_color        "$color3" # apply colors to windows
+# set theme
+_c normal_border_color          "$BACKGROUND" #
+_c active_border_color          "$MAGENTA" #
+_c focused_border_color         "$BLUE" #
+_c presel_feedback_color        "$GREEN" # apply colors to windows
 
 ## monitor settings
 _m -d                           1 2 3 4 5 6 7 8 9
@@ -22,9 +23,10 @@ _m -d                           1 2 3 4 5 6 7 8 9
 ## window settings
 _c border_width                 2
 _c window_gap                   10
-_c top_padding                  34
+_c top_padding                  32
 _c bottom_padding               0
 _c split_ratio                  0.52
+
 _c borderless_monocle           true
 _c gapless_monocle              true
 
@@ -45,8 +47,9 @@ _r -a Nitrogen                  state=floating
 _r -a Nm-connection-editor      state=floating
 _r -a Gnome-calculator          state=floating
 _r -a *:show_help               state=floating
-_r -a *:floating                state=floating
+_r -a *:term_float              state=floating
 _r -a File-roller               state=floating
+_r -a Xarchiver                 state=floating
 _r -a Yad                       state=floating
 _r -a nmtui                     state=floating
 _r -a retroarch                 state=floating

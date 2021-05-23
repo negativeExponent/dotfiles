@@ -11,6 +11,10 @@ configuration {
 	show-icons: true;
     icon-theme: "Arc";
     sidebar-mode: true;
+    display-drun: "🔎";
+    display-drun: "🔎";
+    display-drun: "🔎";
+    drun-display-format:            "{name}";
 }
 
 @import "colors.rasi"
@@ -20,14 +24,15 @@ configuration {
 entry {
     text-color:        var(foreground);
     spacing:           0;
-    placeholder-color: var(background);
-    placeholder:       "";
+    placeholder-color: var(foreground);
+    placeholder:       "Search...";
 }
 
 inputbar {
     padding:    1px ;
     spacing:    0px ;
     text-color: var(foreground);
-    children:   [ textbox-prompt-colon,entry ];
+    /*children:   [ textbox-prompt-colon,entry ]; */
+    children:   [ prompt, entry ];
 }
 
