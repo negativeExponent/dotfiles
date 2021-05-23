@@ -47,8 +47,8 @@ color6  ${CYAN}
 color14 ${ALTCYAN}
 
 # white
-color7  ${WHITE}
-color15 ${ALTWHITE}
+color7  ${GRAY}
+color15 ${WHITE}
 
 # Cursor colors
 cursor            ${WHITE}
