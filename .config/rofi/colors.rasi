@@ -9,6 +9,6 @@
 	urgent-color:       #FF5555;
 	selected-color:     #BD93F9;
     border-color:       #BD93F9;
-	active-color:       #FF79C6;
+	active-color:       #50FA7B;
     alpha:              #00000000;
 }
