@@ -10,7 +10,7 @@ configuration {
 /*	theme: "theme"; */
 	show-icons: true;
     icon-theme: "Arc";
-    sidebar-mode: true;
+    /*sidebar-mode: true;*/
     display-drun: "🔎";
     display-drun: "🔎";
     display-drun: "🔎";
