@@ -166,8 +166,7 @@
     max_icon_size = 80
 
     # Paths to default icons.
-	icon_path = 
-	/usr/share/icons/Arc/actions/16/:/usr/share/icons/Arc/apps/16/:/usr/share/icons/Arc/devices/16/:/usr/share/icons/Arc/emblems/16/:/usr/share/icons/Arc/emotes/16/:/usr/share/icons/Arc/mimetypes/16/:/usr/share/icons/Arc/places/16/:/usr/share/icons/Arc/status/16/
+	icon_path = /usr/share/icons/Arc/actions/16/:/usr/share/icons/Arc/apps/16/:/usr/share/icons/Arc/devices/16/:/usr/share/icons/Arc/emblems/16/:/usr/share/icons/Arc/emotes/16/:/usr/share/icons/Arc/mimetypes/16/:/usr/share/icons/Arc/places/16/:/usr/share/icons/Arc/status/16/
 
     ### History ###
 
