@@ -7,7 +7,6 @@ configuration {
 	location: 0;
 	padding: 24;
 	hide-scrollbar: true;
-	theme: "theme";
 	show-icons: false;
     icon-theme: "Arc";
     sidebar-mode: false;
@@ -16,6 +15,8 @@ configuration {
 @import "colors.rasi"
 @import "layout.rasi"
 @import "font.rasi"
+
+
 
 entry {
     text-color:        var(foreground);

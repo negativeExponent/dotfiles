@@ -1,7 +1,7 @@
 configuration {
 	padding: 24;
 	hide-scrollbar: true;
-	theme: "theme";
+
     font: "Monospace 12";
 }
 

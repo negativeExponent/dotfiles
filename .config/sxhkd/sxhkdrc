@@ -173,6 +173,9 @@ super + e
 super + d
 	rofi-appmenu
 
+alt + F1
+	rofi-appmenu
+
 # power menu
 super + x
 	rofi-powermenu
