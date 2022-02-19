@@ -2,8 +2,8 @@ include-file = $XDG_CONFIG_HOME/polybar/colors.ini
 include-file = $XDG_CONFIG_HOME/polybar/modules.ini
 
 [settings]
-throttle-output = 5
-throttle-output-for = 10
+;throttle-output = 5
+;throttle-output-for = 10
 ; throttle-input-for = 30 # to be deprecated
 screenchange-reload = true
 compositing-background = over
@@ -40,17 +40,18 @@ border-top-size=4
 border-bottom-size=4
 
 font-0 = JetBrainsMonoMedium:size=10;2
-font-1 = NotoColorEmoji:fontformat=truetype:scale=12:antialias=false;2
+font-1 = JetBrainsMonoMedium Nerd Font:size=10;2
+font-2 = NotoColorEmoji:fontformat=truetype:scale=12:antialias=false;2
 
 module-margin-left = 1
 module-margin-right = 0
 
-;modules-left = bspwm sep bspwm-mode sep xwindow
+;modules-left = bspwm sep bspwm-mode sep bspwm-mode sep xwindow
 ;modules-center =
 ;modules-right = mpd sep network-eth sep weather sep check-updates sep torrents sep cpu sep memory sep pulseaudio sep date
 
 modules-left = bspwm xwindow
-modules-right = check-updates torrents network-eth weather cpu memory pavolume date
+modules-right = check-updates torrents network-eth weather cpu cpu-temp memory pavolume date
 
 tray-position = right
 tray-padding = 2
