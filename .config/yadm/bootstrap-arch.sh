@@ -71,7 +71,7 @@ install_packages() {
 	PKGS+="mpv w3m lxappearance-gtk3 "
 	PKGS+="zathura zathura-pdf-mupdf maim xclip feh "
 	PKGS+="xarchiver zip unzip p7zip jq "
-	PKGS+="ttf-linux-libertine noto-fonts-emoji ttf-jetbrains-mono "
+	PKGS+="libertinus-font noto-fonts-emoji ttf-jetbrains-mono "
 	PKGS+="arc-icon-theme "
 	PKGS+="nitrogen " # wallpaper setter and changer
 	PKGS+="mlocate pacman-contrib "
