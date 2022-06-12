@@ -22,7 +22,7 @@ fi
 while pgrep -u "$(id -u)" -x polybar >/dev/null; do sleep 1; done
 
 eth=$(ip link | grep -m 1 -E '\b(en).*\b(state UP)' | awk '{print substr($2, 1, length($2)-1)}')
-# ! eth && eth=$(ip link | grep -m 1 -E '\b(et).*\b(state UP)' | awk '{print substr($2, 1, length($2)-1)}')
+! eth && eth=$(ip link | grep -m 1 -E '\b(et).*\b(state UP)' | awk '{print substr($2, 1, length($2)-1)}')
 wlan=$(ip link | grep -m 1 -E '\b(wl)' | awk '{print substr($2, 1, length($2)-1)}')
 printf "Found network interfaces: ${BLUE}%s${NC} (eth), ${BLUE}%s${NC} (wlan)\\n" "${eth}" "${wlan}"
 
