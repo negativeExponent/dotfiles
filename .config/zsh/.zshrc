@@ -16,7 +16,7 @@ if [[ ! -d $HOME/.config/zinit ]];then
   mkdir $HOME/.config/zinit
   git clone https://github.com/zdharma/zinit.git $HOME/.config/zinit
 fi
-source $HOME/.config/zinit/zinit.zsh
+source $HOME/.config/zinit/zi.zsh
 
 export DIRENV_LOG_FORMAT=
 
