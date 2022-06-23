@@ -42,7 +42,7 @@ case "$chosen" in
         ${reb:-sudo -A reboot}
         ;;
     $cmd_shutdown)
-        ${shut:-sudo -A shutdown -p now}
+        ${shut:-sudo -A shutdown -P now}
         ;;
     $cmd_reload)
         if pgrep -u $USER bspwm >/dev/null; then
