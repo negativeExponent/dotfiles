@@ -75,17 +75,28 @@ install_packages() {
 	# other apps needed but not required for WM to start
 	PKGS+="mpv  "
 	# PKGS+="w3m zathura zathura-pdf-mupdf maim xclip "
-	PKGS+="xarchiver zip unzip p7zip jq "
+
+	#archiver manager
+	PKGS+="file-roller "
+	#PKGS+="xarchiver "
+
+	#compression support files
+	#PKGS+="zip unzip p7zip jq "
+	PKGS+="p7zip "
+
+	#fonts and themes
 	PKGS+="libertinus-font noto-fonts-emoji ttf-jetbrains-mono "
 	PKGS+="arc-icon-theme "
+
 	PKGS+="nitrogen " # wallpaper setter and changer
+
 	PKGS+="mlocate pacman-contrib "
 	
 	# some apps i personally use
 	PKGS+="meld ghex gnome-calculator "
 
 	# relies on libsystemd/systemd
-	[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
+	#[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
 
 	# Misc apps
 	#PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
@@ -122,14 +133,14 @@ install_aur_packages() {
 		fi
 	fi
 	# relies on libsystemd
-	command -v "brave" >/dev/null || pac_install "brave-bin"
-	command -v "tremc" >/dev/null || pac_install "tremc-git"
-	command -v "picom" >/dev/null || pac_install "picom-git"
-	command -v "vscodium" >/dev/null || pac_install "vscodium-bin"
-	[ "$ARCH" = "obarun" ] || command -v "cava" >/dev/null || pac_install "cava-git"
+	#command -v "brave" >/dev/null || pac_install "brave-bin"
+	#command -v "tremc" >/dev/null || pac_install "tremc-git"
+	#command -v "picom" >/dev/null || pac_install "picom-git"
+	#command -v "vscodium" >/dev/null || pac_install "vscodium-bin"
+	#[ "$ARCH" = "obarun" ] || command -v "cava" >/dev/null || pac_install "cava-git"
 	# lockscreen
-	command -v "betterlockscreen" >/dev/null || pac_install "betterlockscreen"
-	command -v "xautolock" >/dev/null || pac_install "xautolock"
+	#command -v "betterlockscreen" >/dev/null || pac_install "betterlockscreen"
+	#command -v "xautolock" >/dev/null || pac_install "xautolock"
 }
 
 configure_intel_video() {
@@ -190,6 +201,7 @@ install_msg ""
 install_msg "Making pacman beautiful and colorful because why not..."
 grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
 grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+grep "^ParallelDownloads" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#ParallelDownloads$/ParallelDownloads=5/" /etc/pacman.conf
 
 install_msg ""
 install_msg "Updating pacman..."
