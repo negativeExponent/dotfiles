@@ -57,24 +57,19 @@ install_packages() {
 	PKGS+="xorg-server xorg-xinit xorg-xrdb xorg-xrandr xorg-xsetroot xorg-xset xsel xdo unclutter htop neofetch zsh "
 
 	# Audio
-	#PKGS+="alsa-utils alsa-firmware "
-	#PKGS+="pulseaudio-alsa pamixer pulsemixer "
-	#[ "$ARCH" = "obarun" ] && PKGS+="pulseaudio-66serv "
-	PKGS+="pipewire wireplumber "
+	PKGS+="alsa-utils alsa-firmware "
+	PKGS+="pulseaudio-alsa pamixer pulsemixer "
+	[ "$ARCH" = "obarun" ] && PKGS+="pulseaudio-66serv "
 
 	# Minimal bspwm apps
-	PKGS+="bspwm sxhkd kitty rofi geany "
-	
-	# desktop essentials
-	#PKGS+="pcmanfm lxappearance"
-	PKGS+="xfce4-settings thunar thunar-volman thunar-archive-plugin "
+	PKGS+="bspwm sxhkd kitty rofi geany pcmanfm-gtk3 "
 
 	# arch has forced systemd crap as dunst dependency
 	[ "$ARCH" = "obarun" ] || PKGS+="dunst "
 
 	# other apps needed but not required for WM to start
-	PKGS+="mpv  "
-	# PKGS+="w3m zathura zathura-pdf-mupdf maim xclip "
+	PKGS+="mpv w3m lxappearance-gtk3 "
+	PKGS+="zathura zathura-pdf-mupdf maim xclip feh "
 	PKGS+="xarchiver zip unzip p7zip jq "
 	PKGS+="libertinus-font noto-fonts-emoji ttf-jetbrains-mono "
 	PKGS+="arc-icon-theme "
@@ -88,9 +83,9 @@ install_packages() {
 	[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
 
 	# Misc apps
-	#PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
-	#PKGS+="atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger "
-	#PKGS+="speedtest-cli "
+	PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
+	PKGS+="atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger "
+	PKGS+="speedtest-cli "
 	PKGS+="numlockx "
 
 	# Additional fonts and themes
@@ -103,7 +98,7 @@ install_packages() {
 	PKGS+="thefuck "
 
     # redshift
-    #PKGS+="redshift "
+    PKGS+="redshift "
 
     # for calendar popup
     PKGS+="yad "

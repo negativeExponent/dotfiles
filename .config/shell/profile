@@ -3,7 +3,7 @@ export BROWSER="brave"
 export TERMINAL="kitty"
 export EDITOR="vim"
 export VISUAL="vim"
-export FILEMANAGER="pcmanfm"
+export FILEMANAGER="thunar"
 
 # ~/ Clean-up:
 export XDG_CONFIG_HOME="$HOME/.config"

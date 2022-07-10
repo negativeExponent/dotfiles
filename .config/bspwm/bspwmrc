@@ -14,7 +14,7 @@ export PATH=${PATH}:${HOME}/.local/bin:${HOME}/.local/bin/transmission
 # set theme
 _c normal_border_color          "$BACKGROUND" #
 _c active_border_color          "$MAGENTA" #
-_c focused_border_color         "$BLUE" #
+_c focused_border_color         "$RED" #
 _c presel_feedback_color        "$GREEN" # apply colors to windows
 
 ## monitor settings
@@ -56,6 +56,9 @@ _r -a nmtui                     state=floating
 _r -a retroarch                 state=floating
 _r -a yad-calendar              state=floating
 _r -a mpv                       state=pseudo_tiled
+_r -a Xfce4-appearance-settings state=floating
+_r -a Thunar                    state=floating
+
 
 _r -a Brave-browser             desktop='^2'    follow=on
 _r -a Firefox                   desktop='^2'    follow=on
