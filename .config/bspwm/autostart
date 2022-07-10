@@ -26,6 +26,8 @@ fi
 
 run "xfsettingsd"
 
+run "pipewire"
+
 nitrogen --restore & # restore background wallpaper
 # . "$HOME/.local/bin/load_icm_profile" &   # load monitor profile
 xsetroot -cursor_name left_ptr &     # general system settings
