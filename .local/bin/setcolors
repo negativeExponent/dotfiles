@@ -73,6 +73,8 @@ roficolors() {
 	background:         ${BACKGROUND};
     background-color:   ${BACKGROUND};
 	urgent-color:       ${RED};
+	urgent-foreground:       ${BACKGROUND};
+	urgent-background:       ${RED};
 	selected-color:     ${BLUE};
     border-color:       ${BLUE};
 	active-color:       ${GREEN};
