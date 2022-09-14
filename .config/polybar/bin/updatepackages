@@ -7,4 +7,5 @@ elif command -v xbps-install >/dev/null; then
 	term_float bash -c 'sudo xbps-install -Su; read -p "Press any key to close window..."'
 fi
 
-polybar-msg hook check-updates 1
+# polybar-msg hook check-updates 1
+polybar-msg action "#check-updates.hook.0"
