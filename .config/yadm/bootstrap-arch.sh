@@ -28,6 +28,13 @@ install_msg() {
 	echo -e "\e[32m$@\e[0m"
 }
 
+
+error() {
+	# Log to stderr and exit with failure.
+	printf "%s\n" "$1" >&2
+	exit 1
+}
+
 pac_install() {
 	# echo -e "\e[35mInstalling: $@...\e[0m"
 	yay -S --needed --noconfirm "$@"
@@ -122,6 +129,37 @@ install_packages() {
 	pac_install $PKGS
 }
 
+refreshkeys() {
+	case "$(readlink -f /sbin/init)" in
+	*systemd*)
+#		whiptail --infobox "Refreshing Arch Keyring..." 7 40
+		sudo pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
+		;;
+	*)
+#		whiptail --infobox "Enabling Arch Repositories..." 7 40
+		if ! grep -q "^\[universe\]" /etc/pacman.conf; then
+			echo "[universe]
+Server = https://universe.artixlinux.org/\$arch
+Server = https://mirror1.artixlinux.org/universe/\$arch
+Server = https://mirror.pascalpuffke.de/artix-universe/\$arch
+Server = https://artixlinux.qontinuum.space/artixlinux/universe/os/\$arch
+Server = https://mirror1.cl.netactuate.com/artix/universe/\$arch
+Server = https://ftp.crifo.org/artix-universe/" | sudo tee -a /etc/pacman.conf
+			sudo pacman -Sy --noconfirm >/dev/null 2>&1
+		fi
+		sudo pacman --noconfirm --needed -S \
+			artix-keyring artix-archlinux-support >/dev/null 2>&1
+		for repo in extra community; do
+			grep -q "^\[$repo\]" /etc/pacman.conf ||
+				echo "[$repo]
+Include = /etc/pacman.d/mirrorlist-arch" | sudo tee -a /etc/pacman.conf
+		done
+		sudo pacman -Sy >/dev/null 2>&1
+		sudo pacman-key --populate archlinux >/dev/null 2>&1
+		;;
+	esac
+}
+
 install_aur_packages() {
 	if ! command -v "polybar" >/dev/null; then
 		if pacman -Ssq polybar >/dev/null; then
@@ -193,6 +231,10 @@ EOF
 install_msg ""
 install_msg "Detected system = $ARCH ($INIT)"
 
+! command -v ntpdate > /dev/null 2>&1  && sudo pacman -S ntp --needed --noconfirm
+install_msg "Synchronizing system time to ensure successful and secure installation of software..."
+##ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
+
 install_msg ""
 install_msg "Running symlinks to personal directories..."
 . "$HOME/.config/yadm/_symlink.sh"
@@ -202,6 +244,13 @@ install_msg "Making pacman beautiful and colorful because why not..."
 grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
 grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
 grep "^ParallelDownloads" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#ParallelDownloads$/ParallelDownloads=5/" /etc/pacman.conf
+
+# Use all cores for compilation.
+sudo sed -i "s/-j2/-j$(nproc)/;/^#MAKEFLAGS/s/^#//" /etc/makepkg.conf
+
+# Refresh Arch keyrings.
+refreshkeys ||
+	error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
 install_msg ""
 install_msg "Updating pacman..."
@@ -223,12 +272,30 @@ install_msg ""
 install_msg "Installing and configuring intel gpu driver..."
 configure_intel_video
 
-if command -v "betterlockscreen" >/dev/null; then
-	if [ -f "$HOME/.config/wall.jpg" ]; then
-		install_msg "Preparing lockscreen config..."
-		betterlockscreen -u ~/.config/wall.jpg
-	fi
-fi
+###################################
+# section includes patches from LARBS
+###################################
+
+# Most important command! Get rid of the beep!
+sudo rmmod pcspkr
+echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
+
+# dbus UUID must be generated for Artix runit.
+sudo dbus-uuidgen | sudo tee /var/lib/dbus/machine-id
+
+# Use system notifications for Brave on Artix
+echo "export \$(dbus-launch)"| sudo tee /etc/profile.d/dbus.sh
+
+#######
+# END #
+#######
+
+#if command -v "betterlockscreen" >/dev/null; then
+#	if [ -f "$HOME/.config/wall.jpg" ]; then
+#		install_msg "Preparing lockscreen config..."
+#		betterlockscreen -u ~/.config/wall.jpg
+#	fi
+#fi
 
 install_msg ""
 install_msg "Enabling ssh key..."
