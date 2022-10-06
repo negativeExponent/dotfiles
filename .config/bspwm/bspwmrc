@@ -22,7 +22,7 @@ _m -d                           1 2 3 4 5 6 7 8 9
 
 ## window settings
 _c border_width                 1
-_c window_gap                   12
+_c window_gap                   5
 _c top_padding                  34
 _c bottom_padding               0
 _c split_ratio                  0.52
@@ -42,22 +42,23 @@ _r -r "*"
 _r -a mplayer2                  state=floating
 _r -a Kupfer.py                 focus=on
 _r -a Screenkey                 manage=off
-_r -a Lxappearance              state=floating
-_r -a Nitrogen                  state=floating
-_r -a Nm-connection-editor      state=floating
-_r -a Gnome-calculator          state=floating
-_r -a gnome-calculator		state=floating
+_r -a Lxappearance              state=floating follow=on
+_r -a Nitrogen                  state=floating follow=on
+_r -a Nm-connection-editor      state=floating follow=on
+_r -a Gnome-calculator          state=floating follow=on
+_r -a gnome-calculator			state=floating follow=on
 _r -a *:show_help               state=floating
 _r -a *:term_float              state=floating
-_r -a File-roller               state=floating
-_r -a Xarchiver                 state=floating
+_r -a File-roller               state=floating follow=on
+_r -a Xarchiver                 state=floating follow=on
 _r -a Yad                       state=floating
-_r -a nmtui                     state=floating
-_r -a retroarch                 state=floating
+_r -a nmtui                     state=floating follow=on
+_r -a retroarch                 state=floating follow=on
 _r -a yad-calendar              state=floating
 _r -a mpv                       state=pseudo_tiled
-_r -a Xfce4-appearance-settings state=floating
-_r -a Thunar                    state=floating
+_r -a Xfce4-appearance-settings state=floating follow=on
+_r -a Thunar                    state=floating follow=on
+_r -a ghex                      state=floating follow=on
 
 
 _r -a Brave-browser             desktop='^2'    follow=on

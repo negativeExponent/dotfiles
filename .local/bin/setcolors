@@ -83,5 +83,12 @@ roficolors() {
 EOF
 }
 
+resetTerminal() {
+	if [[ 'pidof ${TERMINAL}' ]]; then 
+		killall -USR1 $TERMINAL
+	fi
+}
+
 termcolors
 roficolors
+resetTerminal
