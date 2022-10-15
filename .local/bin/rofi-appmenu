@@ -9,4 +9,5 @@
 # color urgent = background, foreground, background-alt, highlight-background, highlight-foreground
 
 # Launch rofi with custom configuration
-rofi -show drun -theme "$HOME/.config/rofi/appmenu.rasi"
+#rofi -show drun -theme "$HOME/.config/rofi/appmenu.rasi"
+rofi -show drun

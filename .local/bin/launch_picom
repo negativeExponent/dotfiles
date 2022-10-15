@@ -9,8 +9,12 @@ command -v picom > /dev/null || exit
 _t() {
 	if pidof -x picom > /dev/null; then
 		pkill -x picom
+		echo "Compositor disabled."
+		notify-send -t 5000 "Compositor disabled."
 	else
 		picom -b --experimental-backend
+		echo "Compositor enabled."
+		notify-send -t 5000 "Compositor enabled."
 	fi
 }
 

@@ -3,12 +3,13 @@
  */
 
 * {
-    foreground:         #F8F8F2;
-	background:         #282A36;
-    background-color:   #282A36;
-	urgent-color:       #FF5555;
-	selected-color:     #BD93F9;
-    border-color:       #BD93F9;
-	active-color:       #50FA7B;
-    alpha:              #00000000;
+    bg-col:       #282A36;
+    bg-col-light: #282A36;
+    border-col:   #282A36;
+    selected-col: #282A36;
+    blue:         #BD93F9;
+    fg-col:       #F8F8F2;
+    fg-col2:      #FF5555;
+    grey:         #F8F8F2;
+    width:        600;
 }

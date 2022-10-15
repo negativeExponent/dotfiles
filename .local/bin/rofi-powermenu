@@ -9,7 +9,8 @@ cmd_shutdown="💻 Shutdown"
 cmd_reload="🔃 Reload"
 
 options="$cmd_reload|$cmd_logout|$cmd_lock|$cmd_suspend|$cmd_reboot|$cmd_shutdown"
-chosen=$(rofi -sep "|" -theme "~/.config/rofi/powermenu.rasi" -p "Power Menu" -dmenu -i <<< "$options")
+#chosen=$(rofi -sep "|" -theme "~/.config/rofi/powermenu.rasi" -p "Power Menu" -dmenu -i <<< "$options")
+chosen=$(rofi -sep "|" -p "Power Menu" -dmenu -i <<< "$options")
 
 # For non-systemd init systems.
 case "$(readlink -f /sbin/init)" in

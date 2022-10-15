@@ -3,5 +3,8 @@
 # This script is the SUDO_ASKPASS variable, meaning that it will be used as a
 # password prompt if needed.
 
+#rofi -theme ~/.config/rofi/askpass.rasi \
+#	-dmenu -password -i -no-fixed-num-lines -p "Enter sudo password"
+
 rofi -theme ~/.config/rofi/askpass.rasi \
 	-dmenu -password -i -no-fixed-num-lines -p "Enter sudo password"
