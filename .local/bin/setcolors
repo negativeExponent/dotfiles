@@ -13,10 +13,10 @@ termcolors() {
 
 foreground            ${FOREGROUND}
 background            ${BACKGROUND}
-selection_foreground  ${ALTBLACK}
-selection_background  ${FOREGROUND}
+selection_foreground  ${BACKGROUND}
+selection_background  ${GRAY}
 
-url_color ${ALTYELLOW}
+url_color ${MAGENTA}
 
 # black
 color0  ${BLACK}
