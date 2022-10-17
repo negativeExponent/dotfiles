@@ -1,0 +1,170 @@
+#! /bin/sh
+
+logfile=/tmp/bspwm_external_rules.log
+window_id="$1"
+window_class="$2"
+window_instance="$3"
+window_consequences="$4"
+window_title="$(xwininfo -id "$window_id" | sed '/^xwininfo/!d ; s,.*"\(.*\)".*,\1,')"
+window_type="$(xprop -id "$window_id" _NET_WM_WINDOW_TYPE | sed '/^_NET_WM_WINDOW_TYPE/!d ; s/^.* = \(.*\),.*/\1/')"
+
+case "$window_type" in
+	*DIALOG*)
+		echo "state=floating"
+		;;
+	*UTILITY*)
+		echo "state=floating"
+		;;
+	*SPLASH*)
+		echo "state=floating"
+		echo "center=on"
+		;;
+	*NOTIFICATION*)
+		echo "manage=off"
+		;;
+	*DOCK*)
+		echo "manage=off"
+		;;
+	*DESKTOP*)
+		echo "manage=off"
+		;;
+esac
+
+main() {
+case "$window_class" in
+	Nitrogen)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
+	
+	gnome-calculator)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
+	
+	*:show_help) # term:show_help
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
+	
+	term_float) # term:term_float
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating"
+		;;
+	
+	File-roller)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
+		
+	Xarchiver)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
+	
+	nmtui)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
+	
+	retroarch)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on border=off"
+		;;
+	
+	mpv)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=pseudo_tiled"
+		;;
+	
+	Xfce4-appearance-settings)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
+	
+	Thunar)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
+	
+	ghex)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
+
+	# desktop-specific
+	firefox|Navigator|*Brave*)
+	    eval "$consequences"
+	    [ "$state" ] || echo "state=pseudo_tiled desktop=^2 border=off rectangle=1250x820+0+0 center=on follow=on"
+	    ;;
+	
+	Firefox)
+	    eval "$window_consequences"
+	    [ "$state" ] || echo "state=pseudo_tiled desktop='^2' center=on follow=on border=off"
+	    ;;
+	 
+	discord)
+	    eval "$window_consequences"
+	    [ "$state" ] || echo "state=pseudo_tiled desktop=^6 center=on follow=on border=off"
+	    ;;
+	
+	"")
+        sleep 0.5
+		wm_class=($(xprop -id $wid | grep "WM_CLASS" | grep -Po '"\K[^,"]+'))
+		class=${wm_class[-1]}
+		[[ ${#wm_class[@]} == "2" ]] && instance=${wm_class[0]}
+		[[ -n "$class" ]] && main
+		;;
+esac
+}
+# _r -a mplayer2                  state=floating
+# _r -a Kupfer.py                 focus=on
+# _r -a Screenkey                 manage=off
+# _r -a Lxappearance              state=floating follow=on
+# _r -a Nitrogen                  state=floating follow=on
+# _r -a Nm-connection-editor      state=floating follow=on
+# _r -a Gnome-calculator          state=floating follow=on
+# _r -a gnome-calculator			state=floating follow=on
+# _r -a *:show_help               state=floating
+# _r -a *:term_float              state=floating
+# _r -a File-roller               state=floating follow=on
+# _r -a Xarchiver                 state=floating follow=on
+# _r -a Yad                       state=floating
+# _r -a nmtui                     state=floating follow=on
+# _r -a retroarch                 state=floating follow=on
+# _r -a yad-calendar              state=floating
+# _r -a mpv                       state=pseudo_tiled
+# _r -a Xfce4-appearance-settings state=floating follow=on
+# _r -a Thunar                    state=floating follow=on
+# _r -a ghex                      state=floating follow=on
+
+
+# _r -a Brave-browser             desktop='^2'    follow=on
+# _r -a Firefox                   desktop='^2'    follow=on
+# _r -a "Code - OSS"              desktop='^3'    follow=on
+# _r -a vscodium                  desktop='^3'    follow=on
+# _r -a discord                   desktop='^6'    follow=on
+
+main
+
+case "$window_instance" in
+     YaST2)
+        eval "$window_consequences"
+        [ "$state" ] || echo "state=floating follow=on center=on border=off"
+	    ;;
+esac
+
+case "$window_title" in
+	*/sbin/yast2*)
+		eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on center=on border=off"
+		;;
+esac
+
+echo "Id: $window_id" >> "$logfile"
+echo "Class: $window_class" >> "$logfile"
+echo "Instance: $window_instance" >> "$logfile"
+echo "Consequences: $window_consequences" >> "$logfile"
+echo "Title: $window_title" >> "$logfile"
+echo "Type: $window_type" >> "$logfile"
+echo "---" >> "$logfile"

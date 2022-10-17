@@ -20,6 +20,9 @@ _c presel_feedback_color        "$GREEN" # apply colors to windows
 ## monitor settings
 _m -d                           1 2 3 4 5 6 7 8 9
 
+## application rules
+bspc config external_rules_command ~/.config/bspwm/external_rules
+
 ## window settings
 _c border_width                 1
 _c window_gap                   5
@@ -33,37 +36,3 @@ _c gapless_monocle              true
 
 ## mouse behaviors
 _c focus_follows_pointer        true
-
-## application rules
-
-# prevent doubling rules
-_r -r "*"
-
-# apply special rules first
-_r -a mplayer2                  state=floating
-_r -a Kupfer.py                 focus=on
-_r -a Screenkey                 manage=off
-_r -a Lxappearance              state=floating follow=on
-_r -a Nitrogen                  state=floating follow=on
-_r -a Nm-connection-editor      state=floating follow=on
-_r -a Gnome-calculator          state=floating follow=on
-_r -a gnome-calculator			state=floating follow=on
-_r -a *:show_help               state=floating
-_r -a *:term_float              state=floating
-_r -a File-roller               state=floating follow=on
-_r -a Xarchiver                 state=floating follow=on
-_r -a Yad                       state=floating
-_r -a nmtui                     state=floating follow=on
-_r -a retroarch                 state=floating follow=on
-_r -a yad-calendar              state=floating
-_r -a mpv                       state=pseudo_tiled
-_r -a Xfce4-appearance-settings state=floating follow=on
-_r -a Thunar                    state=floating follow=on
-_r -a ghex                      state=floating follow=on
-
-
-_r -a Brave-browser             desktop='^2'    follow=on
-_r -a Firefox                   desktop='^2'    follow=on
-_r -a "Code - OSS"              desktop='^3'    follow=on
-_r -a vscodium                  desktop='^3'    follow=on
-_r -a discord                   desktop='^6'    follow=on
