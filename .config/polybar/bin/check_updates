@@ -1,13 +1,14 @@
 #!/bin/env bash
 
-
-# if ! updates_arch=$(checkupdates 2> /dev/null | wc -l ); then
-#    updates_arch=0
-# fi
-
 if command -v pacman >/dev/null; then
-	if ! updates=$(checkupdates 2> /dev/null | wc -l ); then
-		updates=0
+	if command -v checkupdates >/dev/null; then
+		if ! updates=$(checkupdates 2> /dev/null | wc -l ); then
+			updates_arch=0
+		fi
+	else
+		if ! updates=$(pacman -Qu 2> /dev/null | wc -l ); then
+			updates_arch=0
+		fi
 	fi
 	updates=$(("$updates_arch"))
 elif command -v xbps-install >/dev/null; then
@@ -15,6 +16,12 @@ elif command -v xbps-install >/dev/null; then
 		update_xbps=0
 	fi
 	updates=$(("$update_xbps"))
+elif command -v dnf >/dev/null; then
+	update_dnf=$(dnf check-update 2> /dev/null | wc -l)
+	if [ "$update_dnf" -lt "2" ]; then
+		update_dnf=0
+	fi
+	updates=$(("$update_dnf"))
 else
 	echo "📦 NA"
 	exit

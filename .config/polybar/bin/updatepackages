@@ -5,6 +5,8 @@ if command -v pacman >/dev/null; then
 	term_float bash -c 'sudo pacman -Syu; read -p "Press any key to close window..."'
 elif command -v xbps-install >/dev/null; then
 	term_float bash -c 'sudo xbps-install -Su; read -p "Press any key to close window..."'
+elif command -v dnf >/dev/null; then
+	term_float bash -c 'sudo dnf update; read -p "Press any key to close window..."'
 fi
 
 # polybar-msg hook check-updates 1
