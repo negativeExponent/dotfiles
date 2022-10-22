@@ -37,7 +37,7 @@ if ! command -v xrandr >/dev/null 2>&1; then
 fi
 
 for i in $(polybar -m | awk -F: '{print $1}'); do
-  launch_bar "${i}" example &
+  (sleep 1; launch_bar "${i}" example) &
 done
 
 #for screen in $(xrandr --query | grep -w connected); do

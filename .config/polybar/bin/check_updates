@@ -20,6 +20,8 @@ elif command -v dnf >/dev/null; then
 	update_dnf=$(dnf check-update 2> /dev/null | wc -l)
 	if [ "$update_dnf" -lt "2" ]; then
 		update_dnf=0
+	else
+		notify-send -t 5000 "$update_dnf updates available!"
 	fi
 	updates=$(("$update_dnf"))
 else

@@ -103,6 +103,19 @@ roficolors() {
 EOF
 }
 
+polycolors() {
+	cat > "${HOME}/.config/polybar/colors.ini" << EOF
+[colors]
+panelbg					= #CC${BACKGROUND:1}
+foreground              = \${xrdb:foreground:#fff}
+background              = \${xrdb:background:#000}
+border                  = \${xrdb:color4:#228}
+alert                   = \${xrdb:color1:#f44}
+separator               = \${xrdb:color5:#888}
+focused-bg              = \${xrdb:color4:#888}
+EOF
+}
+
 resetTerminal() {
 	if [[ 'pidof ${TERMINAL}' ]]; then 
 		killall -USR1 $TERMINAL
@@ -112,3 +125,4 @@ resetTerminal() {
 termcolors
 roficolors
 resetTerminal
+polycolors
