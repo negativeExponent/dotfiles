@@ -20,31 +20,31 @@ url_color ${MAGENTA}
 
 # black
 color0  ${BLACK}
-color8  ${ALTBLACK}
+color8  ${BLACK}
 
 # red
 color1  ${RED}
-color9  ${ALTRED}
+color9  ${RED}
 
 # green
 color2  ${GREEN}
-color10 ${ALTGREEN}
+color10 ${GREEN}
 
 # yellow
 color3  ${YELLOW}
-color11 ${ALTYELLOW}
+color11 ${YELLOW}
 
 # blue
 color4  ${BLUE}
-color12 ${ALTBLUE}
+color12 ${BLUE}
 
 # magenta
 color5  ${MAGENTA}
-color13 ${ALTMAGENTA}
+color13 ${MAGENTA}
 
 # cyan
 color6  ${CYAN}
-color14 ${ALTCYAN}
+color14 ${CYAN}
 
 # white
 color7  ${GRAY}
@@ -55,10 +55,10 @@ cursor            ${WHITE}
 cursor_text_color ${BACKGROUND}
 
 # Tab bar colors
-active_tab_foreground   ${ALTBLACK}
+active_tab_foreground   ${BLACK}
 active_tab_background   ${FOREGROUND}
 inactive_tab_foreground ${BACKGROUND}
-inactive_tab_background ${ALTBLACK}
+inactive_tab_background ${BLACK}
 EOF
 }
 
