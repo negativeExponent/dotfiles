@@ -6,7 +6,7 @@
 X_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/shell"
 COLOR_SRC_DIR="$X_DIR/xcolors"
 
-options="dracula|gruvbox|nord|materia|onedark|catppuccin-frappe|catppuccin-latte|catppuccin-macchiato|catppuccin-mocha"
+options="dracula|gruvbox|nord|materia|onedark|catppuccin-frappe|catppuccin-latte|catppuccin-macchiato|catppuccin-mocha|tokyonight"
 #chosen=$(rofi -sep "|" -theme "~/.config/rofi/theme.rasi" -p "Choose theme:" -lines 5 -dmenu -i <<< "$options")
 chosen=$(rofi -sep "|" -p "Choose theme:" -lines 5 -dmenu -i <<< "$options")
 
@@ -18,39 +18,4 @@ theme() {
     notify-send "Theme: $1"
 }
 
-case "$chosen" in
-    "dracula" )
-        theme dracula
-        ;;
-    "gruvbox" )
-        theme gruvbox
-        ;;
-    "materia" )
-        theme materia
-        ;;
-    "nord" )
-        theme nord
-        ;;
-    "onedark" )
-        theme onedark
-        ;;
-    "catppuccin" )
-        theme catppuccin
-        ;;
-
-    "catppuccin-frappe" )
-        theme catppuccin-frappe
-        ;;
-
-    "catppuccin-latte" )
-        theme catppuccin-latte
-        ;;
-
-    "catppuccin-macchiato" )
-        theme catppuccin-macchiato
-        ;;
-    
-    "catppuccin-mocha" )
-        theme catppuccin-mocha
-        ;;
-esac
+theme "$chosen"
