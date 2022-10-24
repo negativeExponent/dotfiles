@@ -12,11 +12,18 @@ PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magent
 ### * pkgfile
 
 ## Installing package manager
-if [[ ! -d $HOME/.config/zinit ]];then
-  mkdir $HOME/.config/zinit
-  git clone https://github.com/zdharma/zinit.git $HOME/.config/zinit
+#if [[ ! -d $HOME/.config/zinit ]];then
+#  mkdir $HOME/.config/zinit
+#  git clone https://github.com/zdharma/zinit.git $HOME/.config/zinit
+#fi
+#source $HOME/.config/zinit/zi.zsh
+
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [[ ! -d "${ZINIT_HOME}" ]];then
+	mkdir -p "$(dirname $ZINIT_HOME)"
+	git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 fi
-source $HOME/.config/zinit/zi.zsh
+source "${ZINIT_HOME}/zinit.zsh"
 
 export DIRENV_LOG_FORMAT=
 
@@ -119,24 +126,24 @@ zinit wait lucid light-mode for \
 
 #zinit ice wait lucid \
 #  atload"AUTO_NOTIFY_IGNORE+=(emacs mpgo mpv ranger rn vim vimus)"
-zinit light "MichaelAquilina/zsh-auto-notify" # automatically sends out a notification when a long running task has completed
-AUTO_NOTIFY_IGNORE+=("docker" "ssh")
+#zinit light "MichaelAquilina/zsh-auto-notify" # automatically sends out a notification when a long running task has completed
+#AUTO_NOTIFY_IGNORE+=("docker" "ssh")
 
 # load or unload ENV variables from .envrc file depending on the current directory
-zinit from"gh-r" as"program" mv"direnv* -> direnv" \
-    atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
-    pick"direnv" src="zhook.zsh" for \
-        direnv/direnv
+#zinit from"gh-r" as"program" mv"direnv* -> direnv" \
+#    atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
+#    pick"direnv" src="zhook.zsh" for \
+#        direnv/direnv
 
 # Multi-word, syntax highlighted history searching for Zsh
 zstyle ":history-search-multi-word" page-size "11"
-zinit ice wait"1" lucid
-zinit light zdharma/history-search-multi-word
+#zinit ice wait"1" lucid
+#zinit light zdharma/history-search-multi-word
 
-zinit light skywind3000/z.lua # navigate faster by learning your habits
+#zinit light skywind3000/z.lua # navigate faster by learning your habits
 zinit snippet OMZP::command-not-found # provide suggested packages to be installed if a command cannot be found
-zinit snippet OMZP::extract # extracts a wide variety of archive filetypes
-zinit snippet OMZP::thefuck # corrects your previous console command
+#zinit snippet OMZP::extract # extracts a wide variety of archive filetypes
+#zinit snippet OMZP::thefuck # corrects your previous console command
 
 # Colored man pages
 export LESS_TERMCAP_md=$(tput bold; tput setaf 1)
@@ -149,5 +156,5 @@ export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
 
 
 ## install starship first
-## sh -c "$(curl -fsSL https://starship.rs/install.sh)"
-#eval "$(starship init zsh)"
+##sh -c "$(curl -fsSL https://starship.rs/install.sh)"
+eval "$(starship init zsh)"

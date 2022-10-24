@@ -20,10 +20,13 @@ elif command -v dnf >/dev/null; then
 	update_dnf=$(dnf check-update 2> /dev/null | wc -l)
 	if [ "$update_dnf" -lt "2" ]; then
 		update_dnf=0
-	else
-		notify-send -t 5000 "$update_dnf updates available!"
 	fi
 	updates=$(("$update_dnf"))
+elif command -v apt >/dev/null; then
+	if ! updates_apt=$(apt list --upgradable 2> /dev/null | grep -c upgradable); then
+		updates_apt=0
+	fi
+	updates=$(("$updates_apt"))
 else
 	echo "📦 NA"
 	exit

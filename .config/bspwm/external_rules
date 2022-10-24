@@ -110,10 +110,10 @@ case "$window_class" in
 	
 	"")
         sleep 0.5
-		wm_class=($(xprop -id $wid | grep "WM_CLASS" | grep -Po '"\K[^,"]+'))
-		class=${wm_class[-1]}
-		[[ ${#wm_class[@]} == "2" ]] && instance=${wm_class[0]}
-		[[ -n "$class" ]] && main
+		wm_class=$(xprop -id "$window_id" | grep "WM_CLASS" | grep -Po '"\K[^,"]+')
+		window_class=${wm_class[-1]}
+		[[ ${#wm_class[@]} == "2" ]] && window_instance=${wm_class[0]}
+		[[ -n "$window_class" ]] && main
 		;;
 esac
 }

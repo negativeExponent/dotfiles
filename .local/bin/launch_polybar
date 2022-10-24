@@ -7,7 +7,7 @@ RED='\033[31m'
 BLUE='\033[34m'
 
 launch_bar() {
-  MONITOR=$1 IFACE_ETH=${eth} IFACE_WLAN=${wlan} polybar "$2" &
+  MONITOR=$1 IFACE_ETH=${eth} IFACE_WLAN=${wlan} polybar "$2" --config=~/.config/polybar/config.ini &
 }
 
 # Terminate already running bar instances
