@@ -1,11 +1,13 @@
 #!/bin/sh
 
+CMD="$1"
+
 weather=$(curl -s "wttr.in/${LOCATION}?format=1")
 
-case "$1" in
+case "$CMD" in
 	"show")
 		curl -sf "wttr.in/$LOCATION" > ~/.cache/weather
-		setsid -f $TERMINAL --hold --name term_float -e cat ~/.cache/weather
+		setsid -f $TERMINAL --hold --class term_float -e cat ~/.cache/weather
 		;;
 esac
 

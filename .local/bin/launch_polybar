@@ -2,12 +2,14 @@
 
 ## Add this to your wm startup file.
 
+MYBAR="$1"
+
 NC='\033[0m'
 RED='\033[31m'
 BLUE='\033[34m'
 
 launch_bar() {
-  MONITOR=$1 IFACE_ETH=${eth} IFACE_WLAN=${wlan} polybar "$2" --config=~/.config/polybar/config.ini &
+  MONITOR=$1 IFACE_ETH=${eth} IFACE_WLAN=${wlan} polybar -c ~/.config/polybar/config.ini --reload $2
 }
 
 # Terminate already running bar instances
@@ -29,16 +31,16 @@ printf "Found network interfaces: ${BLUE}%s${NC} (eth), ${BLUE}%s${NC} (wlan)\\n
 # Use newline as field separator for looping over lines
 IFS=$'\n'
 
+for m in $(polybar -m | awk -F: '{print $1}'); do
+  (sleep 1; launch_bar "${m}" "${MYBAR}") &
+done
+
 # Ensure that xrandr is available and abort the script otherwise. Discard
 # command's output by redirecting stdout to /dev/null and stderr to stdout.
-if ! command -v xrandr >/dev/null 2>&1; then
-  printf "[ ${RED}Error${NC} ] Polybar launcher requires ${BLUE}xrandr${NC} for detecting monitors.\\n" >&2
-  exit
-fi
-
-for i in $(polybar -m | awk -F: '{print $1}'); do
-  (sleep 1; launch_bar "${i}" example) &
-done
+#if ! command -v xrandr >/dev/null 2>&1; then
+#  printf "[ ${RED}Error${NC} ] Polybar launcher requires ${BLUE}xrandr${NC} for detecting monitors.\\n" >&2
+#  exit
+#fi
 
 #for screen in $(xrandr --query | grep -w connected); do
   # Substring removal, delete everything after first space

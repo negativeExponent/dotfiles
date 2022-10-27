@@ -14,7 +14,8 @@ theme() {
     local selected=$1
     [ -f "$COLOR_SRC_DIR/$selected" ] || exit
     ln -sf "$COLOR_SRC_DIR/$selected" "$X_DIR/colors"
-    bspc wm -r
+    ! pgrep -x bspwm 2>/dev/null || bspc wm -r
+    ! pgrep -x i3 2>/dev/null || i3-msg restart
     notify-send "Theme: $1"
 }
 

@@ -125,4 +125,4 @@ resetTerminal() {
 termcolors
 roficolors
 resetTerminal
-polycolors
+#polycolors

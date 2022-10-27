@@ -57,7 +57,7 @@ sleep 0.5
 
 . "$HOME/.local/bin/setcolors" &			# exports color configs to rofi, kitty ...
 . "$HOME/.local/bin/launch_picom" &         # kills and relaunch compositor
-. "$HOME/.local/bin/launch_polybar" &       # kills and relaunch panel
+. "$HOME/.local/bin/launch_polybar bspwm-bar" &       # kills and relaunch panel
 . "$HOME/.local/bin/launch_dunst" &         # kills and relaunch notification daemon
 # . "$HOME/.local/bin/autolock" 5 &
 

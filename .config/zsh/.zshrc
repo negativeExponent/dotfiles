@@ -157,4 +157,4 @@ export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
 
 ## install starship first
 ##sh -c "$(curl -fsSL https://starship.rs/install.sh)"
-eval "$(starship init zsh)"
+! [ -x /usr/bin/starship ] || eval "$(starship init zsh)"
