@@ -24,28 +24,19 @@ else
 	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources"
 fi
 
-run "xfsettingsd"
-
-# run "pipewire"
-
-nitrogen --restore & # restore background wallpaper
-# . "$HOME/.local/bin/load_icm_profile" &   # load monitor profile
-xsetroot -cursor_name left_ptr &     # general system settings
-numlockx &
-# daemons
 run /usr/libexec/polkit-gnome-authentication-agent-1
 run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
 
-run "mpd"                                   # music player widget
-run "sxhkd"                                 # X hotkey daemon
-run "redshift" " -t $CTEMP -l $LOC"
+nitrogen --restore &
+xsetroot -cursor_name left_ptr &
+numlockx &
 
-# tray icons
-run "connman-gtk" "--tray"                # network manager gtk ui
-run "volumeicon"                          # volume icon
-run "nm-applet"                           # networkmanager
-run "blueman-applet"                      # bluetooth
+run "xfsettingsd"
+run "mpd"
+run "sxhkd"
+run "volumeicon"
+run "nm-applet"
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then
@@ -53,11 +44,14 @@ if command -v transmission-daemon >/dev/null; then
 	fi
 fi
 
-sleep 0.5
+# Ensure that xrdb has finished running before moving on to start the WM/DE.
+[ -n "$xrdbpid" ] && wait "$xrdbpid"
+
+sleep 1
 
 . "$HOME/.local/bin/setcolors" &			# exports color configs to rofi, kitty ...
 . "$HOME/.local/bin/launch_picom" &         # kills and relaunch compositor
-. "$HOME/.local/bin/launch_polybar bspwm-bar" &       # kills and relaunch panel
+. "$HOME/.local/bin/launch_polybar" "bspwm-bar" &       # kills and relaunch panel
 . "$HOME/.local/bin/launch_dunst" &         # kills and relaunch notification daemon
 # . "$HOME/.local/bin/autolock" 5 &
 

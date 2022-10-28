@@ -20,31 +20,31 @@ url_color ${MAGENTA}
 
 # black
 color0  ${BLACK}
-color8  ${BLACK}
+color8  ${ALTBLACK}
 
 # red
 color1  ${RED}
-color9  ${RED}
+color9  ${ALTRED}
 
 # green
 color2  ${GREEN}
-color10 ${GREEN}
+color10 ${ALTGREEN}
 
 # yellow
 color3  ${YELLOW}
-color11 ${YELLOW}
+color11 ${ALTYELLOW}
 
 # blue
 color4  ${BLUE}
-color12 ${BLUE}
+color12 ${ALTBLUE}
 
 # magenta
 color5  ${MAGENTA}
-color13 ${MAGENTA}
+color13 ${ALTMAGENTA}
 
 # cyan
 color6  ${CYAN}
-color14 ${CYAN}
+color14 ${ALTCYAN}
 
 # white
 color7  ${GRAY}

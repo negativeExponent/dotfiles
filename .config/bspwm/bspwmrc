@@ -12,10 +12,10 @@ export PATH=${PATH}:${HOME}/.local/bin:${HOME}/.local/bin/transmission
 . "$HOME/.local/bin/getcolors"
 
 # set theme
-_c normal_border_color          "$BACKGROUND" #
-_c active_border_color          "$MAGENTA" #
-_c focused_border_color         "$RED" #
-_c presel_feedback_color        "$GREEN" # apply colors to windows
+_c normal_border_color          "$BACKGROUND"
+_c active_border_color          "$BLUE"
+_c focused_border_color         "$MAGENTA"
+_c presel_feedback_color        "$GREEN"
 
 ## monitor settings
 _m -d                           1 2 3 4 5 6 7 8 9
@@ -24,10 +24,24 @@ _m -d                           1 2 3 4 5 6 7 8 9
 bspc config external_rules_command ~/.config/bspwm/external_rules
 
 ## window settings
-_c border_width                 1
-_c window_gap                   5
-_c top_padding                  24
-_c bottom_padding               0
+BW=2
+_c border_width $BW
+_c window_gap -$BW
+for side in top right bottom left ; do
+	if [ ${side} == "top" ]; then
+		_c top_padding 36
+	else
+		_c ${side}_padding $BW
+	fi
+	
+done
+#_c border_width                 2
+#_c window_gap                   4
+#_c top_padding                  34
+#_c bottom_padding               2
+#_c left_padding                 4
+#_c right_padding                4
+
 _c split_ratio                  0.52
 
 _c single_monocle               true
