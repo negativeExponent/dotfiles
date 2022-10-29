@@ -35,6 +35,13 @@ if [ -d /usr/lib/ccache ]; then
 	else
 		PATH="/usr/lib/ccache:$PATH"
 	fi
+# alternate path (like tumbleweed)
+elif [ -d /usr/lib64/ccache ]; then
+	if [ -d /usr/lib64/ccache/bin ]; then
+		PATH="/usr/lib64/ccache/bin:$PATH"
+	else
+		PATH="/usr/lib64/ccache:$PATH"
+	fi
 fi
 
 export PATH
