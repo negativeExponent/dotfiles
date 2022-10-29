@@ -6,7 +6,7 @@
 X_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/shell"
 COLOR_SRC_DIR="$X_DIR/xcolors"
 
-options="dracula|gruvbox|nord|materia|onedark|catppuccin-frappe|catppuccin-latte|catppuccin-macchiato|catppuccin-mocha|tokyonight"
+options="base16|dracula|gruvbox|nord|materia|onedark|catppuccin-frappe|catppuccin-latte|catppuccin-macchiato|catppuccin-mocha|tokyonight"
 #chosen=$(rofi -sep "|" -theme "~/.config/rofi/theme.rasi" -p "Choose theme:" -lines 5 -dmenu -i <<< "$options")
 chosen=$(rofi -sep "|" -p "Choose theme:" -lines 5 -dmenu -i <<< "$options")
 

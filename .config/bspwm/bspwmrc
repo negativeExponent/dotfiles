@@ -29,7 +29,7 @@ _c border_width $BW
 _c window_gap -$BW
 for side in top right bottom left ; do
 	if [ ${side} == "top" ]; then
-		_c top_padding 36
+		_c top_padding 26
 	else
 		_c ${side}_padding $BW
 	fi
