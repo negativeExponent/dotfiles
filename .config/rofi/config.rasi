@@ -3,7 +3,7 @@ configuration{
     lines: 6;
     show-icons: true;
     icon-theme: "Dracula";
-    terminal: "st";
+    terminal: "kitty";
     drun-display-format: "{icon} {name}";
     location: 0;
     disable-history: false;
