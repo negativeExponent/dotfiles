@@ -1,5 +1,5 @@
 {
     "editor.renderWhitespace": "all",
-    "editor.fontFamily": "'JetBrainsMono Nerd Font Mono', 'Noto Color Emoji', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
+    "editor.fontFamily": "'JetBrains Mono Medium', 'mononoki Nerd Font', 'Noto Color Emoji', 'Droid Sans Mono', 'monospace', monospace, 'Droid Sans Fallback'",
     "editor.fontLigatures": true,
 }
