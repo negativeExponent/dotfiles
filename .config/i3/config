@@ -1,6 +1,14 @@
 # Mod key
 set $mod Mod4
+
+# Menu launcher
 set $menu ~/.local/bin/rofi-appmenu
+
+# use these keys for focus, movement, and resize directions
+set $left   j
+set $down   k
+set $up     l
+set $right  semicolon
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -9,36 +17,36 @@ floating_modifier $mod
 font pango:monospace 10
 
 # change focus
-bindsym $mod+j focus left
-bindsym $mod+k focus down
-bindsym $mod+l focus up
-bindsym $mod+semicolon focus right
+bindsym $mod+$left  focus left
+bindsym $mod+$down  focus down
+bindsym $mod+$up    focus up
+bindsym $mod+$right focus right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Left focus left
-bindsym $mod+Down focus down
-bindsym $mod+Up focus up
+bindsym $mod+Left  focus left
+bindsym $mod+Down  focus down
+bindsym $mod+Up    focus up
 bindsym $mod+Right focus right
 
 # move focused window
-bindsym $mod+Shift+j move left
-bindsym $mod+Shift+k move down
-bindsym $mod+Shift+l move up
-bindsym $mod+Shift+semicolon move right
+bindsym $mod+Shift+$left  move left
+bindsym $mod+Shift+$down  move down
+bindsym $mod+Shift+$up    move up
+bindsym $mod+Shift+$right move right
 
 # alternatively, you can use the cursor keys:
-bindsym $mod+Shift+Left move left
-bindsym $mod+Shift+Down move down
-bindsym $mod+Shift+Up move up
-bindsym $mod+Shift+Right move right
+bindsym $mod+Shift+Left   move left
+bindsym $mod+Shift+Down   move down
+bindsym $mod+Shift+Up     move up
+bindsym $mod+Shift+Right  move right
 
 # split orientation
 bindsym $mod+h split h; exec dunstify -a i3-gaps 'Tiling horizontally'
 bindsym $mod+v split v; exec dunstify -a i3-gaps 'Tiling vertically'
 
 # change container layout (stacked, tabbed, toggle split)
-bindsym $mod+s layout stacking
-bindsym $mod+w layout tabbed
+bindsym $mod+s layout stacking; exec dunstify -a i3-gaps 'Layout: Stacking'
+bindsym $mod+w layout tabbed; exec dunstify -a i3-gaps 'Layout: Tabbed'
 bindsym $mod+e layout toggle split
 
 # toggle tiling / floating
@@ -53,29 +61,34 @@ bindsym $mod+f fullscreen toggle
 # focus the parent container
 bindsym $mod+a focus parent
 
+# shortcut to change window border
+bindsym $mod+t border normal    0
+bindsym $mod+y border pixel     1
+bindsym $mod+u border none
+
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
+    # These bindings trigger as soon as you enter the resize mode
 
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        bindsym j resize shrink width 10 px or 10 ppt
-        bindsym k resize grow height 10 px or 10 ppt
-        bindsym l resize shrink height 10 px or 10 ppt
-        bindsym semicolon resize grow width 10 px or 10 ppt
+    # Pressing left will shrink the window’s width.
+    # Pressing right will grow the window’s width.
+    # Pressing up will shrink the window’s height.
+    # Pressing down will grow the window’s height.
+    bindsym $left  resize shrink width 10 px or 10 ppt
+    bindsym $down  resize grow height 10 px or 10 ppt
+    bindsym $up    resize shrink height 10 px or 10 ppt
+    bindsym $right resize grow width 10 px or 10 ppt
 
-        # same bindings, but for the arrow keys
-        bindsym Left resize shrink width 10 px or 10 ppt
-        bindsym Down resize grow height 10 px or 10 ppt
-        bindsym Up resize shrink height 10 px or 10 ppt
-        bindsym Right resize grow width 10 px or 10 ppt
+    # same bindings, but for the arrow keys
+    bindsym Left   resize shrink width 10 px or 10 ppt
+    bindsym Down   resize grow height 10 px or 10 ppt
+    bindsym Up     resize shrink height 10 px or 10 ppt
+    bindsym Right  resize grow width 10 px or 10 ppt
 
-        # back to normal: Enter or Escape or $mod+r
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-        bindsym $mod+r mode "default"
+    # back to normal: Enter or Escape or $mod+r
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+    bindsym $mod+r mode "default"
 }
 
 bindsym $mod+r mode "resize"
@@ -84,17 +97,17 @@ bindsym $mod+r mode "resize"
 bindsym $mod+0 mode "$mode_system"
 set $mode_system (l)ock, (e)xit, switch_(u)ser, (s)uspend, (h)ibernate, (r)eboot, (Shift+s)hutdown
 mode "$mode_system" {
-        bindsym l exec --no-startup-id i3exit lock, mode "default"
-        bindsym s exec --no-startup-id i3exit suspend, mode "default"
-        bindsym u exec --no-startup-id i3exit switch_user, mode "default"
-        bindsym e exec --no-startup-id i3exit logout, mode "default"
-        bindsym h exec --no-startup-id i3exit hibernate, mode "default"
-        bindsym r exec --no-startup-id i3exit reboot, mode "default"
-        bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
+    bindsym l exec --no-startup-id i3exit lock, mode "default"
+    bindsym s exec --no-startup-id i3exit suspend, mode "default"
+    bindsym u exec --no-startup-id i3exit switch_user, mode "default"
+    bindsym e exec --no-startup-id i3exit logout, mode "default"
+    bindsym h exec --no-startup-id i3exit hibernate, mode "default"
+    bindsym r exec --no-startup-id i3exit reboot, mode "default"
+    bindsym Shift+s exec --no-startup-id i3exit shutdown, mode "default"
 
-        # Exit system mode
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+    # Exit system mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
 }
 
 # reload the configuration file
@@ -103,6 +116,7 @@ bindsym $mod+Shift+c reload
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
 bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+# close a focused window
 bindsym $mod+Shift+q kill
 
 # Define names for default workspaces for which we configure key bindings later on.
@@ -140,7 +154,6 @@ bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 
-
 bindsym $mod+Return exec --no-startup-id i3-sensible-terminal
 bindsym $mod+d exec --no-startup-id $menu
 
@@ -148,37 +161,97 @@ bindsym $mod+d exec --no-startup-id $menu
 set $refresh_i3status killall -SIGUSR1 i3status
 bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
 bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute     exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
 
 # multimedia keys
-bindsym XF86AudioPlay exec --no-startup-id mpc toggle
-bindsym XF86AudioStop exec --no-startup-id mpc stop
-bindsym XF86AudioNext exec --no-startup-id mpc next
-bindsym XF86AudioPrev exec --no-startup-id mpc prev
+bindsym XF86AudioPlay        exec --no-startup-id mpc toggle
+bindsym XF86AudioStop        exec --no-startup-id mpc stop
+bindsym XF86AudioNext        exec --no-startup-id mpc next
+bindsym XF86AudioPrev        exec --no-startup-id mpc prev
 
-bindsym $mod+F7 exec --no-startup-id rofi-theme
-bindsym $mod+F8 exec --no-startup-id nitrogen
-bindsym Print exec --no-startup-id screenshot
-bindsym $mod+Print exec --no-startup-id screenshot full
-bindsym $mod+Shift+Print exec --no-startup-id screenshot window
+bindsym $mod+F7              exec --no-startup-id rofi-theme
+bindsym $mod+F8              exec --no-startup-id nitrogen
+bindsym Print                exec --no-startup-id screenshot
+bindsym $mod+Print           exec --no-startup-id screenshot full
+bindsym $mod+Shift+Print     exec --no-startup-id screenshot window
 
-for_window [class="^.*"] border pixel 1
+for_window [class="^.*"]              border pixel 1
 
 # window assignment
-assign [class="Brave-browser"] $ws2
-assign [class="discord"] $ws6
+assign [class="Brave-browser"]        $ws2
+assign [class="discord"]              $ws6
 
 # floating windows
-for_window [class="term_float"] floating enable
-for_window [class="retroarch"] floating enable
+for_window [class="term_float"]       floating enable
+for_window [class="retroarch"]        floating enable
 for_window [class="gnome-calculator"] floating enable
-for_window [class="ghex"] floating enable
-for_window [class="Lxappearance"] floating enable
-for_window [class="Nitrogen"] floating enable
-for_window [class="Xarchiver"] floating enable
-for_window [class="File-roller"] floating enable
+for_window [class="ghex"]             floating enable
+for_window [class="Lxappearance"]     floating enable
+for_window [class="Nitrogen"]         floating enable
+for_window [class="Xarchiver"]        floating enable
+for_window [class="File-roller"]      floating enable
 for_window [class="Nm-connection-editor"] floating enable
+
+# window style
+new_window pixel 1
+new_float normal 1
+hide_edge_borders none
+
+gaps inner 8
+gaps outer 8
+smart_borders on
+
+### Modify inner/outer gaps.
+set $mode_gaps Gaps: (o) outer, (i) inner
+set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
+set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
+bindsym $mod+Shift+g mode "$mode_gaps"
+
+mode "$mode_gaps" {
+    bindsym o      mode "$mode_gaps_outer"
+    bindsym i      mode "$mode_gaps_inner"
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+mode "$mode_gaps_inner" {
+    bindsym plus  gaps inner current plus 5
+    bindsym minus gaps inner current minus 5
+    bindsym 0     gaps inner current set 0
+
+    bindsym Shift+plus  gaps inner all plus 5
+    bindsym Shift+minus gaps inner all minus 5
+    bindsym Shift+0     gaps inner all set 0
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+mode "$mode_gaps_outer" {
+    bindsym plus  gaps outer current plus 5
+    bindsym minus gaps outer current minus 5
+    bindsym 0     gaps outer current set 0
+
+    bindsym Shift+plus  gaps outer all plus 5
+    bindsym Shift+minus gaps outer all minus 5
+    bindsym Shift+0     gaps outer all set 0
+
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+
+set_from_resource $normal .background
+set_from_resource $foreground .foreground
+set_from_resource $focus .color4
+# set_from_resource $focus background
+set_from_resource $alert .color1
+
+#                       border  bg      text    indicator
+client.focused          $focus	$focus	$focus	$focus
+client.unfocused        $normal $normal $normal $normal
+client.focused_inactive $normal $normal $normal $normal
+client.urgent           $alert	$alert	$alert	$alert
+client.placeholder      #000000 #0C0C0C #FFFFFF #000000   #0C0C0C
+client.background       #FFFFFF
 
 # startup
 # placed here to make sure theme starts ahead of others
@@ -221,63 +294,3 @@ exec_always --no-startup-id nitrogen --restore
 exec_always --no-startup-id ~/.local/bin/launch_picom
 exec_always --no-startup-id ~/.local/bin/launch_dunst
 exec_always --no-startup-id ~/.local/bin/launch_polybar i3-bar
-
-# window style
-new_window pixel 1
-new_float normal 1
-hide_edge_borders none
-
-gaps inner 8
-gaps outer 8
-smart_borders on
-
-### Modify inner/outer gaps.
-set $mode_gaps Gaps: (o) outer, (i) inner
-set $mode_gaps_outer Outer Gaps: +|-|0 (local), Shift + +|-|0 (global)
-set $mode_gaps_inner Inner Gaps: +|-|0 (local), Shift + +|-|0 (global)
-bindsym $mod+Shift+g mode "$mode_gaps"
-
-mode "$mode_gaps" {
-        bindsym o      mode "$mode_gaps_outer"
-        bindsym i      mode "$mode_gaps_inner"
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
-mode "$mode_gaps_inner" {
-        bindsym plus  gaps inner current plus 5
-        bindsym minus gaps inner current minus 5
-        bindsym 0     gaps inner current set 0
-
-        bindsym Shift+plus  gaps inner all plus 5
-        bindsym Shift+minus gaps inner all minus 5
-        bindsym Shift+0     gaps inner all set 0
-
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
-mode "$mode_gaps_outer" {
-        bindsym plus  gaps outer current plus 5
-        bindsym minus gaps outer current minus 5
-        bindsym 0     gaps outer current set 0
-
-        bindsym Shift+plus  gaps outer all plus 5
-        bindsym Shift+minus gaps outer all minus 5
-        bindsym Shift+0     gaps outer all set 0
-
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
-}
-
-set_from_resource $normal .background
-set_from_resource $foreground .foreground
-set_from_resource $focus .color4
-# set_from_resource $focus background
-set_from_resource $alert .color1
-
-#                       border  bg      text    indicator
-client.focused          $focus	$focus	$focus	$focus
-client.unfocused        $normal $normal $normal $normal
-client.focused_inactive $normal $normal $normal $normal
-client.urgent           $alert	$alert	$alert	$alert
-client.placeholder      #000000 #0C0C0C #FFFFFF #000000   #0C0C0C
-client.background       #FFFFFF
