@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -a
 
 LOC=$LOCATION_RS
 CTEMP=5500:4500
@@ -34,9 +36,10 @@ numlockx &
 
 run "xfsettingsd"
 run "mpd"
-run "sxhkd"
+run "sxhkd" " -c $HOME/.config/bspwm/sxhkdrc"
 run "volumeicon"
 run "nm-applet"
+run "ksuperkey" " -e Super_L=Alt_L|F1"
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then
@@ -47,12 +50,8 @@ fi
 # Ensure that xrdb has finished running before moving on to start the WM/DE.
 [ -n "$xrdbpid" ] && wait "$xrdbpid"
 
-sleep 1
-
 . "$HOME/.local/bin/setcolors" &			# exports color configs to rofi, kitty ...
 . "$HOME/.local/bin/launch_picom" &         # kills and relaunch compositor
 . "$HOME/.local/bin/launch_polybar" "bspwm-bar" &       # kills and relaunch panel
 . "$HOME/.local/bin/launch_dunst" &         # kills and relaunch notification daemon
 # . "$HOME/.local/bin/autolock" 5 &
-
-ksuperkey -e 'Super_L=Alt_L|F1'
