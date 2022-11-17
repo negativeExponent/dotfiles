@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -a
-
 LOC=$LOCATION_RS
 CTEMP=5500:4500
 AUTOLOCK_TIMEOUT=10 # timeout in minutes

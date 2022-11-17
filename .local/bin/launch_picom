@@ -12,7 +12,7 @@ _t() {
 		echo "Compositor disabled."
 		notify-send -t 5000 "Compositor disabled."
 	else
-		picom -b --experimental-backend
+		picom -b
 		echo "Compositor enabled."
 		notify-send -t 5000 "Compositor enabled."
 	fi
@@ -26,6 +26,6 @@ case "$cmd" in
 		;;
 	*)
 		pidof -x picom > /dev/null && echo "Picom already launched." && exit
-		picom -b --experimental-backend
+		picom -b
 		;;
 esac

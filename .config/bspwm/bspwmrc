@@ -1,52 +1,33 @@
 #!/bin/bash
 
-_c() { bspc config "$@"; }
-_m() { bspc monitor "$@"; }
-_r() { bspc rule "$@"; }
-
 export PATH=${PATH}:${HOME}/.local/bin:${HOME}/.local/bin/transmission
 
-## autostart programs
+## AUTOSTART
 . "$HOME/.config/bspwm/autostart"
-## get colors from xrdb
+
+## MONITOR SETTINGS
+bspc monitor -d                           1 2 3 4 5 6 7 8 9
+
+## THEME
+# get colors from xrdb
 . "$HOME/.local/bin/getcolors"
+bspc config normal_border_color          "$ALTBACKGROUND"
+bspc config active_border_color          "$MAGENTA"
+bspc config focused_border_color         "$BLUE"
+bspc config presel_feedback_color        "$GREEN"
 
-# set theme
-_c normal_border_color          "$BACKGROUND"
-_c active_border_color          "$BLUE"
-_c focused_border_color         "$MAGENTA"
-_c presel_feedback_color        "$GREEN"
+## MISC SETTINGS
+bspc config border_width                 2
+bspc config window_gap                   10
+bspc config top_padding                  30
+bspc config split_ratio                  0.52
 
-## monitor settings
-_m -d                           1 2 3 4 5 6 7 8 9
+bspc config single_monocle               true
+bspc config borderless_monocle           true
+bspc config gapless_monocle              true
 
-## application rules
+## MOUSE CONTROLS
+bspc config focus_follows_pointer        true
+
+## WINDOW RULES
 bspc config external_rules_command ~/.config/bspwm/external_rules
-
-## window settings
-BW=2
-_c border_width $BW
-_c window_gap -$BW
-for side in top right bottom left ; do
-	if [ ${side} == "top" ]; then
-		_c top_padding 26
-	else
-		_c ${side}_padding $BW
-	fi
-	
-done
-#_c border_width                 2
-#_c window_gap                   4
-#_c top_padding                  34
-#_c bottom_padding               2
-#_c left_padding                 4
-#_c right_padding                4
-
-_c split_ratio                  0.52
-
-_c single_monocle               true
-_c borderless_monocle           true
-_c gapless_monocle              true
-
-## mouse behaviors
-_c focus_follows_pointer        true

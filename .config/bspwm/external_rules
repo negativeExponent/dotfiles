@@ -94,7 +94,7 @@ case "$window_class" in
 
 	# desktop-specific
 	firefox|Navigator|*Brave*)
-	    eval "$consequences"
+	    eval "$window_consequences"
 	    [ "$state" ] || echo "state=pseudo_tiled desktop=^2 border=off rectangle=1250x820+0+0 center=on follow=on"
 	    ;;
 	
@@ -107,7 +107,7 @@ case "$window_class" in
 	    eval "$window_consequences"
 	    [ "$state" ] || echo "state=pseudo_tiled desktop=^6 center=on follow=on border=off"
 	    ;;
-	
+
 	"")
         sleep 0.5
 		wm_class=$(xprop -id "$window_id" | grep "WM_CLASS" | grep -Po '"\K[^,"]+')
@@ -158,6 +158,11 @@ case "$window_title" in
 	*/sbin/yast2*)
 		eval "$window_consequences"
 		[ "$state" ] || echo "state=floating follow=on center=on border=off"
+		;;
+
+	yad-calendar)
+		eval "$window_consequences"
+		[ "$state" ] || echo "state=floating border=off"
 		;;
 esac
 

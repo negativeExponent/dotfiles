@@ -277,8 +277,8 @@ configure_intel_video
 ###################################
 
 # Most important command! Get rid of the beep!
-sudo rmmod pcspkr
-echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
+#sudo rmmod pcspkr
+#echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
 
 # dbus UUID must be generated for Artix runit.
 sudo dbus-uuidgen | sudo tee /var/lib/dbus/machine-id

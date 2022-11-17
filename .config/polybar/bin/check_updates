@@ -28,13 +28,13 @@ elif command -v apt >/dev/null; then
 	fi
 	updates=$(("$updates_apt"))
 else
-	echo "📦NA"
+	echo "NA"
 	exit
 fi
 
 if [ "$updates" -gt 0 ]; then
-	echo "📦$updates"
+	echo "$updates"
 	notify-send "📦 $updates updates available."
 else
-	echo "📦0"
+	echo "0"
 fi
