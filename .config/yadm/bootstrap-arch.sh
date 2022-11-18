@@ -243,7 +243,7 @@ install_msg ""
 install_msg "Making pacman beautiful and colorful because why not..."
 grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
 grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
-grep "^ParallelDownloads" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#ParallelDownloads$/ParallelDownloads=5/" /etc/pacman.conf
+grep "^ParallelDownloads" /etc/pacman.conf >/dev/null || sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
 
 # Use all cores for compilation.
 sudo sed -i "s/-j2/-j$(nproc)/;/^#MAKEFLAGS/s/^#//" /etc/makepkg.conf
