@@ -58,16 +58,30 @@ install_packages() {
 
 	# some essential apps
 	PKGS="base-devel "
-	PKGS+="openssh git curl wget ccache vim "
+	PKGS+="openssh "
+	PKGS+="git "
+	PKGS+="curl "
+	PKGS+="wget "
+	PKGS+="ccache " 
+	PKGS+="vim "
 
 	# X
-	PKGS+="xorg-server xorg-xinit xorg-xrdb xorg-xrandr xorg-xsetroot xorg-xset xsel xdo unclutter htop neofetch zsh "
+	PKGS+="xorg-server xorg-xinit xorg-xrdb xorg-xrandr xorg-xsetroot xorg-xset xorg-xwininfo xsel xdo xdotool "
+	PKGS+="unclutter htop neofetch zsh thefuck lua starship xclip "
 
 	# Audio
 	#PKGS+="alsa-utils alsa-firmware "
 	#PKGS+="pulseaudio-alsa pamixer pulsemixer "
 	#[ "$ARCH" = "obarun" ] && PKGS+="pulseaudio-66serv "
-	PKGS+="pipewire wireplumber "
+	PKGS+="pipewire "
+	PKGS+="pipewire-alsa "
+	PKGS+="pipewire-pulse "
+	PKGS+="gst-plugin-pipewire "
+	PKGS+="libpulse "
+	PKGS+="wireplumber "
+	PKGS+="alsa-utils "
+	PKGS+="pamixer "
+	PKGS+="pulsemixer "
 
 	# Minimal bspwm apps
 	PKGS+="bspwm sxhkd kitty rofi geany "
@@ -84,16 +98,14 @@ install_packages() {
 	# PKGS+="w3m zathura zathura-pdf-mupdf maim xclip "
 
 	#archiver manager
-	PKGS+="file-roller "
-	#PKGS+="xarchiver "
+	PKGS+="xarchiver "
 
 	#compression support files
-	#PKGS+="zip unzip p7zip jq "
-	PKGS+="p7zip "
+	PKGS+="zip unzip p7zip "
 
 	#fonts and themes
 	PKGS+="libertinus-font noto-fonts-emoji ttf-jetbrains-mono "
-	PKGS+="arc-icon-theme "
+	PKGS+="papirus-icon-theme "
 
 	PKGS+="nitrogen " # wallpaper setter and changer
 
@@ -103,7 +115,7 @@ install_packages() {
 	PKGS+="meld ghex gnome-calculator "
 
 	# relies on libsystemd/systemd
-	#[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
+	[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
 
 	# Misc apps
 	#PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
@@ -115,10 +127,7 @@ install_packages() {
 	PKGS+="ttf-croscore gtk-engine-murrine "
 
 	# System utilities
-	PKGS+="android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring " # automounting of usb and android devices
-
-	# Needed by zshrc
-	PKGS+="thefuck "
+	PKGS+="android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring udisks2 udiskie " # automounting of usb and android devices
 
     # redshift
     #PKGS+="redshift "
@@ -224,6 +233,18 @@ EOF
 	fi
 }
 
+install_theme() {
+	wget -c https://github.com/dracula/gtk/archive/master.zip
+	[ -d ./gtk-master ] && rm -rf gtk-master
+	unzip -q master.zip
+	mkdir -p ~/.local/share/themes
+	[ -d ~/.local/share/themes/Dracula ] && rm -rf ~/.local/share/themes/Dracula
+	mv -fu gtk-master ~/.local/share/themes/Dracula
+	rm master.zip
+	gsettings set org.gnome.desktop.interface gtk-theme "Dracula"
+	gsettings set org.gnome.desktop.wm.preferences theme "Dracula"
+}
+
 ######################
 ## Start of Script ###
 ######################
@@ -272,6 +293,10 @@ install_msg ""
 install_msg "Installing and configuring intel gpu driver..."
 configure_intel_video
 
+install_msg ""
+install_msg "Installing Dracula GTK Theme"
+install_theme
+
 ###################################
 # section includes patches from LARBS
 ###################################
@@ -281,7 +306,7 @@ configure_intel_video
 #echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
 
 # dbus UUID must be generated for Artix runit.
-sudo dbus-uuidgen | sudo tee /var/lib/dbus/machine-id
+sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
 
 # Use system notifications for Brave on Artix
 echo "export \$(dbus-launch)"| sudo tee /etc/profile.d/dbus.sh
