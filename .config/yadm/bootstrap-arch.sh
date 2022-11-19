@@ -73,13 +73,18 @@ install_packages() {
 	#PKGS+="alsa-utils alsa-firmware "
 	#PKGS+="pulseaudio-alsa pamixer pulsemixer "
 	#[ "$ARCH" = "obarun" ] && PKGS+="pulseaudio-66serv "
-	PKGS+="pipewire "
-	PKGS+="pipewire-alsa "
-	PKGS+="pipewire-pulse "
-	PKGS+="gst-plugin-pipewire "
+	#PKGS+="pipewire "
+	#PKGS+="pipewire-alsa "
+	#PKGS+="pipewire-pulse "
+	#PKGS+="gst-plugin-pipewire "
+	#PKGS+="wireplumber "
+	PKGS+="pulseaudio "
+	PKGS+="pulseaudio-alsa "
+	PKGS+="pulseaudio-jack "
+	PKGS+="pulseaudio-zeroconf "
 	PKGS+="libpulse "
-	PKGS+="wireplumber "
 	PKGS+="alsa-utils "
+	PKGS+="alsa-firmware "
 	PKGS+="pamixer "
 	PKGS+="pulsemixer "
 
@@ -239,7 +244,7 @@ install_theme() {
 	unzip -q master.zip
 	mkdir -p ~/.local/share/themes
 	[ -d ~/.local/share/themes/Dracula ] && rm -rf ~/.local/share/themes/Dracula
-	mv -fu gtk-master ~/.local/share/themes/Dracula
+	mv gtk-master ~/.local/share/themes/Dracula
 	rm master.zip
 	gsettings set org.gnome.desktop.interface gtk-theme "Dracula"
 	gsettings set org.gnome.desktop.wm.preferences theme "Dracula"
