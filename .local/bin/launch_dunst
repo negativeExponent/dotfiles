@@ -2,12 +2,14 @@
 
 # Launch notification daemon with colors
 
-. "$HOME/.local/bin/getcolors"
+#. "$HOME/.local/bin/getcolors"
 
-FG="$BACKGROUND"
-BG="$FOREGROUND"
+#FG="$BACKGROUND"
+#BG="$FOREGROUND"
 
 kill -TERM "$(pidof dunst)"
-dunst -lb "$BG" -lf "$FG" -lfr "$GREEN" \
-	-nb "$BG" -nf "$FG" -nfr "$BLUE" \
-	-cb "$BG" -cf "$FG" -cfr "$RED"
+#dunst -lb "$BG" -lf "$FG" -lfr "$GREEN" \
+#	-nb "$BG" -nf "$FG" -nfr "$BLUE" \
+#	-cb "$BG" -cf "$FG" -cfr "$RED"
+
+dunst

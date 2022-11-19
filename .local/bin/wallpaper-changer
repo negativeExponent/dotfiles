@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 
 # Sets a randomly selected wallpaper from a given directory
 
