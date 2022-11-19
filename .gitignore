@@ -1,5 +1,13 @@
 .cache
 .vscode-oss
 .zi
+.config/discord
 .config/VSCodium
+.local/share/Trash
 .local/share/yadm
+.local/share/zinit
+.local/share/thumbnails
+.local/share/themes
+.local/share/icons
+.local/share/fish
+
