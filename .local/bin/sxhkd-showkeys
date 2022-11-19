@@ -1,20 +1,12 @@
 #!/bin/bash
 
+SXHKD_CONF=~/.config/bspwm/sxhkdrc
+THEMEFILE=~/.config/rofi/sxhkdbinds.rasi
+
 # Show a help menu using rofi
 # https://my-take-on.tech/2020/07/03/some-tricks-for-sxhkd-and-bspwm/
-awk '/^[a-z]/ && last {print "<small>",$0,"\t",last,"</small>"} {last=""} /^#/{last=$0}' ~/.config/sxhkd/sxhkdrc |
-    column -t -s $'\t' | rofi -theme ~/.config/rofi/sxhkdbinds.rasi -p "Keybinds" -dmenu -i -markup-rows
-
-#    rofi -dmenu -i -markup-rows -no-show-icons -width 800 -lines 30 -yoffset 40 \
-#    -hide-scrollbar true \
-#    -padding 24 \
-#    -color-enabled true \
-#    -color-window "#282a36, #BD93F9, #282a36" \
-#    -color-normal "#282a36, #BD93F9, #282a36, #BD93F9, #282a36" \
-#    -color-active "#282a36, #BD93F9, #282a36, #BD93F9, #282a36" \
-#    -color-urgent "#282a36, #BD93F9, #282a36, #BD93F9, #282a36" \
-#    -fn Monospace-10 \
-#    -p "Help"
+awk '/^[a-z]/ && last {print "<small>",$0,"\t",last,"</small>"} {last=""} /^#/{last=$0}' "$SXHKD_CONF" |
+    column -t -s $'\t' | rofi -theme "$THEMEFILE" -p "Keybinds" -dmenu -i -markup-rows
 
 # previous implementation using terminal and fzf
 #cat ~/.config/sxhkd/sxhkdrc | awk '/^[a-z]/ && last {print $0,"\t",last} {last=""} /^#/{last=$0}' | column -t -s $'\t' | fzf

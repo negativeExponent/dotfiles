@@ -1,5 +1,4 @@
 configuration{
-	icon-theme:					"Dracula";
 	location: 					0;
 	hide-scrollbar:				true;
 }
@@ -14,7 +13,7 @@ element-text, element-icon , mode-switcher {
 
 window {
 	height:						80px;
-	border:						3px;
+	border:						1px;
 	border-color:				@border-col;
 	background-color:			@bg-col;
 }
@@ -55,7 +54,7 @@ entry {
 listview {
 	border:						0px 0px 0px;
 	padding:					6px 0px 0px;
-	margin:						10px 0px 0px 20px;
+	margin:						10px 20px 0px 20px;
 	columns:					2;
 	background-color:			@bg-col;
 }
@@ -71,7 +70,8 @@ element-icon {
 }
 
 element selected {
-	background-color:			@selected-col;
+	foreground-color:			@selected-fg-col;
+	background-color:			@selected-bg-col;
 	text-color:					@fg-col2;
 }
 

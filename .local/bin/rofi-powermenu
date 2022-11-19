@@ -1,4 +1,4 @@
-#!/bin/env bash
+#!/bin/bash
 
 # rofi power menu
 cmd_logout="🚀 Log out"
@@ -9,7 +9,6 @@ cmd_shutdown="💻 Shutdown"
 cmd_reload="🔃 Reload"
 
 options="$cmd_reload|$cmd_logout|$cmd_lock|$cmd_suspend|$cmd_reboot|$cmd_shutdown"
-#chosen=$(rofi -sep "|" -theme "~/.config/rofi/powermenu.rasi" -p "Power Menu" -dmenu -i <<< "$options")
 chosen=$(rofi -sep "|" -p "Power Menu" -dmenu -i <<< "$options")
 
 # For non-systemd init systems.
@@ -34,10 +33,10 @@ case "$chosen" in
         fi
         ;;
     $cmd_lock)
-        betterlockscreen --lock dimblur;;
-#        ;;
+        betterlockscreen --lock dimblur
+       ;;
 #    $cmd_suspend)
-#        systemctl suspend;;
+#        systemctl suspend
 #        ;;
     $cmd_reboot)
         ${reb:-sudo -A reboot}

@@ -9,7 +9,7 @@ die() {
 
 run() {
     command -v "$1" || die "$1"
-    $TERMINAL --name floating -e "$1"
+    $TERMINAL --class term_float --name term_float -e "$1"
 }
 
 options="alsamixer|pulsemixer|ncmpcpp|nmtui|tremc|htop"
@@ -17,7 +17,7 @@ options="alsamixer|pulsemixer|ncmpcpp|nmtui|tremc|htop"
 chosen="$1"
 
 # if no argv is passed, then open menu
-[ ! -z "${chosen}" ] || chosen=$(rofi -sep "|" -theme "~/.config/rofi/theme.rasi" -p "Termnal Apps:" -lines 6 -dmenu -i <<< "$options")
+[ ! -z "${chosen}" ] || chosen=$(rofi -sep "|" -p "Termnal Apps:" -lines 6 -dmenu -i <<< "$options")
 
 case "${chosen}" in
     alsamixer| \

@@ -6,17 +6,20 @@
 X_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/shell"
 COLOR_SRC_DIR="$X_DIR/xcolors"
 
-options="base16|dracula|gruvbox|nord|materia|onedark|catppuccin-frappe|catppuccin-latte|catppuccin-macchiato|catppuccin-mocha|tokyonight"
-#chosen=$(rofi -sep "|" -theme "~/.config/rofi/theme.rasi" -p "Choose theme:" -lines 5 -dmenu -i <<< "$options")
+options="dracula|gruvbox|nord|materia|onedark|catppuccin-frappe|catppuccin-latte|catppuccin-macchiato|catppuccin-mocha|tokyonight"
 chosen=$(rofi -sep "|" -p "Choose theme:" -lines 5 -dmenu -i <<< "$options")
 
-theme() {
+restart_wm() {
+    pgrep -x bspwm 2>/dev/null && bspc wm -r
+    pgrep -x i3 2>/dev/null && i3-msg restart
+}
+
+applytheme() {
     local selected=$1
     [ -f "$COLOR_SRC_DIR/$selected" ] || exit
     ln -sf "$COLOR_SRC_DIR/$selected" "$X_DIR/colors"
-    ! pgrep -x bspwm 2>/dev/null || bspc wm -r
-    ! pgrep -x i3 2>/dev/null || i3-msg restart
+    restart_wm
     notify-send "Theme: $1"
 }
 
-theme "$chosen"
+applytheme "$chosen"
