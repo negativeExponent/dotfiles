@@ -14,8 +14,6 @@ fi
 
 if [ -f "/etc/artix-release" ]; then
     system_type="artix"
-elif [ -f "/etc/arch-release" ]; then
-	system_type="arch"
 elif [ -f "/etc/os-release" ]; then
 	if grep -q "obarun" "/etc/os-release" >/dev/null; then
 		system_type="obarun"
@@ -25,6 +23,8 @@ elif [ -f "/etc/os-release" ]; then
 		echo "Unknown system. Exiting.(1)"
 		exit 1
 	fi
+elif [ -f "/etc/arch-release" ]; then
+	system_type="arch"
 else
 	echo "Unknown syste. Exiting.(2)"
 	exit 1

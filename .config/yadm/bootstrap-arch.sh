@@ -56,7 +56,7 @@ install_aur_helper() {
 install_packages() {
 	local PKGS=
 
-	# some essential apps
+	# some base apps
 	PKGS="base-devel "
 	PKGS+="openssh "
 	PKGS+="git "
@@ -66,41 +66,51 @@ install_packages() {
 	PKGS+="vim "
 
 	# X
-	PKGS+="xorg-server xorg-xinit xorg-xrdb xorg-xrandr xorg-xsetroot xorg-xset xorg-xwininfo xsel xdo xdotool "
-	PKGS+="unclutter htop neofetch zsh thefuck lua starship xclip "
+	PKGS+="xorg-server "
+	PKGS+="xorg-xinit "
+	PKGS+="xorg-xrdb "
+	PKGS+="xorg-xrandr "
+	PKGS+="xorg-xsetroot " 
+	PKGS+="xorg-xset "
+	PKGS+="xorg-xwininfo "
+	PKGS+="xsel "
+	PKGS+="xdo "
+    PKGS+="xdotool "
 
 	# Audio
-	#PKGS+="alsa-utils alsa-firmware "
-	#PKGS+="pulseaudio-alsa pamixer pulsemixer "
+
 	#[ "$ARCH" = "obarun" ] && PKGS+="pulseaudio-66serv "
-	#PKGS+="pipewire "
-	#PKGS+="pipewire-alsa "
-	#PKGS+="pipewire-pulse "
-	#PKGS+="gst-plugin-pipewire "
-	#PKGS+="wireplumber "
-	PKGS+="pulseaudio "
-	PKGS+="pulseaudio-alsa "
-	PKGS+="pulseaudio-jack "
-	PKGS+="pulseaudio-zeroconf "
-	PKGS+="libpulse "
+	#PKGS+="pulseaudio "
+	#PKGS+="pulseaudio-alsa "
+	#PKGS+="pulseaudio-jack "
+	
 	PKGS+="alsa-utils "
-	PKGS+="alsa-firmware "
+
+	PKGS+="pipewire "
+	PKGS+="pipewire-alsa "
+	PKGS+="pipewire-pulse "
+	PKGS+="gst-plugin-pipewire "
+
+	if [ "$ARCH" = "obarun" ]; then
+		# Because pipewire-media-session if dependency of pipewire-66serv, for now
+		PKGS+="pipewire-66serv "
+		PKGS+="pipewire-media-session "
+	else
+		PKGS+="wireplumber "
+	fi
+
+	PKGS+="libpulse "
 	PKGS+="pamixer "
 	PKGS+="pulsemixer "
+	PKGS+="playerctl "
 
-	# Minimal bspwm apps
+	# BSPWM Desktop
 	PKGS+="bspwm sxhkd kitty rofi geany "
-	
-	# desktop essentials
-	#PKGS+="pcmanfm lxappearance"
-	PKGS+="xfce4-settings thunar thunar-volman thunar-archive-plugin "
 
 	# arch has forced systemd crap as dunst dependency
 	[ "$ARCH" = "obarun" ] || PKGS+="dunst "
 
-	# other apps needed but not required for WM to start
-	PKGS+="mpv  "
-	# PKGS+="w3m zathura zathura-pdf-mupdf maim xclip "
+	PKGS+="xfce4-settings thunar thunar-volman thunar-archive-plugin "
 
 	#archiver manager
 	PKGS+="xarchiver "
@@ -108,11 +118,21 @@ install_packages() {
 	#compression support files
 	PKGS+="zip unzip p7zip "
 
+	PKGS+="unclutter htop neofetch zsh thefuck lua starship xclip "
+
+	# Video player
+	PKGS+="mpv  "
+
 	#fonts and themes
-	PKGS+="libertinus-font noto-fonts-emoji ttf-jetbrains-mono "
+	PKGS+="ttf-linux-libertine "
+	PKGS+="noto-fonts-emoji "
+	PKGS+="noto-fonts-cjk "
+	PKGS+="ttf-jetbrains-mono "
+	
 	PKGS+="papirus-icon-theme "
 
 	PKGS+="nitrogen " # wallpaper setter and changer
+
 
 	PKGS+="mlocate pacman-contrib "
 	
@@ -122,23 +142,20 @@ install_packages() {
 	# relies on libsystemd/systemd
 	[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
 
-	# Misc apps
-	#PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
-	#PKGS+="atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger "
-	#PKGS+="speedtest-cli "
 	PKGS+="numlockx "
-
-	# Additional fonts and themes
-	PKGS+="ttf-croscore gtk-engine-murrine "
 
 	# System utilities
 	PKGS+="android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring udisks2 udiskie " # automounting of usb and android devices
 
-    # redshift
-    #PKGS+="redshift "
-
     # for calendar popup
     PKGS+="yad "
+
+	# Document viewer
+	# PKGS+="w3m zathura zathura-pdf-mupdf maim xclip "
+	# Misc apps
+	#PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
+	#PKGS+="atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger "
+	#PKGS+="speedtest-cli "
 
 	pac_install $PKGS
 }
@@ -146,30 +163,32 @@ install_packages() {
 refreshkeys() {
 	case "$(readlink -f /sbin/init)" in
 	*systemd*)
-#		whiptail --infobox "Refreshing Arch Keyring..." 7 40
+		install_msg "Refreshing Arch Keyring..."
 		sudo pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
 		;;
 	*)
-#		whiptail --infobox "Enabling Arch Repositories..." 7 40
-		if ! grep -q "^\[universe\]" /etc/pacman.conf; then
-			echo "[universe]
+		if [ "$ARCH" = "artix" ]; then
+			install_msg "Enabling Arch Repositories..."
+			if ! grep -q "^\[universe\]" /etc/pacman.conf; then
+				echo "[universe]
 Server = https://universe.artixlinux.org/\$arch
 Server = https://mirror1.artixlinux.org/universe/\$arch
 Server = https://mirror.pascalpuffke.de/artix-universe/\$arch
 Server = https://artixlinux.qontinuum.space/artixlinux/universe/os/\$arch
 Server = https://mirror1.cl.netactuate.com/artix/universe/\$arch
 Server = https://ftp.crifo.org/artix-universe/" | sudo tee -a /etc/pacman.conf
-			sudo pacman -Sy --noconfirm >/dev/null 2>&1
-		fi
-		sudo pacman --noconfirm --needed -S \
-			artix-keyring artix-archlinux-support >/dev/null 2>&1
-		for repo in extra community; do
-			grep -q "^\[$repo\]" /etc/pacman.conf ||
-				echo "[$repo]
+				sudo pacman -Sy --noconfirm >/dev/null 2>&1
+			fi
+			sudo pacman --noconfirm --needed -S \
+				artix-keyring artix-archlinux-support >/dev/null 2>&1
+			for repo in extra community; do
+				grep -q "^\[$repo\]" /etc/pacman.conf ||
+					echo "[$repo]
 Include = /etc/pacman.d/mirrorlist-arch" | sudo tee -a /etc/pacman.conf
-		done
-		sudo pacman -Sy >/dev/null 2>&1
-		sudo pacman-key --populate archlinux >/dev/null 2>&1
+			done
+			sudo pacman -Sy >/dev/null 2>&1
+			sudo pacman-key --populate archlinux >/dev/null 2>&1
+		fi
 		;;
 	esac
 }
@@ -239,6 +258,7 @@ EOF
 }
 
 install_theme() {
+	cd
 	wget -c https://github.com/dracula/gtk/archive/master.zip
 	[ -d ./gtk-master ] && rm -rf gtk-master
 	unzip -q master.zip
@@ -308,10 +328,10 @@ install_theme
 
 # Most important command! Get rid of the beep!
 #sudo rmmod pcspkr
-#echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
+echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
 
 # dbus UUID must be generated for Artix runit.
-sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
+! [ "$ARCH" = "obarun" ] && sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
 
 # Use system notifications for Brave on Artix
 echo "export \$(dbus-launch)"| sudo tee /etc/profile.d/dbus.sh
@@ -327,12 +347,12 @@ echo "export \$(dbus-launch)"| sudo tee /etc/profile.d/dbus.sh
 #	fi
 #fi
 
-install_msg ""
-install_msg "Enabling ssh key..."
-if [ -f $HOME/.ssh/id_rsa ] ; then
-	eval "$(ssh-agent -s)"
-	ssh-add $HOME/.ssh/id_rsa
-fi
+#install_msg ""
+#install_msg "Enabling ssh key..."
+#if [ -f $HOME/.ssh/id_rsa ] ; then
+#	eval "$(ssh-agent -s)"
+#	ssh-add $HOME/.ssh/id_rsa
+#fi
 
 install_msg ""
 install_msg "Done."
