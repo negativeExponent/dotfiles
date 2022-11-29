@@ -18,6 +18,9 @@ applytheme() {
     local selected=$1
     [ -f "$COLOR_SRC_DIR/$selected" ] || exit
     ln -sf "$COLOR_SRC_DIR/$selected" "$X_DIR/colors"
+    xrdb -merge "${X_DIR}"/xresources
+    [ -n "$xrdbpid" ] && wait "$xrdbpid"
+    "${HOME}"/.local/bin/setcolors
     restart_wm
     notify-send "Theme: $1"
 }

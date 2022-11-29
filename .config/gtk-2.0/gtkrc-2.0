@@ -4,8 +4,8 @@
 include "/home/negative/.gtkrc-2.0.mine"
 gtk-theme-name="Dracula"
 gtk-icon-theme-name="Papirus-Dark"
-gtk-font-name="Noto Sans 10"
-gtk-cursor-theme-name=""
+gtk-font-name="Sans 10"
+gtk-cursor-theme-name="Adwaita"
 gtk-cursor-theme-size=0
 gtk-toolbar-style=GTK_TOOLBAR_ICONS
 gtk-toolbar-icon-size=GTK_ICON_SIZE_LARGE_TOOLBAR

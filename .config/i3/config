@@ -3,6 +3,7 @@ set $mod Mod4
 
 # Menu launcher
 set $menu ~/.local/bin/rofi-appmenu
+set $term i3-sensible-terminal
 
 # use these keys for focus, movement, and resize directions
 set $left   j
@@ -15,6 +16,53 @@ floating_modifier $mod
 
 # Font
 font pango:monospace 10
+
+## Auturun ##
+
+exec_always --no-startup-id killall -9 picom dunst polybar
+exec_always --no-startup-id ~/.local/bin/setcolors
+
+exec --no-startup-id /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
+exec --no-startup-id eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)
+exec --no-startup-id numlockx on
+exec --no-startup-id xdg-user-dirs-update
+exec --no-startup-id nm-applet
+exec --no-startup-id pa-applet
+exec --no-startup-id xfce4-power-manager
+exec --no-startup-id mpd
+exec --no-startup-id transmission-daemon
+exec --no-startup-id xfsettingsd
+
+exec_always --no-startup-id nitrogen --restore
+exec_always --no-startup-id ~/.local/bin/launch_picom
+exec_always --no-startup-id ~/.local/bin/launch_dunst
+exec_always --no-startup-id ~/.local/bin/launch_polybar i3-bar
+
+## Keybindings ##
+
+bindsym $mod+Return			 exec --no-startup-id $term
+bindsym $mod+d				 exec --no-startup-id $menu
+bindsym $mod+F7				 exec --no-startup-id rofi-theme
+bindsym $mod+F8              exec --no-startup-id nitrogen
+bindsym $mod+F9              exec --no-startup-id launch_picom toggle
+bindsym Print                exec --no-startup-id screenshot
+bindsym $mod+Print           exec --no-startup-id screenshot full
+bindsym $mod+Shift+Print     exec --no-startup-id screenshot window
+
+# Use pactl to adjust volume in PulseAudio.
+set $refresh_i3status killall -SIGUSR1 i3status
+bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status
+bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && $refresh_i3status
+bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
+bindsym XF86AudioMicMute     exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
+
+# multimedia keys
+bindsym XF86AudioPlay        exec --no-startup-id mpc toggle
+bindsym XF86AudioStop        exec --no-startup-id mpc stop
+bindsym XF86AudioNext        exec --no-startup-id mpc next
+bindsym XF86AudioPrev        exec --no-startup-id mpc prev
+
+## Default ##
 
 # change focus
 bindsym $mod+$left  focus left
@@ -154,28 +202,6 @@ bindsym $mod+Shift+7 move container to workspace number $ws7
 bindsym $mod+Shift+8 move container to workspace number $ws8
 bindsym $mod+Shift+9 move container to workspace number $ws9
 
-bindsym $mod+Return exec --no-startup-id i3-sensible-terminal
-bindsym $mod+d exec --no-startup-id $menu
-
-# Use pactl to adjust volume in PulseAudio.
-set $refresh_i3status killall -SIGUSR1 i3status
-bindsym XF86AudioRaiseVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status
-bindsym XF86AudioLowerVolume exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status
-bindsym XF86AudioMute        exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status
-bindsym XF86AudioMicMute     exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status
-
-# multimedia keys
-bindsym XF86AudioPlay        exec --no-startup-id mpc toggle
-bindsym XF86AudioStop        exec --no-startup-id mpc stop
-bindsym XF86AudioNext        exec --no-startup-id mpc next
-bindsym XF86AudioPrev        exec --no-startup-id mpc prev
-
-bindsym $mod+F7              exec --no-startup-id rofi-theme
-bindsym $mod+F8              exec --no-startup-id nitrogen
-bindsym Print                exec --no-startup-id screenshot
-bindsym $mod+Print           exec --no-startup-id screenshot full
-bindsym $mod+Shift+Print     exec --no-startup-id screenshot window
-
 for_window [class="^.*"]              border pixel 1
 
 # window assignment
@@ -199,7 +225,7 @@ new_float normal 1
 hide_edge_borders none
 
 gaps inner 8
-gaps outer 8
+gaps outer 0
 smart_borders on
 
 ### Modify inner/outer gaps.
@@ -239,58 +265,16 @@ mode "$mode_gaps_outer" {
     bindsym Escape mode "default"
 }
 
-set_from_resource $normal .background
-set_from_resource $foreground .foreground
-set_from_resource $focus .color4
+set_from_resource $normal background
+set_from_resource $foreground foreground
+set_from_resource $focus color4
 # set_from_resource $focus background
-set_from_resource $alert .color1
+set_from_resource $alert color1
 
 #                       border  bg      text    indicator
-client.focused          $focus	$focus	$focus	$focus
-client.unfocused        $normal $normal $normal $normal
-client.focused_inactive $normal $normal $normal $normal
+client.focused          $focus	$focus	$normal	$alert
+client.unfocused        $normal $normal $foreground $normal
+client.focused_inactive $normal $normal $foreground $normal
 client.urgent           $alert	$alert	$alert	$alert
 client.placeholder      #000000 #0C0C0C #FFFFFF #000000   #0C0C0C
 client.background       #FFFFFF
-
-# startup
-# placed here to make sure theme starts ahead of others
-exec_always --no-startup-id xrdb -merge ~/.config/shell/xresources
-exec_always --no-startup-id (sleep 2; ~/.local/bin/setcolors)
-
-# This font is widely installed, provides lots of unicode glyphs, right-to-left
-# text rendering and scalability on retina/hidpi displays (thanks to pango).
-#font pango:DejaVu Sans Mono 8
-
-# Start XDG autostart .desktop files using dex. See also
-# https://wiki.archlinux.org/index.php/XDG_Autostart
-exec --no-startup-id dex-autostart --autostart --environment i3
-
-# The combination of xss-lock, nm-applet and pactl is a popular choice, so
-# they are included here as an example. Modify as you see fit.
-
-# xss-lock grabs a logind suspend inhibit lock and will use i3lock to lock the
-# screen before suspend. Use loginctl lock-session to lock your screen.
-exec --no-startup-id xss-lock --transfer-sleep-lock -- i3lock --nofork
-
-# NetworkManager is the most popular way to manage wireless networks on Linux,
-# and nm-applet is a desktop environment-independent system tray GUI for it.
-
-exec --no-startup-id nm-applet
-exec --no-startup-id numlockx on
-exec --no-startup-id pa-applet
-exec --no-startup-id xfce4-power-manager
-exec --no-startup-id xdg-user-dirs-update
-exec --no-startup-id /usr/libexec/polkit-gnome-authentication-agent-1
-exec --no-startup-id eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg)
-exec --no-startup-id mpd
-exec --no-startup-id transmission-daemon
-exec --no-startup-id xfsettingsd
-exec --no-startup-id pipewire
-exec --no-startup-id pipewire-pulse
-exec --no-startup-id wireplumber
-
-exec_always --no-startup-id nitrogen --restore
-exec_always --no-startup-id ~/.local/bin/launch_picom
-exec_always --no-startup-id ~/.local/bin/launch_dunst
-exec_always --no-startup-id ~/.local/bin/launch_polybar i3-bar

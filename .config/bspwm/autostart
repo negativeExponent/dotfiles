@@ -18,11 +18,11 @@ xset s off
 xset -dpms 
 
 # load Xresources
-if [ -f "$HOME/.Xresources" ]; then
-	xrdb -merge "$HOME/.Xresources"
-else
-	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources"
-fi
+#if [ -f "$HOME/.Xresources" ]; then
+#	xrdb -merge "$HOME/.Xresources"
+#else
+#	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources"
+#fi
 
 run /usr/libexec/polkit-gnome-authentication-agent-1
 run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
