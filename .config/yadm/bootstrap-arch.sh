@@ -110,7 +110,7 @@ install_packages() {
 	# arch has forced systemd crap as dunst dependency
 	[ "$ARCH" = "obarun" ] || PKGS+="dunst "
 
-	PKGS+="xfce4-settings thunar thunar-volman thunar-archive-plugin "
+	PKGS+="xfce4-settings thunar thunar-volman thunar-archive-plugin maim "
 
 	#archiver manager
 	PKGS+="xarchiver "
@@ -125,9 +125,11 @@ install_packages() {
 
 	#fonts and themes
 	PKGS+="ttf-linux-libertine "
+	PKGS+="noto-fonts "
 	PKGS+="noto-fonts-emoji "
 	PKGS+="noto-fonts-cjk "
 	PKGS+="ttf-jetbrains-mono "
+	PKGS+="ttf-font-awesome "
 	
 	PKGS+="papirus-icon-theme "
 
@@ -274,18 +276,18 @@ install_theme() {
 ## Start of Script ###
 ######################
 
-install_msg ""
+
 install_msg "Detected system = $ARCH ($INIT)"
 
 ! command -v ntpdate > /dev/null 2>&1  && sudo pacman -S ntp --needed --noconfirm
 install_msg "Synchronizing system time to ensure successful and secure installation of software..."
 ##ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 
-install_msg ""
+
 install_msg "Running symlinks to personal directories..."
 . "$HOME/.config/yadm/_symlink.sh"
 
-install_msg ""
+
 install_msg "Making pacman beautiful and colorful because why not..."
 grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
 grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
@@ -298,27 +300,27 @@ sudo sed -i "s/-j2/-j$(nproc)/;/^#MAKEFLAGS/s/^#//" /etc/makepkg.conf
 refreshkeys ||
 	error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
-install_msg ""
+
 install_msg "Updating pacman..."
 sudo pacman -Syu --noconfirm
 
-install_msg ""
+
 install_msg "Installing AUR helper..."
 install_aur_helper
 
-install_msg ""
+
 install_msg "Installing base packages..."
 install_packages
 
-install_msg ""
+
 install_msg "Installing AUR packages..."
 install_aur_packages
 
-install_msg ""
+
 install_msg "Installing and configuring intel gpu driver..."
 configure_intel_video
 
-install_msg ""
+
 install_msg "Installing Dracula GTK Theme"
 install_theme
 
@@ -340,20 +342,4 @@ echo "export \$(dbus-launch)"| sudo tee /etc/profile.d/dbus.sh
 # END #
 #######
 
-#if command -v "betterlockscreen" >/dev/null; then
-#	if [ -f "$HOME/.config/wall.jpg" ]; then
-#		install_msg "Preparing lockscreen config..."
-#		betterlockscreen -u ~/.config/wall.jpg
-#	fi
-#fi
-
-#install_msg ""
-#install_msg "Enabling ssh key..."
-#if [ -f $HOME/.ssh/id_rsa ] ; then
-#	eval "$(ssh-agent -s)"
-#	ssh-add $HOME/.ssh/id_rsa
-#fi
-
-install_msg ""
 install_msg "Done."
-install_msg ""
