@@ -1,6 +1,9 @@
 #!/bin/sh
 
-autostart="mpd mpDris2 transmission-daemon unclutter pipewire xfsettingsd"
+autostart="mpd mpDris2 transmission-daemon unclutter"
+
+# kill mpd if running
+! pidof mpd || mpd --kill
 
 for program in $autostart; do
 	pidof -s "$program" || "$program" &
