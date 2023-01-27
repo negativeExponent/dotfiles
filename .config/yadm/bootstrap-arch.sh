@@ -28,7 +28,6 @@ install_msg() {
 	echo -e "\e[32m$@\e[0m"
 }
 
-
 error() {
 	# Log to stderr and exit with failure.
 	printf "%s\n" "$1" >&2
@@ -57,12 +56,12 @@ install_packages() {
 	local PKGS=
 
 	# some base apps
-	PKGS="base-devel "
-	PKGS+="openssh "
-	PKGS+="git "
-	PKGS+="curl "
-	PKGS+="wget "
-	PKGS+="ccache " 
+#	PKGS="base-devel "
+#	PKGS+="openssh "
+#	PKGS+="git "
+#	PKGS+="curl "
+#	PKGS+="wget "
+#	PKGS+="ccache " 
 	PKGS+="vim "
 
 	# X
@@ -70,11 +69,11 @@ install_packages() {
 	PKGS+="xorg-xinit "
 	PKGS+="xorg-xrdb "
 	PKGS+="xorg-xrandr "
-	PKGS+="xorg-xsetroot " 
+#	PKGS+="xorg-xsetroot " 
 	PKGS+="xorg-xset "
 	PKGS+="xorg-xwininfo "
-	PKGS+="xsel "
-	PKGS+="xdo "
+#	PKGS+="xsel "
+#	PKGS+="xdo "
     PKGS+="xdotool "
 
 	# Audio
@@ -84,25 +83,26 @@ install_packages() {
 	#PKGS+="pulseaudio-alsa "
 	#PKGS+="pulseaudio-jack "
 	
-	PKGS+="alsa-utils "
+	#PKGS+="alsa-utils "
 
-	PKGS+="pipewire "
-	PKGS+="pipewire-alsa "
-	PKGS+="pipewire-pulse "
-	PKGS+="gst-plugin-pipewire "
+	#PKGS+="pipewire "
+	#PKGS+="pipewire-alsa "
+	#PKGS+="pipewire-pulse "
+	#PKGS+="pipewire-jack "
+	#PKGS+="gst-plugin-pipewire "
 
-	if [ "$ARCH" = "obarun" ]; then
+	#if [ "$ARCH" = "obarun" ]; then
 		# Because pipewire-media-session if dependency of pipewire-66serv, for now
-		PKGS+="pipewire-66serv "
-		PKGS+="pipewire-media-session "
-	else
-		PKGS+="wireplumber "
-	fi
+		#PKGS+="pipewire-66serv "
+		#PKGS+="pipewire-media-session "
+	#else
+		#PKGS+="wireplumber "
+	#fi
 
-	PKGS+="libpulse "
-	PKGS+="pamixer "
-	PKGS+="pulsemixer "
-	PKGS+="playerctl "
+	#PKGS+="libpulse "
+	#PKGS+="pamixer "
+	#PKGS+="pulsemixer "
+	#PKGS+="playerctl "
 
 	# BSPWM Desktop
 	PKGS+="bspwm sxhkd kitty rofi geany "
@@ -110,10 +110,17 @@ install_packages() {
 	# arch has forced systemd crap as dunst dependency
 	[ "$ARCH" = "obarun" ] || PKGS+="dunst "
 
-	PKGS+="xfce4-settings thunar thunar-volman thunar-archive-plugin maim "
+	# filemanager and appearance (xfce4)
+	#PKGS+="xfce4-settings thunar thunar-volman thunar-archive-plugin "
+
+	# filemanager and appearance (lxde gtk2)
+	PKGS+="pcmanfm lxappearance "
 
 	#archiver manager
-	PKGS+="xarchiver "
+	PKGS+="xarchiver-gtk2 "
+
+	# screenshot
+	PKGS+="maim "
 
 	#compression support files
 	PKGS+="zip unzip p7zip "
@@ -121,25 +128,29 @@ install_packages() {
 	PKGS+="unclutter htop neofetch zsh thefuck lua starship xclip "
 
 	# Video player
-	PKGS+="mpv  "
+	PKGS+="mpv "
 
 	#fonts and themes
-	PKGS+="ttf-linux-libertine "
-	PKGS+="noto-fonts "
+	#PKGS+="ttf-linux-libertine " # deprecated
+	PKGS+="libertinus-font "
+	#PKGS+="noto-fonts "
 	PKGS+="noto-fonts-emoji "
-	PKGS+="noto-fonts-cjk "
+	#PKGS+="noto-fonts-cjk "
 	PKGS+="ttf-jetbrains-mono "
-	PKGS+="ttf-font-awesome "
+	#PKGS+="ttf-font-awesome "
 	
+	PKGS+="arc-gtk-theme "
 	PKGS+="papirus-icon-theme "
 
 	PKGS+="nitrogen " # wallpaper setter and changer
 
-
-	PKGS+="mlocate pacman-contrib "
+	#PKGS+="mlocate "
+	PKGS+="pacman-contrib "
 	
-	# some apps i personally use
-	PKGS+="meld ghex gnome-calculator "
+	# misc utilities
+	PKGS+="meld "
+	PKGS+="ghex "
+	PKGS+="gnome-calculator "
 
 	# relies on libsystemd/systemd
 	[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
@@ -147,10 +158,10 @@ install_packages() {
 	PKGS+="numlockx "
 
 	# System utilities
-	PKGS+="android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring udisks2 udiskie " # automounting of usb and android devices
+	PKGS+="android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring " # automounting of usb and android devices
 
     # for calendar popup
-    PKGS+="yad "
+    # PKGS+="yad "
 
 	# Document viewer
 	# PKGS+="w3m zathura zathura-pdf-mupdf maim xclip "
@@ -216,7 +227,7 @@ install_aur_packages() {
 	#command -v "xautolock" >/dev/null || pac_install "xautolock"
 }
 
-configure_intel_video() {
+configure_video() {
 	local ati=$(lspci | grep VGA | grep ATI)
 	local nvidia=$(lspci | grep VGA | grep NVIDIA)
 	local intel=$(lspci | grep VGA | grep Intel)
@@ -251,8 +262,6 @@ configure_intel_video() {
 Section "Device"
    Identifier  "Intel Graphics"
    Driver      "intel"
-#   Option     "SwapbuffersWait"       "false"
-#   Option "DRI" "3"
    Option      "TearFree"     "true"
 EndSection
 EOF
@@ -260,6 +269,7 @@ EOF
 }
 
 install_theme() {
+	if [ ! -d "$HOME/.local/share/themes/Dracula" ]; then
 	cd
 	wget -c https://github.com/dracula/gtk/archive/master.zip
 	[ -d ./gtk-master ] && rm -rf gtk-master
@@ -270,6 +280,7 @@ install_theme() {
 	rm master.zip
 	gsettings set org.gnome.desktop.interface gtk-theme "Dracula"
 	gsettings set org.gnome.desktop.wm.preferences theme "Dracula"
+	fi
 }
 
 ######################
@@ -279,8 +290,8 @@ install_theme() {
 
 install_msg "Detected system = $ARCH ($INIT)"
 
-! command -v ntpdate > /dev/null 2>&1  && sudo pacman -S ntp --needed --noconfirm
-install_msg "Synchronizing system time to ensure successful and secure installation of software..."
+#! command -v ntpdate > /dev/null 2>&1  && sudo pacman -S ntp --needed --noconfirm
+#install_msg "Synchronizing system time to ensure successful and secure installation of software..."
 ##ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
 
 
@@ -300,7 +311,6 @@ sudo sed -i "s/-j2/-j$(nproc)/;/^#MAKEFLAGS/s/^#//" /etc/makepkg.conf
 refreshkeys ||
 	error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
-
 install_msg "Updating pacman..."
 sudo pacman -Syu --noconfirm
 
@@ -318,7 +328,7 @@ install_aur_packages
 
 
 install_msg "Installing and configuring intel gpu driver..."
-configure_intel_video
+configure_video
 
 
 install_msg "Installing Dracula GTK Theme"
@@ -333,10 +343,11 @@ install_theme
 echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
 
 # dbus UUID must be generated for Artix runit.
-! [ "$ARCH" = "obarun" ] && sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
+[ -d "/var/lib/dbus" ] || sudo mkdir -p /var/lib/dbus
+sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
 
 # Use system notifications for Brave on Artix
-echo "export \$(dbus-launch)"| sudo tee /etc/profile.d/dbus.sh
+echo "export \$(dbus-launch)" >/dev/null | sudo tee /etc/profile.d/dbus.sh
 
 #######
 # END #

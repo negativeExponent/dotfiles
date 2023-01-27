@@ -3,11 +3,9 @@
 system_type=
 scriptfile=
 
-echo ""
 echo -e "\e[31mChecking permissions...\e[0m"
 
 if [ "$EUID" -eq 0 ]; then
-    echo ""
 	echo "Please do not run this script as root (e.g. using sudo)"
 	exit
 fi
@@ -19,6 +17,8 @@ elif [ -f "/etc/os-release" ]; then
 		system_type="obarun"
     elif grep -q "void" "/etc/os-release" >/dev/null; then 
         system_type="void"
+    elif grep -q "arch" "/etc/os-release" >/dev/null; then 
+        system_type="arch"
 	else
 		echo "Unknown system. Exiting.(1)"
 		exit 1
@@ -50,15 +50,12 @@ if [ -z "$scriptfile" ]; then
     exit 1
 fi
 
-echo ""
 echo -e "\e[32mInstalling for ${system_type}Linux.\e[0m"
-echo ""
 read -p "Do you want to proceed? " reply
 case "$reply" in
     y|yes|Y|YES)
         ;;
     *)
-        echo ""
         echo "Installation cancelled."
         exit 1
         ;;
