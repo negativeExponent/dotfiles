@@ -2,5 +2,6 @@
     "editor.fontFamily": "'JetBrains Mono', 'mononoki Nerd Font', 'Noto Fonts Emoji', 'Droid Sans Mono', 'monospace', monospace",
     "terminal.integrated.fontFamily": "monospace",
     "editor.fontLigatures": true,
-    "files.autoGuessEncoding": true
+    "files.autoGuessEncoding": true,
+    "terminal.integrated.scrollback": 10000
 }

@@ -24,21 +24,21 @@ fi
 xset s off
 xset -dpms
 
-run /usr/libexec/polkit-gnome-authentication-agent-1
-run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
-eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
-
 nitrogen --restore &
 xsetroot -cursor_name left_ptr &
 numlockx &
 unclutter &
+autotiling &
 
-run "xfsettingsd"
 run "mpd"
-run "sxhkd" " -c $HOME/.config/bspwm/sxhkdrc"
-run "ksuperkey" " -e Super_L=Alt_L|F1"
+run "xfsettingsd"
 run "xfce4-power-manager"
-run "udiskie"
+run "ksuperkey" " -e Super_L=Alt_L|F1"
+run "ksuperkey" " -e Super_R=Alt_L|F1"
+run "udiskie -a -n -s"
+run "/usr/libexec/polkit-gnome-authentication-agent-1"
+run "/usr/lib/xfce-polkit/xfce-polkit"
+eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then
@@ -51,6 +51,6 @@ fi
 
 . "$HOME/.local/bin/setcolors" &			# exports color configs to rofi, kitty ...
 . "$HOME/.local/bin/launch_picom" &         # kills and relaunch compositor
-. "$HOME/.local/bin/launch_polybar" "bspwm-bar" &       # kills and relaunch panel
+. "$HOME/.local/bin/launch_polybar" "i3-bar" &       # kills and relaunch panel
 . "$HOME/.local/bin/launch_dunst" &         # kills and relaunch notification daemon
 # . "$HOME/.local/bin/autolock" 5 &

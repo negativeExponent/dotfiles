@@ -1,14 +1,5 @@
 #!/bin/sh
 
-autostart="mpd mpDris2 transmission-daemon unclutter"
-
-# kill mpd if running
-! pidof mpd || mpd --kill
-
-for program in $autostart; do
-	pidof -s "$program" || "$program" &
-done >/dev/null 2>&1
-
 # NOTE: Colors are derived from Xresources, so make sure
 # they are sourced out first before calling the rest of
 # scripts below

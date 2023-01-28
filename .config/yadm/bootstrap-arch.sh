@@ -29,6 +29,7 @@ PKGS+="bspwm sxhkd kitty rofi geany "
 ## filemanager and appearance (xfce4) ##
 PKGS+="xfce4-settings xfce4-power-manager thunar thunar-volman thunar-archive-plugin udiskie "
 PKGS+="xarchiver zip unzip p7zip "
+PKGS+="picom "
 
 ## Audio/Video/Media ##
 PKGS+="alsa-utils "
@@ -160,6 +161,8 @@ install_aur_packages() {
 		fi
 	fi
 	command -v "simple-mtpfs" >/dev/null || pac_install simple-mtpfs
+	command -v "ksuperkey" >/dev/null || pac_install ksuperkey
+	[ -x "/usr/lib/xfce-polkit/xfce-polkit" ] || pac_install xfce-polkit
 	#command -v "brave" >/dev/null || pac_install "brave-bin"
 	#command -v "tremc" >/dev/null || pac_install "tremc-git"
 	#command -v "picom" >/dev/null || pac_install "picom-git"
