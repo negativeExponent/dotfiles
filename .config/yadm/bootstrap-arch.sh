@@ -8,21 +8,69 @@
 
 set -e
 
-clear
-
 ARCH="$1"								# arch or artix
 INIT="systemd"							# init, systemd as default
 
-if [ "$EUID" -eq 0 ]; then
-	echo "Please do not run this script as root (e.g. using sudo)"
-	exit
-fi
+## Xorg ##
+PKGS+="xorg-server "
+PKGS+="xorg-xinit "
+PKGS+="xorg-xprop "
+PKGS+="xorg-xrdb "
+PKGS+="xorg-xrandr "
+PKGS+="xorg-xsetroot "
+PKGS+="xorg-xset "
+PKGS+="xorg-xwininfo "
 
-if [[ "$ARCH" = "artix" ]]; then
-	pacman -Qk openrc 2>/dev/null && INIT="openrc"
-	pacman -Qk runit 2>/dev/null && INIT="runit"
-	pacman -Qk s6 2>/dev/null && INIT="s6"
-fi
+## BSPWM Desktop ##
+PKGS+="bspwm sxhkd kitty rofi geany "
+# arch has forced systemd crap as dunst dependency
+[ "$ARCH" = "obarun" ] || PKGS+="dunst "
+
+## filemanager and appearance (xfce4) ##
+PKGS+="xfce4-settings xfce4-power-manager thunar thunar-volman thunar-archive-plugin udiskie "
+PKGS+="xarchiver zip unzip p7zip "
+
+## Audio/Video/Media ##
+PKGS+="alsa-utils "
+PKGS+="pipewire pipewire-pulse wireplumber "
+PKGS+="pulsemixer "
+PKGS+="mpv " # Video player
+# relies on libsystemd/systemd
+[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp " # music player
+
+#fonts and themes
+PKGS+="libertinus-font " # libertine replacement
+PKGS+="noto-fonts-emoji "
+PKGS+="ttf-jetbrains-mono "
+PKGS+="arc-gtk-theme "
+PKGS+="papirus-icon-theme "
+PKGS+="nitrogen " # wallpaper setter and changer
+
+## misc utilities ##
+PKGS+="meld "
+PKGS+="ghex "
+PKGS+="gnome-calculator "
+PKGS+="ccache "
+PKGS+="sxiv " # image viewer
+PKGS+="vim " # text editor
+PKGS+="curl " # weather widget
+PKGS+="maim " # screenshot
+PKGS+="unclutter htop neofetch "
+PKGS+="zsh zsh-completions thefuck lua starship "
+#	PKGS+="xsel "
+#	PKGS+="xdo "
+PKGS+="xdotool "
+PKGS+="numlockx "
+PKGS+="yad " # for calendar popup
+PKGS+="mlocate "
+PKGS+="pacman-contrib " # update widget
+
+## Document viewer ##
+PKGS+="w3m zathura zathura-pdf-mupdf maim xclip "
+# Misc apps
+#PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
+#PKGS+="atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger "
+#PKGS+="speedtest-cli "
 
 install_msg() {
 	echo -e "\e[32m$@\e[0m"
@@ -35,142 +83,31 @@ error() {
 }
 
 pac_install() {
-	# echo -e "\e[35mInstalling: $@...\e[0m"
 	yay -S --needed --noconfirm "$@"
 }
 
-install_aur_helper() {
-	if ! command -v yay >/dev/null; then
-		[ -d /tmp/yay-bin ] && rm -rf /tmp/yay-bin
-		git clone --depth 1 https://aur.archlinux.org/yay-bin /tmp/yay-bin
-		cd /tmp/yay-bin
-		makepkg -si --noconfirm
-		if ! command -v yay >/dev/null; then
-			echo "Failed to install yay-bin."
-			exit 1
-		fi
+detect_system() {
+	if [[ "$ARCH" = "artix" ]]; then
+		pacman -Qk openrc 2>/dev/null && INIT="openrc"
+		pacman -Qk runit 2>/dev/null && INIT="runit"
+		pacman -Qk s6 2>/dev/null && INIT="s6"
 	fi
+	install_msg "Detected system = $ARCH ($INIT)"
 }
 
-install_packages() {
-	local PKGS=
+create_symlinks() {
+	install_msg "Running symlinks to personal directories..."
+	. "$XDG_CONFIG_HOME/yadm/_symlink.sh"
+}
 
-	# some base apps
-#	PKGS="base-devel "
-#	PKGS+="openssh "
-#	PKGS+="git "
-#	PKGS+="curl "
-#	PKGS+="wget "
-#	PKGS+="ccache " 
-	PKGS+="vim "
+pretty_pacmanconf() {
+	install_msg "Making pacman beautiful and colorful because why not..."
+	grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
+	grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+	grep "^ParallelDownloads" /etc/pacman.conf >/dev/null || sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
 
-	# X
-	PKGS+="xorg-server "
-	PKGS+="xorg-xinit "
-	PKGS+="xorg-xrdb "
-	PKGS+="xorg-xrandr "
-#	PKGS+="xorg-xsetroot " 
-	PKGS+="xorg-xset "
-	PKGS+="xorg-xwininfo "
-#	PKGS+="xsel "
-#	PKGS+="xdo "
-    PKGS+="xdotool "
-
-	# Audio
-
-	#[ "$ARCH" = "obarun" ] && PKGS+="pulseaudio-66serv "
-	#PKGS+="pulseaudio "
-	#PKGS+="pulseaudio-alsa "
-	#PKGS+="pulseaudio-jack "
-	
-	#PKGS+="alsa-utils "
-
-	#PKGS+="pipewire "
-	#PKGS+="pipewire-alsa "
-	#PKGS+="pipewire-pulse "
-	#PKGS+="pipewire-jack "
-	#PKGS+="gst-plugin-pipewire "
-
-	#if [ "$ARCH" = "obarun" ]; then
-		# Because pipewire-media-session if dependency of pipewire-66serv, for now
-		#PKGS+="pipewire-66serv "
-		#PKGS+="pipewire-media-session "
-	#else
-		#PKGS+="wireplumber "
-	#fi
-
-	#PKGS+="libpulse "
-	#PKGS+="pamixer "
-	#PKGS+="pulsemixer "
-	#PKGS+="playerctl "
-
-	# BSPWM Desktop
-	PKGS+="bspwm sxhkd kitty rofi geany "
-
-	# arch has forced systemd crap as dunst dependency
-	[ "$ARCH" = "obarun" ] || PKGS+="dunst "
-
-	# filemanager and appearance (xfce4)
-	#PKGS+="xfce4-settings thunar thunar-volman thunar-archive-plugin "
-
-	# filemanager and appearance (lxde gtk2)
-	PKGS+="pcmanfm lxappearance "
-
-	#archiver manager
-	PKGS+="xarchiver-gtk2 "
-
-	# screenshot
-	PKGS+="maim "
-
-	#compression support files
-	PKGS+="zip unzip p7zip "
-
-	PKGS+="unclutter htop neofetch zsh thefuck lua starship xclip "
-
-	# Video player
-	PKGS+="mpv "
-
-	#fonts and themes
-	#PKGS+="ttf-linux-libertine " # deprecated
-	PKGS+="libertinus-font "
-	#PKGS+="noto-fonts "
-	PKGS+="noto-fonts-emoji "
-	#PKGS+="noto-fonts-cjk "
-	PKGS+="ttf-jetbrains-mono "
-	#PKGS+="ttf-font-awesome "
-	
-	PKGS+="arc-gtk-theme "
-	PKGS+="papirus-icon-theme "
-
-	PKGS+="nitrogen " # wallpaper setter and changer
-
-	#PKGS+="mlocate "
-	PKGS+="pacman-contrib "
-	
-	# misc utilities
-	PKGS+="meld "
-	PKGS+="ghex "
-	PKGS+="gnome-calculator "
-
-	# relies on libsystemd/systemd
-	[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp "
-
-	PKGS+="numlockx "
-
-	# System utilities
-	PKGS+="android-tools gvfs gvfs-mtp polkit-gnome gnome-keyring " # automounting of usb and android devices
-
-    # for calendar popup
-    # PKGS+="yad "
-
-	# Document viewer
-	# PKGS+="w3m zathura zathura-pdf-mupdf maim xclip "
-	# Misc apps
-	#PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
-	#PKGS+="atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger "
-	#PKGS+="speedtest-cli "
-
-	pac_install $PKGS
+	# Use all cores for compilation.
+	sudo sed -i "s/-j2/-j$(nproc)/;/^#MAKEFLAGS/s/^#//" /etc/makepkg.conf
 }
 
 refreshkeys() {
@@ -181,32 +118,38 @@ refreshkeys() {
 		;;
 	*)
 		if [ "$ARCH" = "artix" ]; then
-			install_msg "Enabling Arch Repositories..."
-			if ! grep -q "^\[universe\]" /etc/pacman.conf; then
-				echo "[universe]
-Server = https://universe.artixlinux.org/\$arch
-Server = https://mirror1.artixlinux.org/universe/\$arch
-Server = https://mirror.pascalpuffke.de/artix-universe/\$arch
-Server = https://artixlinux.qontinuum.space/artixlinux/universe/os/\$arch
-Server = https://mirror1.cl.netactuate.com/artix/universe/\$arch
-Server = https://ftp.crifo.org/artix-universe/" | sudo tee -a /etc/pacman.conf
-				sudo pacman -Sy --noconfirm >/dev/null 2>&1
-			fi
-			sudo pacman --noconfirm --needed -S \
-				artix-keyring artix-archlinux-support >/dev/null 2>&1
-			for repo in extra community; do
-				grep -q "^\[$repo\]" /etc/pacman.conf ||
-					echo "[$repo]
-Include = /etc/pacman.d/mirrorlist-arch" | sudo tee -a /etc/pacman.conf
-			done
-			sudo pacman -Sy >/dev/null 2>&1
-			sudo pacman-key --populate archlinux >/dev/null 2>&1
+		. "$XDG_CONFIG_HOME/yadm/artix_enable_archlinux_repo.sh"
 		fi
 		;;
 	esac
 }
 
+update_system() {
+	install_msg "Updating pacman..."
+	sudo pacman -Syu --noconfirm
+}
+
+install_aur_helper() {
+	if ! command -v yay >/dev/null; then
+		install_msg "Installing AUR helper..."
+		[ -d /tmp/yay-bin ] && rm -rf /tmp/yay-bin
+		git clone --depth 1 https://aur.archlinux.org/yay-bin /tmp/yay-bin
+		cd /tmp/yay-bin
+		makepkg -si --noconfirm
+		if ! command -v yay >/dev/null; then
+			error "Failed to install aur helper (yay)."
+		fi
+	fi
+}
+
+install_packages() {
+	install_msg "Installing packages..."
+	pac_install $PKGS
+}
+
 install_aur_packages() {
+	install_msg "Installing AUR packages..."
+	install_aur_helper
 	if ! command -v "polybar" >/dev/null; then
 		if pacman -Ssq polybar >/dev/null; then
 			install_msg "Installing polybar from repository..."
@@ -216,7 +159,7 @@ install_aur_packages() {
 			pac_install 'polybar-git'
 		fi
 	fi
-	# relies on libsystemd
+	command -v "simple-mtpfs" >/dev/null || pac_install simple-mtpfs
 	#command -v "brave" >/dev/null || pac_install "brave-bin"
 	#command -v "tremc" >/dev/null || pac_install "tremc-git"
 	#command -v "picom" >/dev/null || pac_install "picom-git"
@@ -228,25 +171,27 @@ install_aur_packages() {
 }
 
 configure_video() {
+	install_msg "Installing and configuring intel gpu driver..."
+
 	local ati=$(lspci | grep VGA | grep ATI)
 	local nvidia=$(lspci | grep VGA | grep NVIDIA)
 	local intel=$(lspci | grep VGA | grep Intel)
 	local amd=$(lspci | grep VGA | grep AMD)
-	
+
 	if [ ! -z "$ati" ]; then
-	    echo 'Ati graphics detected'
+	    install_msg 'Ati graphics detected'
 	    pac_install xf86-video-ati
 	fi
 	if [ ! -z "$nvidia" ]; then
-	    echo 'Nvidia graphics detected'
+	    install_msg 'Nvidia graphics detected'
 	    pac_install xf86-video-nouveau
 	fi
 	if [ ! -z  "$intel" ]; then
-	    echo 'Intel graphics detected'
+	    install_msg 'Intel graphics detected'
 	    pac_install xf86-video-intel libva-intel-driver
 	fi
 	if [ ! -z  "$amd" ]; then
-	    echo 'AMD graphics detected'
+	    install_msg 'AMD graphics detected'
 	    pac_install xf86-video-amdgpu
 	fi
 
@@ -270,6 +215,7 @@ EOF
 
 install_theme() {
 	if [ ! -d "$HOME/.local/share/themes/Dracula" ]; then
+	install_msg "Installing Dracula GTK Theme"
 	cd
 	wget -c https://github.com/dracula/gtk/archive/master.zip
 	[ -d ./gtk-master ] && rm -rf gtk-master
@@ -283,74 +229,42 @@ install_theme() {
 	fi
 }
 
+finishing_up() {
+	###################################
+	# section includes patches from LARBS
+	###################################
+
+	# Most important command! Get rid of the beep!
+	#sudo rmmod pcspkr
+	echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
+
+	if [[ "$ARCH" = "artix" ]]; then
+		# dbus UUID must be generated for Artix runit.
+		[ -d "/var/lib/dbus" ] || sudo mkdir -p /var/lib/dbus
+		sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
+
+		# Use system notifications for Brave on Artix
+		echo "export \$(dbus-launch)" >/dev/null | sudo tee /etc/profile.d/dbus.sh
+	fi
+}
+
 ######################
 ## Start of Script ###
 ######################
 
+clear
 
-install_msg "Detected system = $ARCH ($INIT)"
+[ "$EUID" -eq 0 ] && error "Please do not run this script as root (e.g. using sudo)"
 
-#! command -v ntpdate > /dev/null 2>&1  && sudo pacman -S ntp --needed --noconfirm
-#install_msg "Synchronizing system time to ensure successful and secure installation of software..."
-##ntpdate 0.us.pool.ntp.org >/dev/null 2>&1
-
-
-install_msg "Running symlinks to personal directories..."
-. "$HOME/.config/yadm/_symlink.sh"
-
-
-install_msg "Making pacman beautiful and colorful because why not..."
-grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
-grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
-grep "^ParallelDownloads" /etc/pacman.conf >/dev/null || sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
-
-# Use all cores for compilation.
-sudo sed -i "s/-j2/-j$(nproc)/;/^#MAKEFLAGS/s/^#//" /etc/makepkg.conf
-
-# Refresh Arch keyrings.
-refreshkeys ||
-	error "Error automatically refreshing Arch keyring. Consider doing so manually."
-
-install_msg "Updating pacman..."
-sudo pacman -Syu --noconfirm
-
-
-install_msg "Installing AUR helper..."
-install_aur_helper
-
-
-install_msg "Installing base packages..."
+detect_system
+create_symlinks
+pretty_pacmanconf
+refreshkeys || error "Error automatically refreshing Arch keyring. Consider doing so manually."
+update_system
 install_packages
-
-
-install_msg "Installing AUR packages..."
 install_aur_packages
-
-
-install_msg "Installing and configuring intel gpu driver..."
 configure_video
-
-
-install_msg "Installing Dracula GTK Theme"
 install_theme
-
-###################################
-# section includes patches from LARBS
-###################################
-
-# Most important command! Get rid of the beep!
-#sudo rmmod pcspkr
-echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
-
-# dbus UUID must be generated for Artix runit.
-[ -d "/var/lib/dbus" ] || sudo mkdir -p /var/lib/dbus
-sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
-
-# Use system notifications for Brave on Artix
-echo "export \$(dbus-launch)" >/dev/null | sudo tee /etc/profile.d/dbus.sh
-
-#######
-# END #
-#######
+finishing_up
 
 install_msg "Done."
