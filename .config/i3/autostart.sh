@@ -30,15 +30,16 @@ numlockx &
 unclutter &
 autotiling &
 
+/usr/libexec/polkit-gnome-authentication-agent-1 &
+/usr/lib/xfce-polkit/xfce-polkit &
+eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
+
 run "mpd"
 run "xfsettingsd"
 run "xfce4-power-manager"
 run "ksuperkey" " -e Super_L=Alt_L|F1"
 run "ksuperkey" " -e Super_R=Alt_L|F1"
 run "udiskie -a -n -s"
-run "/usr/libexec/polkit-gnome-authentication-agent-1"
-run "/usr/lib/xfce-polkit/xfce-polkit"
-eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then

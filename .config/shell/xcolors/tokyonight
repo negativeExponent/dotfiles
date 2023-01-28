@@ -1,7 +1,7 @@
 
-*.foreground:    #787c99
-*.background:    #16161e
-*.cursorColor:   #acb0d0
+*.foreground:    #a9b1d6
+*.background:    #1a1b26
+*.cursorColor:   #c0caf5
 *.highlightColor:#3A3F4B
 
 !*fading:                  40
@@ -21,17 +21,17 @@
 ! 7 White     15 White
 
 ! Black colours
-*.color0:        #363b54
-*.color8:        #363b54
+*.color0:        #414868
+*.color8:        #414868
 ! Red colours
 *.color1:        #f7768e
 *.color9:        #f7768e
-! Yellow colours
-*.color2:        #e0af68
-*.color10:       #e0af68
 ! Green colours
-*.color3:        #41a6b5
-*.color11:       #41a6b5
+*.color2:        #73daca
+*.color10:       #73daca
+! Yellow colours
+*.color3:        #e0af68
+*.color11:       #e0af68
 ! Blue colours
 *.color4:        #7aa2f7
 *.color12:       #7aa2f7
@@ -42,5 +42,5 @@
 *.color6:        #7dcfff
 *.color14:       #7dcfff
 ! White colours
-*.color7:        #787c99
-*.color15:       #acb0d0
+*.color7:        #c0caf5
+*.color15:       #c0caf5
