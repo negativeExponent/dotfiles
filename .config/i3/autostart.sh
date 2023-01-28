@@ -39,7 +39,7 @@ run "xfsettingsd"
 run "xfce4-power-manager"
 run "ksuperkey" " -e Super_L=Alt_L|F1"
 run "ksuperkey" " -e Super_R=Alt_L|F1"
-run "udiskie -a -n -s"
+run "udiskie" " --automount --notify --tray"
 
 if command -v transmission-daemon >/dev/null; then
 	if ! pgrep -x transmission-da >/dev/null; then
