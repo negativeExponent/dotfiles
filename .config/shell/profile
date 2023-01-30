@@ -9,7 +9,6 @@ export FILEMANAGER="thunar"
 export XDG_CONFIG_HOME="$HOME/.config"
 export XDG_DATA_HOME="$HOME/.local/share"
 export XDG_CACHE_HOME="$HOME/.cache"
-export XINITRC="$XDG_CONFIG_HOME/x11/xinitrc"
 export ZPLUG_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/zplug"
 
 #export XAUTHORITY="$XDG_RUNTIME_DIR/Xauthority"  # Warning: This line will break some DMs. Remove this line if you're using DMs like lightdm, gdm, sddm,...
@@ -65,5 +64,3 @@ export DEVKITPRO=/opt/devkitpro
 fi
 
 [ -f "/mnt/data/myfiles/extrarc" ] && source "/mnt/data/myfiles/extrarc"
-
-[ "$(tty)" = "/dev/tty1" ] && ! pidof Xorg >/dev/null 2>&1  && exec startx "$XINITRC"
