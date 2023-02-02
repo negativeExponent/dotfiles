@@ -6,75 +6,38 @@
 # USE AT YOUR OWN RISK! I will not be held responsible for any damages or pain from using this
 # config.
 
-set -e
+box() {
+    title=" $1 "
+    edge=$(echo "$title" | sed 's/./*/g')
+    echo "$edge"
+    echo -e "\e[1;32m$title\e[0m"
+    echo "$edge"
+}
 
-ARCH="$1"								# arch or artix
-INIT="systemd"							# init, systemd as default
 
-## Xorg ##
-PKGS+="xorg-server "
-PKGS+="xorg-xinit "
-PKGS+="xorg-xprop "
-PKGS+="xorg-xrdb "
-PKGS+="xorg-xrandr "
-PKGS+="xorg-xsetroot "
-PKGS+="xorg-xset "
-PKGS+="xorg-xwininfo "
+box1() {
+    title=" $1 "
+    edge=$(echo "$title" | sed 's/./*/g')
+    echo "$edge"
+    echo -e "\e[1;31m$title\e[0m"
+}
 
-## BSPWM Desktop ##
-PKGS+="bspwm sxhkd kitty rofi geany "
-# arch has forced systemd crap as dunst dependency
-[ "$ARCH" = "obarun" ] || PKGS+="dunst "
 
-## filemanager and appearance (xfce4) ##
-PKGS+="xfce4-settings xfce4-power-manager thunar thunar-volman thunar-archive-plugin udiskie "
-PKGS+="xarchiver zip unzip p7zip "
-PKGS+="picom "
+box2() {
+    title=" $1 "
+    echo -e "\e[1;31m$title\e[0m"
+}
 
-## Audio/Video/Media ##
-PKGS+="alsa-utils "
-PKGS+="pipewire pipewire-pulse wireplumber "
-PKGS+="pulsemixer "
-PKGS+="mpv " # Video player
-# relies on libsystemd/systemd
-[ "$ARCH" = "obarun" ] || PKGS+="mpd mpc ncmpcpp " # music player
 
-#fonts and themes
-PKGS+="libertinus-font " # libertine replacement
-PKGS+="noto-fonts-emoji "
-PKGS+="ttf-jetbrains-mono "
-PKGS+="arc-gtk-theme "
-PKGS+="papirus-icon-theme "
-PKGS+="nitrogen " # wallpaper setter and changer
-
-## misc utilities ##
-PKGS+="meld "
-PKGS+="ghex "
-PKGS+="gnome-calculator "
-PKGS+="ccache "
-PKGS+="sxiv " # image viewer
-PKGS+="vim " # text editor
-PKGS+="curl " # weather widget
-PKGS+="maim " # screenshot
-PKGS+="unclutter htop neofetch "
-PKGS+="zsh zsh-completions thefuck lua starship "
-#	PKGS+="xsel "
-#	PKGS+="xdo "
-PKGS+="xdotool "
-PKGS+="numlockx "
-PKGS+="yad " # for calendar popup
-PKGS+="mlocate "
-PKGS+="pacman-contrib " # update widget
-
-## Document viewer ##
-PKGS+="w3m zathura zathura-pdf-mupdf maim xclip "
-# Misc apps
-#PKGS+="bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg "
-#PKGS+="atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger "
-#PKGS+="speedtest-cli "
+box3() {
+    title=" $1 "
+    edge=$(echo "$title" | sed 's/./*/g')
+    echo -e "\e[1;31m$title\e[0m"
+    echo "$edge"
+}
 
 install_msg() {
-	echo -e "\e[32m$@\e[0m"
+	box "$1"
 }
 
 error() {
@@ -96,9 +59,13 @@ detect_system() {
 	install_msg "Detected system = $ARCH ($INIT)"
 }
 
+install_needed() {
+	sudo pacman -S --needed --noconfirm git wget curl man-db vim base-devel ccache xorg-server xorg-xinit
+}
+
 create_symlinks() {
 	install_msg "Running symlinks to personal directories..."
-	. "$XDG_CONFIG_HOME/yadm/_symlink.sh"
+	. "${XDG_CONFIG_HOME:-$HOME/.config}/yadm/_symlink.sh"
 }
 
 pretty_pacmanconf() {
@@ -119,14 +86,15 @@ refreshkeys() {
 		;;
 	*)
 		if [ "$ARCH" = "artix" ]; then
-		. "$XDG_CONFIG_HOME/yadm/artix_enable_archlinux_repo.sh"
+			box "Enabling Arch repositories and updating keyrings..."
+			. "${XDG_CONFIG_HOME:-$HOME/.config}/yadm/artix_enable_archlinux_repo.sh"
 		fi
 		;;
 	esac
 }
 
 update_system() {
-	install_msg "Updating pacman..."
+	install_msg "Updating system, please wait..."
 	sudo pacman -Syu --noconfirm
 }
 
@@ -134,8 +102,8 @@ install_aur_helper() {
 	if ! command -v yay >/dev/null; then
 		install_msg "Installing AUR helper..."
 		[ -d /tmp/yay-bin ] && rm -rf /tmp/yay-bin
-		git clone --depth 1 https://aur.archlinux.org/yay-bin /tmp/yay-bin
-		cd /tmp/yay-bin
+		git clone https://aur.archlinux.org/yay-bin /tmp/yay-bin
+		cd /tmp/yay-bin || exit
 		makepkg -si --noconfirm
 		if ! command -v yay >/dev/null; then
 			error "Failed to install aur helper (yay)."
@@ -144,8 +112,29 @@ install_aur_helper() {
 }
 
 install_packages() {
-	install_msg "Installing packages..."
-	pac_install $PKGS
+	install_msg "Installing desktop applications..."
+	install_aur_helper
+	pac_install xorg-xrdb xorg-xrandr xorg-xsetroot xorg-xset xorg-xwininfo
+	pac_install rofi kitty geany nitrogen
+	[ "$ARCH" = "obarun" ] || pac_install dunst
+	#pac_install xfce4-settings thunar thunar-volman thunar-archive-plugin 
+	pac_install lxappearance pcmanfm
+	pac_install xarchiver zip unzip p7zip
+	pac_install arc-gtk-theme papirus-icon-theme
+	pac_install ttf-liberation libertinus-font ttf-jetbrains-mono noto-fonts-emoji
+	pac_install meld ghex gnome-calculator polkit-gnome gnome-keyring # gnome trash
+	pac_install zsh zsh-completions lua thefuck starship
+	# terminal apps
+	pac_install sxiv maim htop yad unclutter xdotool numlockx w3m xclip
+	pac_install mlocate pacman-contrib
+	#pac_install zathura zathura-pdf-mupdf
+	# window manager
+	pac_install bspwm sxhkd
+	#pac_install i3
+	# Misc apps
+	#pac_install bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg
+	#pac_install atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger
+	#pac_install speedtest-cli
 }
 
 install_aur_packages() {
@@ -162,7 +151,8 @@ install_aur_packages() {
 	fi
 	command -v "simple-mtpfs" >/dev/null || pac_install simple-mtpfs
 	command -v "ksuperkey" >/dev/null || pac_install ksuperkey
-	[ -x "/usr/lib/xfce-polkit/xfce-polkit" ] || pac_install xfce-polkit
+	#[ -x "/usr/lib/xfce-polkit/xfce-polkit" ] || pac_install xfce-polkit
+	command -v "picom" >/dev/null || pac_install picom-ibhagwan-git
 	#command -v "brave" >/dev/null || pac_install "brave-bin"
 	#command -v "tremc" >/dev/null || pac_install "tremc-git"
 	#command -v "picom" >/dev/null || pac_install "picom-git"
@@ -174,7 +164,7 @@ install_aur_packages() {
 }
 
 configure_video() {
-	install_msg "Installing and configuring intel gpu driver..."
+	install_msg "Installing and configuring video drivers..."
 
 	local ati=$(lspci | grep VGA | grep ATI)
 	local nvidia=$(lspci | grep VGA | grep NVIDIA)
@@ -239,6 +229,8 @@ finishing_up() {
 
 	# Most important command! Get rid of the beep!
 	#sudo rmmod pcspkr
+	box "Finishing touches..."
+
 	echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
 
 	if [[ "$ARCH" = "artix" ]]; then
@@ -251,23 +243,33 @@ finishing_up() {
 	fi
 }
 
+check_root() {
+	if [ "$EUID" -eq 0 ]; then
+		error "Please do not run this script as root (e.g. using sudo)"
+	fi
+}
+
 ######################
 ## Start of Script ###
 ######################
 
-clear
+set -e
 
-[ "$EUID" -eq 0 ] && error "Please do not run this script as root (e.g. using sudo)"
+ARCH="$1"								# arch or artix
+INIT="systemd"							# init, systemd as default
 
+check_root
 detect_system
 create_symlinks
+install_needed
+
 pretty_pacmanconf
 refreshkeys || error "Error automatically refreshing Arch keyring. Consider doing so manually."
 update_system
 install_packages
 install_aur_packages
 configure_video
-install_theme
+#install_theme
 finishing_up
 
 install_msg "Done."
