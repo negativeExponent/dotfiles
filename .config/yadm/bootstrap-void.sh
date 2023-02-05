@@ -18,8 +18,6 @@ ALL_OFF="\033[0m"
 REPO='https://mirrors.servercentral.com/voidlinux'
 # REPO='https://alpha.us.repo.voidlinux.org'
 
-PKGLIST=$(sed -e "/^#/d" -e "s/#.*//" ${HOME}/.config/yadm/pkglist-void)
-
 error() {
   printf "${BOLD}${RED}ERROR:${ALL_OFF}${BOLD} %s${ALL_OFF}\n" "$1" >&2
   exit 1
@@ -34,7 +32,9 @@ xbps_install() {
 }
 
 install_base_packages() {
-	xbps_install $PKGLIST || error "Failed installation."
+	sed -e "/^#/d" -e "s/#.*//" ${HOME}/.config/yadm/pkglist-void | while read pkg; do
+		xbps_install $pkg || error "Failed installation."
+	done
 }
 
 configure_intel_video() {

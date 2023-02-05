@@ -79,5 +79,3 @@ polkit
 dbus-elogind-x11
 socklog-void # log
 runit-swap
-
-
