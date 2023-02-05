@@ -14,6 +14,9 @@ run() {
     fi
 }
 
+killall -9 picom
+while pgrep -x picom; do sleep 1; done
+
 # load Xresources
 if [ -f "$HOME/.Xresources" ]; then
 	xrdb -merge "$HOME/.Xresources"
@@ -26,19 +29,14 @@ xset -dpms
 
 nitrogen --restore &
 xsetroot -cursor_name left_ptr &
-numlockx &
 unclutter &
 autotiling &
 
-/usr/libexec/polkit-gnome-authentication-agent-1 &
-/usr/lib/xfce-polkit/xfce-polkit &
+run /usr/libexec/polkit-gnome-authentication-agent-1
+run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
 
 run "mpd"
-run "xfsettingsd"
-run "xfce4-power-manager"
-run "ksuperkey" " -e Super_L=Alt_L|F1"
-run "ksuperkey" " -e Super_R=Alt_L|F1"
 run "udiskie" " --automount --notify --tray"
 
 if command -v transmission-daemon >/dev/null; then
@@ -52,6 +50,6 @@ fi
 
 . "$HOME/.local/bin/setcolors" &			# exports color configs to rofi, kitty ...
 . "$HOME/.local/bin/launch_picom" &         # kills and relaunch compositor
-. "$HOME/.local/bin/launch_polybar" "i3-bar" &       # kills and relaunch panel
+. "$HOME/.local/bin/launch_polybar" "mainbar-i3" &       # kills and relaunch panel
 . "$HOME/.local/bin/launch_dunst" &         # kills and relaunch notification daemon
 # . "$HOME/.local/bin/autolock" 5 &

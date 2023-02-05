@@ -12,4 +12,8 @@ fi
 # Ensure that xrdb has finished running before moving on to start the WM/DE.
 [ -n "$xrdbpid" ] && wait "$xrdbpid"
 
-. "$HOME/.local/bin/setcolors" &
+. "$HOME/.local/bin/setcolors"
+
+if [ -f "$HOME/.xsession" ]; then
+	. "$HOME/.xsession"
+fi
