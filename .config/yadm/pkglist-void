@@ -1,0 +1,83 @@
+# xorg stuff
+xorg-minimal
+xinit
+xrandr
+xrdb
+xset
+xsetroot
+xf86-video-intel
+xf86-input-libinput
+# window manager
+i3
+# desktop essentials
+kitty # terminal
+rofi # application launcher
+polybar # panel
+geany # gui editor
+pcmanfm # filemanager
+xarchiver # archive manager
+zip
+unzip
+p7zip
+# themeing
+arc-theme
+paper-icon-theme
+papirus-icon-theme
+liberation-fonts-ttf
+noto-fonts-emoji
+font-libertine-ttf
+# audio/video
+alsa-utils
+mpv # video player
+mpd # music player daemon
+mpc
+ncmpcpp
+# terminal stuff
+thefuck
+lua
+starship
+zsh
+zsh-completions
+# others
+ccache
+feh # wallpaper changer
+lxappearance # gui.gtk appearance
+maim # screenshotter
+sxiv # image viewer
+viewnior # gtk image viewer
+evince # gtk document viewer
+polkit-gnome
+gnome-keyring
+udiskie # usb flash mounter
+simple-mtpfs # mtp mounter
+unclutter
+picom # compositor
+dunst # notification daemon
+yad # calendar - polybar statusbar dependency
+xdotool
+xwininfo
+xprop # bspwm external rules dependency
+ghex # gtk hex editor
+meld # gtk diff viewer
+gnome-calculator # calculator
+htop
+neofetch
+# intel cpu
+intel-ucode
+linux-firmware-intel
+mesa-dri
+mesa-vulkan-intel
+intel-video-accel
+xf86-video-intel
+# services
+dhcpcd
+fcron # cron replacement
+chrony # ntpd replacement
+dbus
+elogind
+polkit
+dbus-elogind-x11
+socklog-void # log
+runit-swap
+
+
