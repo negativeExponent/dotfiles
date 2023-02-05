@@ -196,13 +196,13 @@ super + F2
 super + F7
 	rofi-theme
 
-## change wallpaper (random)
-## super + F8
-##	wallpaper-changer
+# change wallpaper (random)
+super + shift + F8
+	wallpaper-changer
 
 # change wallpaper (nitroge)
 super + F8
-	nitrogen
+	command -v nitrogen && nitrogen || command -v feh && feh ~/Pictures/Wallpapers
 
 # toggles compositor on or off
 super + F9

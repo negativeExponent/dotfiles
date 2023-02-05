@@ -42,6 +42,11 @@ case "$window_class" in
 	    eval "$window_consequences"
 		[ "$state" ] || echo "state=floating follow=on"
 		;;
+
+	feh)
+	    eval "$window_consequences"
+		[ "$state" ] || echo "state=floating follow=on"
+		;;
 	
 	*:show_help) # term:show_help
 	    eval "$window_consequences"
