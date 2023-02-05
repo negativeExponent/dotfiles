@@ -78,7 +78,7 @@ case "$window_class" in
 		[ "$state" ] || echo "state=floating follow=on"
 		;;
 	
-	Thunar)
+	Pcmanfm|Thunar)
 	    eval "$window_consequences"
 		[ "$state" ] || echo "state=floating follow=on"
 		;;
