@@ -11,5 +11,4 @@ elif command -v apt >/dev/null; then
 	term_float bash -c 'sudo apt upgrade; read -p "Press any key to close window..."'
 fi
 
-# polybar-msg hook check-updates 1
-polybar-msg action "#check-updates.hook.0"
+polybar-msg -p "$(pidof "polybar")" action "#check-updates.hook.0"

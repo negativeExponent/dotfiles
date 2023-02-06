@@ -33,8 +33,8 @@ else
 fi
 
 if [ "$updates" -gt 0 ]; then
-	echo "$updates"
-	notify-send "📦 $updates updates available."
+	echo "📦$updates"
+	notify-send "📦$updates updates available."
 else
-	echo "0"
+	echo "📦0"
 fi
