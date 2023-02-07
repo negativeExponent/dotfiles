@@ -27,7 +27,7 @@ fi
 xset s off
 xset -dpms
 
-nitrogen --restore &
+~/.fehbg
 xsetroot -cursor_name left_ptr &
 unclutter &
 autotiling &

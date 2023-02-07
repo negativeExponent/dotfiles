@@ -62,6 +62,7 @@ meld # gtk diff viewer
 gnome-calculator # calculator
 htop
 neofetch
+lm_sensors
 # intel cpu
 intel-ucode
 linux-firmware-intel
