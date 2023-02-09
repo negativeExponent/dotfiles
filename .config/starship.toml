@@ -85,4 +85,4 @@ disabled = true
 
 [username]
 style_user = "bold dimmed blue"
-show_always = true
+show_always = false
