@@ -1,0 +1,58 @@
+# X
+xorg-server
+xorg-xinit
+xorg-xrdb
+xorg-xsetroot
+xorg-xset
+xorg-xwininfo
+xorg-xprop
+arandr
+# desktop common
+alsa-utils
+kitty # terminal
+rofi # program launcher 
+geany # gui text editor
+polybar # status bar
+feh # wallpaper setter
+xfce4-settings
+thunar # filemanager
+thunar-volman
+thunar-archive-plugin 
+udiskie # usb automounter
+xarchiver
+zip
+unzip
+zsh
+lua
+thefuck
+maim # screenshot app
+htop
+yad
+xdotool
+libnotify
+lm_sensors
+slock
+mlocate
+pacman-contrib
+# theming
+arc-gtk-theme
+libertinus-font
+ttf-jetbrains-mono
+noto-fonts
+noto-fonts-emoji
+# gui apps
+meld
+ghex
+gnome-calculator
+# system essentials
+polkit-gnome
+gnome-keyring
+# window manager
+#bspwm sxhkd
+i3
+# Misc apps
+zathura
+zathura-pdf-mupdf
+#bc highlight fzf mediainfo poppler youtube-dl ffmpeg
+#atool imagemagick python-pillow ffmpegthumbnailer ranger
+#speedtest-cli

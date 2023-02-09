@@ -3,17 +3,11 @@
 # NOTE: Colors are derived from Xresources, so make sure
 # they are sourced out first before calling the rest of
 # scripts below
-if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources" ]; then
-	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources"
-else
-	xrdb -merge "$HOME/.Xresources"
-fi
+
+xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources" & xrdbpid=$!
 
 # Ensure that xrdb has finished running before moving on to start the WM/DE.
 [ -n "$xrdbpid" ] && wait "$xrdbpid"
 
-. "$HOME/.local/bin/setcolors"
+setcolors &
 
-if [ -f "$HOME/.xsession" ]; then
-	. "$HOME/.xsession"
-fi

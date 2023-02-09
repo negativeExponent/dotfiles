@@ -19,20 +19,20 @@ box1() {
     title=" $1 "
     edge=$(echo "$title" | sed 's/./*/g')
     echo "$edge"
-    echo -e "\e[1;31m$title\e[0m"
+    echo -e "\e[1;32m$title\e[0m"
 }
 
 
 box2() {
     title=" $1 "
-    echo -e "\e[1;31m$title\e[0m"
+    echo -e "\e[1;32m$title\e[0m"
 }
 
 
 box3() {
     title=" $1 "
     edge=$(echo "$title" | sed 's/./*/g')
-    echo -e "\e[1;31m$title\e[0m"
+    echo -e "\e[1;32m$title\e[0m"
     echo "$edge"
 }
 
@@ -47,7 +47,9 @@ error() {
 }
 
 pac_install() {
-	yay -S --needed --noconfirm "$@"
+	for f in ${@} ; do
+		paru -S --skipreview --noconfirm --needed "$f"
+	done
 }
 
 detect_system() {
@@ -60,16 +62,18 @@ detect_system() {
 }
 
 install_needed() {
-	sudo pacman -S --needed --noconfirm git wget curl man-db vim base-devel ccache xorg-server xorg-xinit
+	sudo pacman -S --needed --noconfirm git wget curl man-db neovim base-devel ccache
 }
 
 create_symlinks() {
 	install_msg "Running symlinks to personal directories..."
+
 	. "${XDG_CONFIG_HOME:-$HOME/.config}/yadm/_symlink.sh"
 }
 
 pretty_pacmanconf() {
 	install_msg "Making pacman beautiful and colorful because why not..."
+
 	grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
 	grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
 	grep "^ParallelDownloads" /etc/pacman.conf >/dev/null || sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
@@ -82,11 +86,13 @@ refreshkeys() {
 	case "$(readlink -f /sbin/init)" in
 	*systemd*)
 		install_msg "Refreshing Arch Keyring..."
+
 		sudo pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
 		;;
 	*)
 		if [ "$ARCH" = "artix" ]; then
 			box "Enabling Arch repositories and updating keyrings..."
+
 			. "${XDG_CONFIG_HOME:-$HOME/.config}/yadm/artix_enable_archlinux_repo.sh"
 		fi
 		;;
@@ -95,72 +101,46 @@ refreshkeys() {
 
 update_system() {
 	install_msg "Updating system, please wait..."
+
 	sudo pacman -Syu --noconfirm
 }
 
 install_aur_helper() {
-	if ! command -v yay >/dev/null; then
-		install_msg "Installing AUR helper..."
-		[ -d /tmp/yay-bin ] && rm -rf /tmp/yay-bin
-		git clone https://aur.archlinux.org/yay-bin /tmp/yay-bin
-		cd /tmp/yay-bin || exit
-		makepkg -si --noconfirm
-		if ! command -v yay >/dev/null; then
-			error "Failed to install aur helper (yay)."
-		fi
+	local aur_name="paru-bin"
+	local aur_cmd="paru"
+
+	if ! command -v $aur_cmd >/dev/null; then
+		install_msg "Installing AUR helper %s... " $aur_name
+
+		[ -d /tmp/$aur_name ] && rm -rf /tmp/$aur_name
+		git clone https://aur.archlinux.org/$aur_name /tmp/$aur_name
+		cd /tmp/$aur_name || exit
+		makepkg -si --noconfirm || error "Failed to build aur helper $aur_name!"
 	fi
 }
 
 install_packages() {
 	install_msg "Installing desktop applications..."
+
 	install_aur_helper
-	pac_install xorg-xrdb xorg-xrandr xorg-xsetroot xorg-xset xorg-xwininfo
-	pac_install rofi kitty geany nitrogen
-	[ "$ARCH" = "obarun" ] || pac_install dunst
-	#pac_install xfce4-settings thunar thunar-volman thunar-archive-plugin 
-	pac_install lxappearance pcmanfm
-	pac_install xarchiver zip unzip p7zip
-	pac_install arc-gtk-theme papirus-icon-theme
-	pac_install ttf-liberation libertinus-font ttf-jetbrains-mono noto-fonts-emoji
-	pac_install meld ghex gnome-calculator polkit-gnome gnome-keyring # gnome trash
-	pac_install zsh zsh-completions lua thefuck starship
-	# terminal apps
-	pac_install sxiv maim htop yad unclutter xdotool numlockx w3m xclip
-	pac_install mlocate pacman-contrib
-	#pac_install zathura zathura-pdf-mupdf
-	# window manager
-	pac_install bspwm sxhkd
-	#pac_install i3
-	# Misc apps
-	#pac_install bc highlight fzf atool mediainfo poppler youtube-dl ffmpeg
-	#pac_install atool imagemagick python-pillow xdotool ffmpegthumbnailer ranger
-	#pac_install speedtest-cli
+
+	sed -e "/^#/d" -e "s/#.*//" ${HOME}/.config/yadm/pkglist-arch | while read pkg; do
+		pac_install $pkg
+	done
+
+	# mpd requires systemd componemts
+	if [ ! "$ARCH" = "obarun" ]; then
+		pac_install dunst mpd mpc ncmpcpp
+	fi
+
+	pac_install mpv
 }
 
 install_aur_packages() {
 	install_msg "Installing AUR packages..."
-	install_aur_helper
-	if ! command -v "polybar" >/dev/null; then
-		if pacman -Ssq polybar >/dev/null; then
-			install_msg "Installing polybar from repository..."
-			pac_install 'polybar'
-		else
-			install_msg "Installing polybar from aur..."
-			pac_install 'polybar-git'
-		fi
-	fi
+
 	command -v "simple-mtpfs" >/dev/null || pac_install simple-mtpfs
-	command -v "ksuperkey" >/dev/null || pac_install ksuperkey
-	#[ -x "/usr/lib/xfce-polkit/xfce-polkit" ] || pac_install xfce-polkit
 	command -v "picom" >/dev/null || pac_install picom-ibhagwan-git
-	#command -v "brave" >/dev/null || pac_install "brave-bin"
-	#command -v "tremc" >/dev/null || pac_install "tremc-git"
-	#command -v "picom" >/dev/null || pac_install "picom-git"
-	#command -v "vscodium" >/dev/null || pac_install "vscodium-bin"
-	#[ "$ARCH" = "obarun" ] || command -v "cava" >/dev/null || pac_install "cava-git"
-	# lockscreen
-	#command -v "betterlockscreen" >/dev/null || pac_install "betterlockscreen"
-	#command -v "xautolock" >/dev/null || pac_install "xautolock"
 }
 
 configure_video() {
@@ -172,19 +152,19 @@ configure_video() {
 	local amd=$(lspci | grep VGA | grep AMD)
 
 	if [ ! -z "$ati" ]; then
-	    install_msg 'Ati graphics detected'
+	    box2 'Ati graphics detected'
 	    pac_install xf86-video-ati
 	fi
 	if [ ! -z "$nvidia" ]; then
-	    install_msg 'Nvidia graphics detected'
+	    box2 'Nvidia graphics detected'
 	    pac_install xf86-video-nouveau
 	fi
 	if [ ! -z  "$intel" ]; then
-	    install_msg 'Intel graphics detected'
+	    box2 'Intel graphics detected'
 	    pac_install xf86-video-intel libva-intel-driver
 	fi
 	if [ ! -z  "$amd" ]; then
-	    install_msg 'AMD graphics detected'
+	    box2 'AMD graphics detected'
 	    pac_install xf86-video-amdgpu
 	fi
 
@@ -206,22 +186,6 @@ EOF
 	fi
 }
 
-install_theme() {
-	if [ ! -d "$HOME/.local/share/themes/Dracula" ]; then
-	install_msg "Installing Dracula GTK Theme"
-	cd
-	wget -c https://github.com/dracula/gtk/archive/master.zip
-	[ -d ./gtk-master ] && rm -rf gtk-master
-	unzip -q master.zip
-	mkdir -p ~/.local/share/themes
-	[ -d ~/.local/share/themes/Dracula ] && rm -rf ~/.local/share/themes/Dracula
-	mv gtk-master ~/.local/share/themes/Dracula
-	rm master.zip
-	gsettings set org.gnome.desktop.interface gtk-theme "Dracula"
-	gsettings set org.gnome.desktop.wm.preferences theme "Dracula"
-	fi
-}
-
 finishing_up() {
 	###################################
 	# section includes patches from LARBS
@@ -233,14 +197,12 @@ finishing_up() {
 
 	echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
 
-	if [[ "$ARCH" = "artix" ]]; then
-		# dbus UUID must be generated for Artix runit.
-		[ -d "/var/lib/dbus" ] || sudo mkdir -p /var/lib/dbus
-		sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
+	# dbus UUID must be generated for Artix runit.
+	[ -d "/var/lib/dbus" ] || sudo mkdir -p /var/lib/dbus
+	sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
 
-		# Use system notifications for Brave on Artix
-		echo "export \$(dbus-launch)" >/dev/null | sudo tee /etc/profile.d/dbus.sh
-	fi
+	# Use system notifications for Brave on Artix
+	echo "export \$(dbus-launch)" >/dev/null | sudo tee /etc/profile.d/dbus.sh
 }
 
 check_root() {
@@ -264,12 +226,11 @@ create_symlinks
 install_needed
 
 pretty_pacmanconf
-refreshkeys || error "Error automatically refreshing Arch keyring. Consider doing so manually."
+refreshkeys 
 update_system
 install_packages
 install_aur_packages
 configure_video
-#install_theme
 finishing_up
 
-install_msg "Done."
+install_msg "Done." 
