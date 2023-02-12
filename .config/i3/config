@@ -7,8 +7,8 @@ set $term               i3-sensible-terminal
 set $themechanger       rofi-theme 
 set $backgroundchanger  nitrogen
 set $screenshot_full    "screenshot full"
-set $screensho_window   "screenshot window"
-set $compositor         "picom toggle"
+set $screensho_area     "screenshot window"
+set $compositor         "launch_picom toggle"
 
 # use these keys for focus, movement, and resize directions
 set $left   j
