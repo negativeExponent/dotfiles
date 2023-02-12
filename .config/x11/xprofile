@@ -4,7 +4,7 @@
 # they are sourced out first before calling the rest of
 # scripts below
 
-xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources" & xrdbpid=$!
+xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources" & xrdbpid=$!
 
 # Ensure that xrdb has finished running before moving on to start the WM/DE.
 [ -n "$xrdbpid" ] && wait "$xrdbpid"
