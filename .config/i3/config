@@ -1,9 +1,14 @@
 # Mod key
 set $mod Mod4
 
-# Menu launcher
-set $menu ~/.local/bin/rofi-appmenu
-set $term i3-sensible-terminal
+set $menu               ~/.local/bin/rofi-appmenu
+set $menufallback       dmenu_run
+set $term               i3-sensible-terminal
+set $themechanger       rofi-theme 
+set $backgroundchanger  nitrogen
+set $screenshot_full    "screenshot full"
+set $screensho_window   "screenshot window"
+set $compositor         "picom toggle"
 
 # use these keys for focus, movement, and resize directions
 set $left   j
