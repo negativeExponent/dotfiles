@@ -4,6 +4,10 @@
 
 MYBAR="$1"
 
+if [ -z "$MYBAR" ]; then
+	MYBAR="mainbar-ewmh"
+fi
+
 NC='\033[0m'
 RED='\033[31m'
 BLUE='\033[34m'
