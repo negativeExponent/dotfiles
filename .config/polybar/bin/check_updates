@@ -2,11 +2,11 @@
 
 if command -v pacman >/dev/null; then
 	if command -v checkupdates >/dev/null; then
-		if ! updates=$(checkupdates 2> /dev/null | wc -l ); then
+		if ! updates_arch=$(checkupdates 2> /dev/null | wc -l ); then
 			updates_arch=0
 		fi
 	else
-		if ! updates=$(pacman -Qu 2> /dev/null | wc -l ); then
+		if ! updates_arch=$(pacman -Qu 2> /dev/null | wc -l ); then
 			updates_arch=0
 		fi
 	fi
