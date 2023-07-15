@@ -1,5 +1,5 @@
 [Desktop Entry]
 Type=Application
 Name=Text editor
-Exec=/usr/bin/kitty -e vim %u
+Exec=/usr/bin/kitty -e nvim %u
 GenericName=Text Editor (nvim)

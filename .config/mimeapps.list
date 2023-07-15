@@ -1,12 +1,12 @@
-application/pdf=org.pwmt.zathura.desktop;pplications]
+[Default Applications]
+
 x-scheme-handler/magnet=torrent.desktop;
 application/x.bittorrent=torrent.desktop;
 application/pdf=pdf.desktop;
 text/plain=editor.desktop;
 inode/directory=thunar.desktop;
 video/x-matroska=mpv.desktop;
-video/mp4=mpv.desktop;
+video/mp4=video.desktop;
 image/gif=img.desktop;
 image/png=img.desktop;
 image/jpeg=img.desktop;
-
