@@ -140,7 +140,7 @@ install_aur_packages() {
 	install_msg "Installing AUR packages..."
 
 	command -v "simple-mtpfs" >/dev/null || pac_install simple-mtpfs
-	command -v "picom" >/dev/null || pac_install picom-ibhagwan-git
+#	command -v "picom" >/dev/null || pac_install picom-ibhagwan-git
 }
 
 configure_video() {
