@@ -63,4 +63,6 @@ export DEVKITPRO=/opt/devkitpro
 [[ -d ${DEVKITPRO}/libctru ]]   && export CTRULIB=${DEVKITPRO}/libctru
 fi
 
-[ -f "/mnt/data/myfiles/extrarc" ] && source "/mnt/data/myfiles/extrarc"
+if [ -f "/media/data/myfiles/extrarc" ]; then
+	source "/media/data/myfiles/extrarc"
+fi
