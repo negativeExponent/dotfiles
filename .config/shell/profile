@@ -1,9 +1,13 @@
 # Application Defaults
 export BROWSER="brave"
 export TERMINAL="kitty"
-export EDITOR="vim"
-export VISUAL="vim"
+export EDITOR="nvim"
+export VISUAL="nvim"
 export FILEMANAGER="thunar"
+
+if [ "$XDG_DESKTOP_TYPE" = "wayland ]; then
+    export TERMINAL="foot"
+fi
 
 # ~/ Clean-up:
 export XDG_CONFIG_HOME="$HOME/.config"

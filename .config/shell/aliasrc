@@ -3,6 +3,7 @@
 # Use neovim for vim if present.
 [ -x "$(command -v nvim)" ] && alias vim="nvim" vimdiff="nvim -d"
 
+alias ..="cd .."
 alias cp="cp -v"
 alias mv="mv -v"
 alias rm="rm -v"
@@ -12,6 +13,17 @@ alias diff="diff --color=auto"
 alias egrep="egrep --color=auto"
 alias fgrep="fgrep --color=auto"
 alias grep="grep --color=auto"
-alias ls="ls --color=auto -h --group-directories-first"
 alias ip="ip -color=auto"
+
+if command -v lsd >/dev/null; then
+    alias ls="lsd"
+    alias ll="lsd -l"
+    alias la="lsd -a"
+    alias lsla="lsd -la"
+else
+    alias ls="ls --color=auto -h --group-directories-first"
+    alias ll="ls -l"
+    alias la="ls -a"
+    alias lsla="ls -la"
+fi
 
