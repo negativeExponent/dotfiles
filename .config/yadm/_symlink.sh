@@ -11,10 +11,7 @@ link() {
 }
 
 create_symlinks() {
-	mkdir -p $HOME/.cache
-	mkdir -p $HOME/.config
-
-	link /media/data/yay $HOME/.cache/yay
+	[ -d "$HOME/.config" ] || mkdir -p $HOME/.config
 
 	# symlinks to HOME
 	link /media/data/Documents $HOME/Documents
