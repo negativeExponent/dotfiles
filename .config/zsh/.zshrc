@@ -154,6 +154,8 @@ export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
 export LESS_TERMCAP_so=$(tput bold; tput setaf 3; tput setab 4)
 export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
 
+# reverse background and foreground colors for highlighted dirs
+LS_COLORS="$LS_COLORS:ow=7;34";
 
 ## install starship first
 ##sh -c "$(curl -fsSL https://starship.rs/install.sh)"
