@@ -2,8 +2,7 @@
 
 term=${TERMINAL:-kitty}
 
-if [ "$term" = "urxvt" ]; then
-	$term -name term_float -e "$@"
-else
-	$term --class=term_float -e "$@"
-fi
+case $term in
+	foot) $term --app-id=term_float -e "$@" ;;
+	*) $term --class=term_float -e "$@" ;;
+esac
