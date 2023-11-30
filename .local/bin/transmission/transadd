@@ -4,4 +4,12 @@
 
 pgrep -fx transmission-daemon > /dev/null || transmission-daemon
 
-transmission-remote --add "$@" && notify-send "Transmission-daemon" "Torrent added." && polybar-msg hook torrents 1 && pkill -SIGRTMIN+2 waybar
+CMD_RESET_BAR_MODULE=
+
+if pgrep -x polybar; then
+	CMD_RESET_BAR_MODULE="polybar-msg hook torrents 1"
+elif pgrep -x waybar; then
+	CMD_RESET_BAR_MODULE="pkill -RTMIN+2 waybar"
+fi
+
+transmission-remote --add "$@" && $CMD_RESET_BAR_MODULE
