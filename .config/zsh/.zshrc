@@ -21,10 +21,8 @@ PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magent
 #source $HOME/.config/zinit/zi.zsh
 
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-if [[ ! -d "${ZINIT_HOME}" ]];then
-	mkdir -p "$(dirname $ZINIT_HOME)"
-	git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-fi
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
 source "${ZINIT_HOME}/zinit.zsh"
 
 export DIRENV_LOG_FORMAT=
@@ -139,13 +137,14 @@ zinit wait lucid light-mode for \
 
 # Multi-word, syntax highlighted history searching for Zsh
 zstyle ":history-search-multi-word" page-size "11"
-#zinit ice wait"1" lucid
-#zinit light zdharma/history-search-multi-word
+zinit ice wait"1" lucid
+zinit light zdharma/history-search-multi-word
 
-#zinit light skywind3000/z.lua # navigate faster by learning your habits
+zinit light skywind3000/z.lua # navigate faster by learning your habits
 zinit snippet OMZP::command-not-found # provide suggested packages to be installed if a command cannot be found
-#zinit snippet OMZP::extract # extracts a wide variety of archive filetypes
-#zinit snippet OMZP::thefuck # corrects your previous console command
+zinit snippet OMZP::extract # extracts a wide variety of archive filetypes
+zinit snippet OMZP::thefuck # corrects your previous console command
+#zinit snippet OMZP::history-substring-search
 
 # Colored man pages
 export LESS_TERMCAP_md=$(tput bold; tput setaf 1)
