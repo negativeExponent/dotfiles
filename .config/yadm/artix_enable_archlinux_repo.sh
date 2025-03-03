@@ -14,9 +14,10 @@ Server = https://ftp.crifo.org/artix-universe/" | sudo tee -a /etc/pacman.conf
 	fi
 	sudo pacman --noconfirm --needed -Sy \
 		artix-keyring artix-archlinux-support
-	for repo in extra community; do
+	for repo in extra multilib; do
 		grep -q "^\[$repo\]" /etc/pacman.conf ||
-			echo "[$repo]
+			echo "
+[$repo]
 Include = /etc/pacman.d/mirrorlist-arch" | sudo tee -a /etc/pacman.conf
 	done
 	sudo pacman -Sy
