@@ -1,11 +1,55 @@
 ##
 ## wm independent hotkeys
 ## NOTE: Comments should start with '##'
-## while hotket descriptions use only one '#'
+## while hotkey descriptions use only one '#'
 ## This will make the modkey+F1 help menu more readable
 ##
 
-# make sxhkd reload its configuration files:
+##
+## Common optional bspwm commands (disabled by default)
+## These are included for reference or future use
+
+## toggle window visibility (hidden state)
+## # hide / show
+## super + ctrl + h
+##    bspc node -g hidden
+
+## enable/disable split type (auto/manual)
+## # toggle split mode
+## super + ctrl + m
+##    bspc node -B manual
+
+## set split type
+## # split horizontal / vertical
+## super + ctrl + {h,v}
+##    bspc node -t {horizontal,vertical}
+
+## rotate tree
+## # rotate clockwise / counter-clockwise
+## super + ctrl + {r,shift + r}
+##    bspc node @/ -R {90,-90}
+
+## flip tree
+## # flip horizontal / vertical
+## super + ctrl + {x,y}
+##    bspc node @/ -F {horizontal,vertical}
+
+## balance tree
+## # balance window sizes
+## super + ctrl + b
+##    bspc node @/ -B balanced
+
+## equalize sizes
+## # equalize window sizes
+## super + ctrl + e
+##    bspc node @/ -B equal
+
+## remove focused node's split type
+## # unlink split
+## super + ctrl + u
+##    bspc node -r
+
+# reload sxhkd config
 super + Escape
 	pkill -USR1 -x sxhkd
 
@@ -13,81 +57,78 @@ super + Escape
 ## bspwm hotkeys
 ##
 
-# close bar then quit wm
+# quit panel then exit bspwm
 super + alt + Escape
 	pkill -x panel; bspc quit
 
-## quit/restart bspwm
-## super + alt + {q,r}
-##	bspc {quit,wm -r}
+# quit / restart bspwm
+super + alt + {q,r}
+	bspc {quit,wm -r}
 
-# close and kill
+# close / kill node
 super + {_,shift + }q
 	bspc node -{c,k}
 
-# alternate between the tiled and monocle layout
+# toggle layout (tiled / monocle)
 super + m
 	bspc desktop -l next
 
-# send the newest marked node to the newest preselected node
+# send marked node to preselected location
 super + y
 	bspc node newest.marked.local -n newest.!automatic.local
 
-# swap the current node and the biggest node
+# swap with biggest window
 super + g
 	bspc node -s biggest
 
 ##
-## state/flags
+## state / flags
 ##
 
-## set the window state
-##super + {t,shift + t,s,f}
-##	bspc node -t {tiled,pseudo_tiled,floating,fullscreen}
-
-# toggle floating or tiled
+# toggle floating / tiled
 super + space
     bspc node -t "~"{floating,tiled}
 
-# toggle pseudo tiled or tiled mode
+# toggle pseudo_tiled / tiled
 super + {p,t}
     bspc node -t {pseudo_tiled,tiled}
 
-# set the node flags
+# mark / lock / sticky / private
+# mark focused node / lock input / sticky across desktops / private from external tools
 super + ctrl + {m,x,y,z}
 	bspc node -g {marked,locked,sticky,private}
 
 ##
-## focus/swap
+## focus / swap
 ##
 
-# focus the node in the given direction
+# focus / swap in direction
 super + {_,shift + }{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
 
-# focus the node for the given path jump
+# focus parent / sibling / first / second
 super + {p,b,comma,period}
 	bspc node -f @{parent,brother,first,second}
 
-# focus the next/previous node in the current desktop
+# focus next / previous node
 super + {_,shift + }c
 	bspc node -f {next,prev}.local
 
-# focus the next/previous desktop in the current monitor
+# focus next / previous desktop
 super + bracket{left,right}
 	bspc desktop -f {prev,next}.local
 
-# focus the last node/desktop
+# focus last node / desktop
 super + {grave,Tab}
 	bspc {node,desktop} -f last
 
-# focus the older or newer node in the focus history
+# focus older / newer in history
 super + {o,i}
 	bspc wm -h off; \
 	bspc node {older,newer} -f; \
 	bspc wm -h on
 
-# focus or send to the given desktop
+# focus / send to desktop
 super + {_,shift + }{1-9,0}
 	bspc {desktop -f,node -d} '^{1-9,10}'
 
@@ -95,83 +136,89 @@ super + {_,shift + }{1-9,0}
 ## preselect
 ##
 
-# preselect the direction
+# preselect direction
 super + ctrl + {h,j,k,l}
 	bspc node -p {west,south,north,east}
 
-# preselect the ratio
+# preselect ratio
 super + ctrl + {1-9}
 	bspc node -o 0.{1-9}
 
-# cancel the preselection for the focused node
+# cancel node preselection
 super + ctrl + space
 	bspc node -p cancel
 
-# cancel the preselection for the focused desktop
+# cancel desktop preselection
 super + ctrl + shift + space
 	bspc query -N -d | xargs -I id -n 1 bspc node id -p cancel
 
 ##
-## move/resize
+## move / resize
 ##
 
-# expand a window by moving one of its side outward
+# expand window
 super + alt + {h,j,k,l}
 	bspc node -z {left -20 0,bottom 0 20,top 0 -20,right 20 0}
 
-# contract a window by moving one of its side inward
+# shrink window
 super + alt + shift + {h,j,k,l}
 	bspc node -z {right -20 0,top 0 20,bottom 0 -20,left 20 0}
 
-# move a floating window
+# move floating window
 super + {Left,Down,Up,Right}
 	bspc node -v {-20 0,0 20,0 -20,20 0}
 
-# volume control
+##
+## volume / media
+##
+
+# volume up / down / mute
 XF86Audio{RaiseVolume,LowerVolume,Mute}
 	amixer {-q set Master 5%+,-q set Master 5%-,set Master toggle}
 
-# music control
+# media next / prev / toggle / stop
 XF86Audio{Next,Prev,Play,Stop}
 	mpc {next,prev,toggle,stop}
 
+# power menu
 XF86PowerOff
 	rofi-powermenu
 
-## Show now-playing
-##super + m
-##	notify-send "Now Playing ♫" "$(mpc current)"
-
 ##
-## non-bspwm bindings
+## apps / programs
 ##
 
-# terminal emulator
+# terminal
 super + Return
 	$TERMINAL
 
-# floating terminal emulator
+# alt terminal
+super + ctrl + Return
+	kitty -c /usr/share/doc/kitty/kitty.conf
+
+# floating terminal
 super + shift + Return
 	term_float
 
-## super + BackSpace
-##	st
-
-# launch browser
+# browser
 super + w
     $BROWSER
 
-# launch filemanager
+# file manager
 super + f
     $FILEMANAGER
 
-# launch gui editor
+# editor
 super + e
     $EDITOR
 
-# program launcher
+# launcher
 super + d
 	rofi-appmenu
+
+# alt launcher
+super + ctrl + d
+	rofi -show drun
 
 alt + F1
 	rofi-appmenu
@@ -180,11 +227,11 @@ alt + F1
 super + x
 	rofi-powermenu
 
-# printscreen (full, selection)
+# screenshot full / window
 super + {_,shift +} Print
     screenshot {full, window}
 
-# help
+# keybind help
 super + F1
 	sxhkd-showkeys
 
@@ -192,7 +239,7 @@ super + F1
 super + F2
 	bspc wm -r
 
-# launch theme chooser
+# theme chooser
 super + F7
 	rofi-theme
 
@@ -200,14 +247,14 @@ super + F7
 super + shift + F8
 	wallpaper-changer
 
-# change wallpaper (nitroge)
+# change wallpaper (nitrogen or feh)
 super + F8
 	command -v nitrogen && nitrogen || command -v feh && feh ~/Pictures/Wallpapers
 
-# toggles compositor on or off
+# toggle compositor
 super + F9
 	launch_picom toggle
-	
-# relaunch polybar
+
+# reload polybar
 super + F10
 	polybar-msg cmd restart

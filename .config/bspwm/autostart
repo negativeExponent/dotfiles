@@ -21,7 +21,7 @@ while pgrep -x picom; do sleep 1; done
 if [ -f "$HOME/.Xresources" ]; then
 	xrdb -merge "$HOME/.Xresources"
 else
-	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/shell/xresources"
+	xrdb -merge "${XDG_CONFIG_HOME:-$HOME/.config}/x11/xresources"
 fi
 
 xset s off
