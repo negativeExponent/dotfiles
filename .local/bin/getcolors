@@ -1,24 +1,56 @@
 #!/bin/bash
 
-# Source colors from xrdb
+# Dracula fallback color palette
+declare -A fallback=(
+  [foreground]="#f8f8f2"
+  [background]="#282a36"
+  [color0]="#21222c"  # black
+  [color1]="#ff5555"  # red
+  [color2]="#50fa7b"  # green
+  [color3]="#f1fa8c"  # yellow
+  [color4]="#bd93f9"  # blue
+  [color5]="#ff79c6"  # magenta
+  [color6]="#8be9fd"  # cyan
+  [color7]="#f8f8f2"  # gray (light fg)
+  [color8]="#6272a4"  # alt black
+  [color9]="#ff6e6e"  # alt red
+  [color10]="#69ff94" # alt green
+  [color11]="#ffffa5" # alt yellow
+  [color12]="#d6acff" # alt blue
+  [color13]="#ff92df" # alt magenta
+  [color14]="#a4ffff" # alt cyan
+  [color15]="#ffffff" # white
+)
 
-FOREGROUND=$(xrdb -query | egrep -m1 '^\*\.?foreground:'| awk '{print $NF}')
-BACKGROUND=$(xrdb -query | egrep -m1 '^\*\.?background:'| awk '{print $NF}')
+# Function to get color from XRDB or fallback
+get_color() {
+  local key="$1"
+  xrdb -query | grep -m1 -E "^\*\.?$key:" | awk '{print $NF}' | grep -E '^#' || echo "${fallback[$key]}"
+}
 
-BLACK=$(xrdb -query | egrep -m1 '^\*\.?color0:'| awk '{print $NF}')
-RED=$(xrdb -query | egrep -m1 '^\*\.?color1:'| awk '{print $NF}')
-GREEN=$(xrdb -query | egrep -m1 '^\*\.?color2:'| awk '{print $NF}')
-YELLOW=$(xrdb -query | egrep -m1 '^\*\.?color3:'| awk '{print $NF}')
-BLUE=$(xrdb -query | egrep -m1 '^\*\.?color4:'| awk '{print $NF}')
-MAGENTA=$(xrdb -query | egrep -m1 '^\*\.?color5:'| awk '{print $NF}')
-CYAN=$(xrdb -query | egrep -m1 '^\*\.?color6:'| awk '{print $NF}')
-GRAY=$(xrdb -query | egrep -m1 '^\*\.?color7:'| awk '{print $NF}')
+# Standard Xresources color keys
+FOREGROUND=$(get_color "foreground")
+BACKGROUND=$(get_color "background")
 
-ALTBLACK=$(xrdb -query | egrep -m1 '^\*\.?color8:'| awk '{print $NF}')
-ALTRED=$(xrdb -query | egrep -m1 '^\*\.?color9:'| awk '{print $NF}')
-ALTGREEN=$(xrdb -query | egrep -m1 '^\*\.?color10:'| awk '{print $NF}')
-ALTYELLOW=$(xrdb -query | egrep -m1 '^\*\.?color11:'| awk '{print $NF}')
-ALTBLUE=$(xrdb -query | egrep -m1 '^\*\.?color12:'| awk '{print $NF}')
-ALTMAGENTA=$(xrdb -query | egrep -m1 '^\*\.?color13:'| awk '{print $NF}')
-ALTCYAN=$(xrdb -query | egrep -m1 '^\*\.?color14:'| awk '{print $NF}')
-WHITE=$(xrdb -query | egrep -m1 '^\*\.?color15:'| awk '{print $NF}')
+BLACK=$(get_color "color0")
+RED=$(get_color "color1")
+GREEN=$(get_color "color2")
+YELLOW=$(get_color "color3")
+BLUE=$(get_color "color4")
+MAGENTA=$(get_color "color5")
+CYAN=$(get_color "color6")
+GRAY=$(get_color "color7")
+
+ALTBLACK=$(get_color "color8")
+ALTRED=$(get_color "color9")
+ALTGREEN=$(get_color "color10")
+ALTYELLOW=$(get_color "color11")
+ALTBLUE=$(get_color "color12")
+ALTMAGENTA=$(get_color "color13")
+ALTCYAN=$(get_color "color14")
+WHITE=$(get_color "color15")
+
+# Export if needed by other scripts or shells
+export FOREGROUND BACKGROUND \
+       BLACK RED GREEN YELLOW BLUE MAGENTA CYAN GRAY \
+       ALTBLACK ALTRED ALTGREEN ALTYELLOW ALTBLUE ALTMAGENTA ALTCYAN WHITE

@@ -70,7 +70,7 @@ case "$window_class" in
 	
 	retroarch)
 	    eval "$window_consequences"
-		[ "$state" ] || echo "state=floating follow=on border=off"
+		[ "$state" ] || echo "state=floating follow=on border=on"
 		;;
 	
 	mpv)
