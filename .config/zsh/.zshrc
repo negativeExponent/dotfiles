@@ -1,152 +1,74 @@
-# Enable colors and change prompt:
+# FAST, CLEAN, SELF-CONTAINED .zshrc (no plugin manager)
+# Automatically clones plugins if missing, then sources them
+
+### COLORS / PROMPT
 [ -z $LS_COLORS ] && eval $(dircolors -b)
+#autoload -U colors && colors
+#PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
 
-autoload -U colors && colors	# Load colors
-PS1="%B%{$fg[red]%}[%{$fg[yellow]%}%n%{$fg[green]%}@%{$fg[blue]%}%M %{$fg[magenta]%}%~%{$fg[red]%}]%{$reset_color%}$%b "
+# simple, readable, colored prompt
+autoload -U colors && colors
+PS1="%B%F{red}[%F{yellow}%n%F{green}@%F{blue}%m %F{magenta}%~%F{red}]%f%b$ "
 
-# .zshrc
 
-## Generic Requirements
-### * git
-### * thefuck
-
-## Arch
-### * pkgfile
-
-## Installing package manager
-#if [[ ! -d $HOME/.config/zinit ]];then
-#  mkdir $HOME/.config/zinit
-#  git clone https://github.com/zdharma/zinit.git $HOME/.config/zinit
-#fi
-#source $HOME/.config/zinit/zi.zsh
-
-ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
-[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
-[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
-source "${ZINIT_HOME}/zinit.zsh"
-
-export DIRENV_LOG_FORMAT=
-
-# for f in $HOME/.local/bin/zsh/*.sh; do source $f; done
-
-# HISTFILE=$HOME/.bash_history
+### HISTORY
 HISTSIZE=100000
 SAVEHIST=$HISTSIZE
+setopt hist_ignore_all_dups hist_reduce_blanks inc_append_history share_history
 
-# Load aliases
-[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
-
-zstyle ':completion:*' menu select # select completions with arrow keys
-zstyle ':completion:*' group-name '' # group results by category
-zstyle ':completion:*' rehash true
-zstyle ':completion:::::' completer _expand _complete _ignored _approximate #enable approximate matches for completion
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}" # Enable LS_COLORS for the completion of files and directories.
-
-#zstyle ':completion:*' completer _complete _ignored
-zstyle :compinstall filename '$HOME/.config/zsh/.zshrc'
-
-setopt hist_ignore_all_dups # remove older duplicate entries from history
-setopt hist_reduce_blanks # remove superfluous blanks from history items
-setopt inc_append_history # save history entries as soon as they are entered
-setopt share_history # share history between different instances of the shell
-setopt auto_cd # cd by typing directory name if it's not a command
-#setopt correct_all # autocorrect commands
-setopt auto_list # automatically list choices on ambiguous completion
-setopt auto_menu # automatically use menu completion
-setopt always_to_end # move cursor to end if word had one match
-#setopt COMPLETE_ALIASES
-
-autoload -Uz compinit && compinit
-
+### BASIC OPTIONS
+setopt auto_cd auto_list auto_menu always_to_end
 bindkey -e
 
-# create a zkbd compatible hash;
-# to add other keys to this hash, see: man 5 terminfo
-typeset -g -A key
+### ALIASES
+[ -f "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc" ] && \
+  source "${XDG_CONFIG_HOME:-$HOME/.config}/shell/aliasrc"
 
-key[Home]="${terminfo[khome]}"
-key[End]="${terminfo[kend]}"
-key[Insert]="${terminfo[kich1]}"
-key[Backspace]="${terminfo[kbs]}"
-key[Delete]="${terminfo[kdch1]}"
-key[Up]="${terminfo[kcuu1]}"
-key[Down]="${terminfo[kcud1]}"
-key[Left]="${terminfo[kcub1]}"
-key[Right]="${terminfo[kcuf1]}"
-key[PageUp]="${terminfo[kpp]}"
-key[PageDown]="${terminfo[knp]}"
-key[Shift-Tab]="${terminfo[kcbt]}"
+### ZSH PLUGIN DIR
+PLUGIN_DIR="$HOME/.zsh/plugins"
+mkdir -p "$PLUGIN_DIR"
 
-# setup key accordingly
-[[ -n "${key[Home]}"      ]] && bindkey -- "${key[Home]}"       beginning-of-line
-[[ -n "${key[End]}"       ]] && bindkey -- "${key[End]}"        end-of-line
-[[ -n "${key[Insert]}"    ]] && bindkey -- "${key[Insert]}"     overwrite-mode
-[[ -n "${key[Backspace]}" ]] && bindkey -- "${key[Backspace]}"  backward-delete-char
-[[ -n "${key[Delete]}"    ]] && bindkey -- "${key[Delete]}"     delete-char
-[[ -n "${key[Up]}"        ]] && bindkey -- "${key[Up]}"         up-line-or-history
-[[ -n "${key[Down]}"      ]] && bindkey -- "${key[Down]}"       down-line-or-history
-[[ -n "${key[Left]}"      ]] && bindkey -- "${key[Left]}"       backward-char
-[[ -n "${key[Right]}"     ]] && bindkey -- "${key[Right]}"      forward-char
-[[ -n "${key[PageUp]}"    ]] && bindkey -- "${key[PageUp]}"     beginning-of-buffer-or-history
-[[ -n "${key[PageDown]}"  ]] && bindkey -- "${key[PageDown]}"   end-of-buffer-or-history
-[[ -n "${key[Shift-Tab]}" ]] && bindkey -- "${key[Shift-Tab]}"  reverse-menu-complete
+### FUNCTION: INSTALL GIT PLUGIN IF MISSING
+install_plugin() {
+  local dir="$1"
+  local repo="$2"
+  if [ ! -d "$dir" ]; then
+    git clone --depth 1 "$repo" "$dir" >/dev/null 2>&1
+  fi
+}
+
+### FAST-SYNTAX-HIGHLIGHTING
+FSH_DIR="$PLUGIN_DIR/fast-syntax-highlighting"
+install_plugin "$FSH_DIR" https://github.com/zdharma-continuum/fast-syntax-highlighting.git
+source "$FSH_DIR/fast-syntax-highlighting.plugin.zsh"
+
+### AUTOSUGGESTIONS
+ASUG_DIR="$PLUGIN_DIR/zsh-autosuggestions"
+install_plugin "$ASUG_DIR" https://github.com/zsh-users/zsh-autosuggestions.git
+source "$ASUG_DIR/zsh-autosuggestions.zsh"
+
+### EXTRA COMPLETIONS (OPTIONAL)
+ZCOMP_DIR="$PLUGIN_DIR/zsh-completions"
+install_plugin "$ZCOMP_DIR" https://github.com/zsh-users/zsh-completions.git
+fpath=($ZCOMP_DIR $fpath)
+
+### COMPINIT WITH CACHE
+autoload -Uz compinit
+compinit -C
+
+### COMPLETION STYLES
+zstyle ':completion:*' menu select
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' completer _expand _complete _ignored _approximate
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+
+### KEYBOARD (load cached zkbd if exists)
+test -f "$HOME/.zkbd/$TERM" && source "$HOME/.zkbd/$TERM"
 bindkey "^[[1;5C" forward-word
 bindkey "^[[1;5D" backward-word
 
-# start typing + [Up-Arrow] - fuzzy find history forward
-if [[ "${terminfo[kcuu1]}" != "" ]]; then
-  autoload -U up-line-or-beginning-search
-  zle -N up-line-or-beginning-search
-  bindkey "${terminfo[kcuu1]}" up-line-or-beginning-search
-fi
-# start typing + [Down-Arrow] - fuzzy find history backward
-if [[ "${terminfo[kcud1]}" != "" ]]; then
-  autoload -U down-line-or-beginning-search
-  zle -N down-line-or-beginning-search
-  bindkey "${terminfo[kcud1]}" down-line-or-beginning-search
-fi
-
-# Finally, make sure the terminal is in application mode, when zle is
-# active. Only then are the values from $terminfo valid.
-if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
-      autoload -Uz add-zle-hook-widget
-      function zle_application_mode_start { echoti smkx }
-      function zle_application_mode_stop { echoti rmkx }
-      add-zle-hook-widget -Uz zle-line-init zle_application_mode_start
-      add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
-fi
-
-zinit wait lucid light-mode for \
-  atinit"zicompinit; zicdreplay" \
-      zdharma/fast-syntax-highlighting \
-  atload"_zsh_autosuggest_start" \
-      zsh-users/zsh-autosuggestions \
-  blockf atpull'zinit creinstall -q .' \
-      zsh-users/zsh-completions
-
-#zinit ice wait lucid \
-#  atload"AUTO_NOTIFY_IGNORE+=(emacs mpgo mpv ranger rn vim vimus)"
-#zinit light "MichaelAquilina/zsh-auto-notify" # automatically sends out a notification when a long running task has completed
-#AUTO_NOTIFY_IGNORE+=("docker" "ssh")
-
-# load or unload ENV variables from .envrc file depending on the current directory
-#zinit from"gh-r" as"program" mv"direnv* -> direnv" \
-#    atclone'./direnv hook zsh > zhook.zsh' atpull'%atclone' \
-#    pick"direnv" src="zhook.zsh" for \
-#        direnv/direnv
-
-# Multi-word, syntax highlighted history searching for Zsh
-zstyle ":history-search-multi-word" page-size "11"
-zinit ice wait"1" lucid
-zinit light zdharma/history-search-multi-word
-
-zinit light skywind3000/z.lua # navigate faster by learning your habits
-zinit snippet OMZP::command-not-found # provide suggested packages to be installed if a command cannot be found
-zinit snippet OMZP::extract # extracts a wide variety of archive filetypes
-zinit snippet OMZP::thefuck # corrects your previous console command
-#zinit snippet OMZP::history-substring-search
-
-# Colored man pages
+### MANPAGE COLORS
 export LESS_TERMCAP_md=$(tput bold; tput setaf 1)
 export LESS_TERMCAP_me=$(tput sgr0)
 export LESS_TERMCAP_mb=$(tput bold; tput setaf 2)
@@ -155,9 +77,12 @@ export LESS_TERMCAP_ue=$(tput rmul; tput sgr0)
 export LESS_TERMCAP_so=$(tput bold; tput setaf 3; tput setab 4)
 export LESS_TERMCAP_se=$(tput rmso; tput sgr0)
 
-# reverse background and foreground colors for highlighted dirs
-LS_COLORS="$LS_COLORS:ow=7;34";
+# reverse dir color
+LS_COLORS="$LS_COLORS:ow=7;34"
 
-## install starship first
-##sh -c "$(curl -fsSL https://starship.rs/install.sh)"
-! [ -x /usr/bin/starship ] || eval "$(starship init zsh)"
+### OPTIONAL: ARCH COMMAND-NOT-FOUND
+[ -f /usr/share/doc/pkgfile/command-not-found.zsh ] && \
+  source /usr/share/doc/pkgfile/command-not-found.zsh
+
+### OPTIONAL: STARSHIP
+[ -x /usr/bin/starship ] && eval "$(starship init zsh)"
