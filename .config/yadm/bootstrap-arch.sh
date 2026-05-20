@@ -106,7 +106,7 @@ update_system() {
 }
 
 install_aur_helper() {
-	local aur_name="paru-bin"
+	local aur_name="paru"
 	local aur_cmd="paru"
 
 	if ! command -v $aur_cmd >/dev/null; then
