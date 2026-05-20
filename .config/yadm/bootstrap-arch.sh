@@ -62,7 +62,7 @@ detect_system() {
 }
 
 install_needed() {
-	sudo pacman -S --needed --noconfirm git wget curl man-db neovim base-devel ccache
+	sudo pacman -S --needed --noconfirm git wget curl man-db neovim base-devel ccache pciutils
 }
 
 create_symlinks() {
@@ -113,7 +113,7 @@ install_aur_helper() {
 		install_msg "Installing AUR helper %s... " $aur_name
 
 		[ -d /tmp/$aur_name ] && rm -rf /tmp/$aur_name
-		git clone https://aur.archlinux.org/$aur_name /tmp/$aur_name
+		git clone https://aur.archlinux.org/${aur_name}.git /tmp/$aur_name
 		cd /tmp/$aur_name || exit
 		makepkg -si --noconfirm || error "Failed to build aur helper $aur_name!"
 	fi
@@ -122,7 +122,7 @@ install_aur_helper() {
 install_packages() {
 	install_msg "Installing desktop applications..."
 
-	install_aur_helper
+	command -v paru >/dev/null || install_aur_helper
 
 	sed -e "/^#/d" -e "s/#.*//" ${HOME}/.config/yadm/pkglist-arch | while read pkg; do
 		pac_install $pkg
@@ -199,10 +199,10 @@ finishing_up() {
 
 	# dbus UUID must be generated for Artix runit.
 	[ -d "/var/lib/dbus" ] || sudo mkdir -p /var/lib/dbus
-	sudo dbus-uuidgen >/dev/null | sudo tee /var/lib/dbus/machine-id
+	dbus-uuidgen | sudo tee /var/lib/dbus/machine-id >/dev/null
 
 	# Use system notifications for Brave on Artix
-	echo "export \$(dbus-launch)" >/dev/null | sudo tee /etc/profile.d/dbus.sh
+	echo 'export $(dbus-launch)' | sudo tee /etc/profile.d/dbus.sh >/dev/null
 }
 
 check_root() {
