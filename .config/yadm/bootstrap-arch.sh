@@ -6,130 +6,130 @@
 # USE AT YOUR OWN RISK! I will not be held responsible for any damages or pain from using this
 # config.
 
+set -e
+
+######################
+## Configuration    ##
+######################
+
+readonly SCRIPT_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/yadm"
+readonly ARCH="${1:-arch}"
+readonly INIT_DEFAULT="systemd"
+
+INIT="$INIT_DEFAULT"
+
+######################
+## Utility Functions #
+######################
+
+error() {
+	printf "%s\n" "$1" >&2
+	exit 1
+}
+
+check_root() {
+	if [[ "$EUID" -eq 0 ]]; then
+		error "Please do not run this script as root (e.g. using sudo)"
+	fi
+}
+
+######################
+## UI Functions     ##
+######################
+
+_print_edge() {
+	local title="$1"
+	printf '%*s\n' "${#title}" | tr ' ' '*'
+}
+
 box() {
-    title=" $1 "
-    edge=$(echo "$title" | sed 's/./*/g')
-    echo "$edge"
-    echo -e "\e[1;32m$title\e[0m"
-    echo "$edge"
+	local title=" $1 "
+	local edge
+	edge=$(_print_edge "$title")
+	echo "$edge"
+	echo -e "\e[1;32m$title\e[0m"
+	echo "$edge"
 }
 
-
-box1() {
-    title=" $1 "
-    edge=$(echo "$title" | sed 's/./*/g')
-    echo "$edge"
-    echo -e "\e[1;32m$title\e[0m"
+box_top() {
+	local title=" $1 "
+	local edge
+	edge=$(_print_edge "$title")
+	echo "$edge"
+	echo -e "\e[1;32m$title\e[0m"
 }
 
-
-box2() {
-    title=" $1 "
-    echo -e "\e[1;32m$title\e[0m"
+box_plain() {
+	local title=" $1 "
+	echo -e "\e[1;32m$title\e[0m"
 }
 
-
-box3() {
-    title=" $1 "
-    edge=$(echo "$title" | sed 's/./*/g')
-    echo -e "\e[1;32m$title\e[0m"
-    echo "$edge"
+box_bottom() {
+	local title=" $1 "
+	local edge
+	edge=$(_print_edge "$title")
+	echo -e "\e[1;32m$title\e[0m"
+	echo "$edge"
 }
 
 install_msg() {
 	box "$1"
 }
 
-error() {
-	# Log to stderr and exit with failure.
-	printf "%s\n" "$1" >&2
-	exit 1
-}
+######################
+## Package Management
+######################
 
 pac_install() {
-	for f in ${@} ; do
-		paru -S --skipreview --noconfirm --needed "$f"
-	done
-}
-
-detect_system() {
-	if [[ "$ARCH" = "artix" ]]; then
-		pacman -Qk openrc 2>/dev/null && INIT="openrc"
-		pacman -Qk runit 2>/dev/null && INIT="runit"
-		pacman -Qk s6 2>/dev/null && INIT="s6"
-	fi
-	install_msg "Detected system = $ARCH ($INIT)"
+	yay -S --noconfirm --needed "$@"
 }
 
 install_needed() {
-	sudo pacman -S --needed --noconfirm git wget curl man-db neovim base-devel ccache pciutils
-}
-
-create_symlinks() {
-	install_msg "Running symlinks to personal directories..."
-
-	. "${XDG_CONFIG_HOME:-$HOME/.config}/yadm/_symlink.sh"
-}
-
-pretty_pacmanconf() {
-	install_msg "Making pacman beautiful and colorful because why not..."
-
-	grep "^Color" /etc/pacman.conf >/dev/null || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
-	grep "ILoveCandy" /etc/pacman.conf >/dev/null || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
-	grep "^ParallelDownloads" /etc/pacman.conf >/dev/null || sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
-
-	# Use all cores for compilation.
-	sudo sed -i "s/-j2/-j$(nproc)/;/^#MAKEFLAGS/s/^#//" /etc/makepkg.conf
-}
-
-refreshkeys() {
-	case "$(readlink -f /sbin/init)" in
-	*systemd*)
-		install_msg "Refreshing Arch Keyring..."
-
-		sudo pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
-		;;
-	*)
-		if [ "$ARCH" = "artix" ]; then
-			box "Enabling Arch repositories and updating keyrings..."
-
-			. "${XDG_CONFIG_HOME:-$HOME/.config}/yadm/artix_enable_archlinux_repo.sh"
-		fi
-		;;
-	esac
-}
-
-update_system() {
-	install_msg "Updating system, please wait..."
-
-	sudo pacman -Syu --noconfirm
+	install_msg "Installing base dependencies..."
+	sudo pacman -S --needed --noconfirm \
+		git wget curl man-db neovim base-devel ccache pciutils
 }
 
 install_aur_helper() {
-	local aur_name="paru"
-	local aur_cmd="paru"
+	local aur_name="yay"
 
-	if ! command -v $aur_cmd >/dev/null; then
-		install_msg "Installing AUR helper %s... " $aur_name
-
-		[ -d /tmp/$aur_name ] && rm -rf /tmp/$aur_name
-		git clone https://aur.archlinux.org/${aur_name}.git /tmp/$aur_name
-		cd /tmp/$aur_name || exit
-		makepkg -si --noconfirm || error "Failed to build aur helper $aur_name!"
+	if command -v "$aur_name" >/dev/null 2>&1; then
+		install_msg "AUR helper already installed: $aur_name"
+		return 0
 	fi
+
+	install_msg "Installing AUR helper: $aur_name..."
+
+	local tmp_dir="/tmp/$aur_name"
+	[[ -d "$tmp_dir" ]] && rm -rf "$tmp_dir"
+
+	git clone "https://github.com/Jguer/yay.git" "$tmp_dir" || \
+		error "Failed to clone $aur_name from GitHub"
+
+	cd "$tmp_dir" || error "Failed to enter $tmp_dir"
+	makepkg -si --noconfirm || error "Failed to build AUR helper: $aur_name"
 }
 
 install_packages() {
 	install_msg "Installing desktop applications..."
 
-	command -v paru >/dev/null || install_aur_helper
+	# Ensure AUR helper is available
+	install_aur_helper
 
-	sed -e "/^#/d" -e "s/#.*//" ${HOME}/.config/yadm/pkglist-arch | while read pkg; do
-		pac_install $pkg
-	done
+	# Install packages from list
+	if [[ -f "${SCRIPT_DIR}/pkglist-arch" ]]; then
+		while IFS= read -r pkg || [[ -n "$pkg" ]]; do
+			# Skip comments and empty lines
+			[[ "$pkg" =~ ^[[:space:]]*# ]] && continue
+			[[ -z "${pkg// }" ]] && continue
+			pac_install "$pkg"
+		done < <(sed -e '/^[[:space:]]*#/d' -e 's/#.*//' "${SCRIPT_DIR}/pkglist-arch")
+	else
+		error "Package list not found: ${SCRIPT_DIR}/pkglist-arch"
+	fi
 
-	# mpd requires systemd componemts
-	if [ ! "$ARCH" = "obarun" ]; then
+	# Install init-system specific packages
+	if [[ "$ARCH" != "obarun" ]]; then
 		pac_install dunst mpd mpc ncmpcpp
 	fi
 
@@ -138,44 +138,132 @@ install_packages() {
 
 install_aur_packages() {
 	install_msg "Installing AUR packages..."
-
-	command -v "simple-mtpfs" >/dev/null || pac_install simple-mtpfs
-#	command -v "picom" >/dev/null || pac_install picom-ibhagwan-git
+	# simple-mtpfs for MTP device access
+	command -v simple-mtpfs >/dev/null 2>&1 || pac_install simple-mtpfs
 }
 
+######################
+## System Setup      ##
+######################
+
+detect_system() {
+	if [[ "$ARCH" == "artix" ]]; then
+		if pacman -Qk openrc >/dev/null 2>&1; then
+			INIT="openrc"
+		elif pacman -Qk runit >/dev/null 2>&1; then
+			INIT="runit"
+		elif pacman -Qk s6 >/dev/null 2>&1; then
+			INIT="s6"
+		fi
+	fi
+	install_msg "Detected system: $ARCH (init: $INIT)"
+}
+
+create_symlinks() {
+	install_msg "Creating symlinks to personal directories..."
+
+	if [[ -f "${SCRIPT_DIR}/_symlink.sh" ]]; then
+		# shellcheck source=/dev/null
+		. "${SCRIPT_DIR}/_symlink.sh"
+	else
+		error "Symlink script not found: ${SCRIPT_DIR}/_symlink.sh"
+	fi
+}
+
+pretty_pacmanconf() {
+	install_msg "Configuring pacman (colors, parallel downloads)..."
+
+	# Enable color output
+	grep -q "^Color" /etc/pacman.conf || \
+		sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
+
+	# Add ILoveCandy animation
+	grep -q "ILoveCandy" /etc/pacman.conf || \
+		sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+
+	# Set parallel downloads
+	grep -q "^ParallelDownloads" /etc/pacman.conf || \
+		sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
+
+	# Use all CPU cores for compilation
+	sudo sed -i \
+		-e "s/-j2/-j$(nproc)/" \
+		-e "/^#MAKEFLAGS/s/^#//" \
+		/etc/makepkg.conf
+}
+
+refreshkeys() {
+	case "$(readlink -f /sbin/init)" in
+	*systemd*)
+		install_msg "Refreshing Arch keyring (systemd)..."
+		sudo pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
+		;;
+	*)
+		if [[ "$ARCH" == "artix" ]]; then
+			box "Enabling Arch repositories and updating keyrings..."
+			if [[ -f "${SCRIPT_DIR}/artix_enable_archlinux_repo.sh" ]]; then
+				# shellcheck source=/dev/null
+				. "${SCRIPT_DIR}/artix_enable_archlinux_repo.sh"
+			else
+				error "Artix repo script not found: ${SCRIPT_DIR}/artix_enable_archlinux_repo.sh"
+			fi
+		fi
+		;;
+	esac
+}
+
+update_system() {
+	install_msg "Updating system (this may take a while)..."
+	sudo pacman -Syu --noconfirm
+}
+
+######################
+## Hardware Setup    ##
+######################
+
 configure_video() {
-	install_msg "Installing and configuring video drivers..."
+	install_msg "Detecting and configuring video drivers..."
 
-	local ati=$(lspci | grep VGA | grep ATI)
-	local nvidia=$(lspci | grep VGA | grep NVIDIA)
-	local intel=$(lspci | grep VGA | grep Intel)
-	local amd=$(lspci | grep VGA | grep AMD)
+	local ati nvidia intel amd
 
-	if [ ! -z "$ati" ]; then
-	    box2 'Ati graphics detected'
-	    pac_install xf86-video-ati
-	fi
-	if [ ! -z "$nvidia" ]; then
-	    box2 'Nvidia graphics detected'
-	    pac_install xf86-video-nouveau
-	fi
-	if [ ! -z  "$intel" ]; then
-	    box2 'Intel graphics detected'
-	    pac_install xf86-video-intel libva-intel-driver
-	fi
-	if [ ! -z  "$amd" ]; then
-	    box2 'AMD graphics detected'
-	    pac_install xf86-video-amdgpu
+	# Detect graphics hardware
+	ati=$(lspci 2>/dev/null | grep -i "VGA.*ATI" || true)
+	nvidia=$(lspci 2>/dev/null | grep -i "VGA.*NVIDIA" || true)
+	intel=$(lspci 2>/dev/null | grep -i "VGA.*Intel" || true)
+	amd=$(lspci 2>/dev/null | grep -i "VGA.*AMD" || true)
+
+	# Install appropriate drivers
+	if [[ -n "$ati" ]]; then
+		box_plain "ATI graphics detected"
+		pac_install xf86-video-ati
 	fi
 
-	# Detect if we are on an Intel system
-##	CPU_VENDOR=$(grep vendor_id /proc/cpuinfo | awk 'NR==1{print $3}')
-##	if [ $CPU_VENDOR = "GenuineIntel" ]; then
-	if [ ! -z  "$intel" ]; then
-		# gets rid of screen tearing if not using compositor/wm does not have vsync
-		sudo mkdir -p /usr/share/X11/xorg.conf.d/
-		sudo bash -c 'cat > /usr/share/X11/xorg.conf.d/20-intel.conf' << EOF
+	if [[ -n "$nvidia" ]]; then
+		box_plain "NVIDIA graphics detected"
+		pac_install xf86-video-nouveau
+	fi
+
+	if [[ -n "$intel" ]]; then
+		box_plain "Intel graphics detected"
+		pac_install xf86-video-intel libva-intel-driver
+		_configure_intel_xorg
+	fi
+
+	if [[ -n "$amd" ]]; then
+		box_plain "AMD graphics detected"
+		pac_install xf86-video-amdgpu
+	fi
+}
+
+_configure_intel_xorg() {
+	# Configure Intel graphics to prevent screen tearing
+	local xorg_dir="/usr/share/X11/xorg.conf.d"
+	local xorg_conf="${xorg_dir}/20-intel.conf"
+
+	sudo mkdir -p "$xorg_dir"
+	sudo tee "$xorg_conf" >/dev/null << 'EOF'
 # /usr/share/X11/xorg.conf.d/20-intel.conf
+# Prevents screen tearing when not using a compositor with vsync
 
 Section "Device"
    Identifier  "Intel Graphics"
@@ -183,54 +271,43 @@ Section "Device"
    Option      "TearFree"     "true"
 EndSection
 EOF
-	fi
 }
 
 finishing_up() {
-	###################################
-	# section includes patches from LARBS
-	###################################
+	box "Applying final system tweaks..."
 
-	# Most important command! Get rid of the beep!
-	#sudo rmmod pcspkr
-	box "Finishing touches..."
+	# Disable PC speaker beep
+	echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf >/dev/null
 
-	echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf
+	# Generate dbus UUID (required for Artix runit)
+	local dbus_dir="/var/lib/dbus"
+	[[ -d "$dbus_dir" ]] || sudo mkdir -p "$dbus_dir"
+	dbus-uuidgen | sudo tee "${dbus_dir}/machine-id" >/dev/null
 
-	# dbus UUID must be generated for Artix runit.
-	[ -d "/var/lib/dbus" ] || sudo mkdir -p /var/lib/dbus
-	dbus-uuidgen | sudo tee /var/lib/dbus/machine-id >/dev/null
-
-	# Use system notifications for Brave on Artix
+	# Configure dbus for system notifications (Artix + Brave)
 	echo 'export $(dbus-launch)' | sudo tee /etc/profile.d/dbus.sh >/dev/null
 }
 
-check_root() {
-	if [ "$EUID" -eq 0 ]; then
-		error "Please do not run this script as root (e.g. using sudo)"
-	fi
+######################
+## Main Execution   ##
+######################
+
+main() {
+	check_root
+	detect_system
+	create_symlinks
+	install_needed
+
+	pretty_pacmanconf
+	refreshkeys
+	update_system
+	install_packages
+	install_aur_packages
+	configure_video
+	finishing_up
+
+	install_msg "Bootstrap complete!"
 }
 
-######################
-## Start of Script ###
-######################
-
-set -e
-
-ARCH="$1"								# arch or artix
-INIT="systemd"							# init, systemd as default
-
-check_root
-detect_system
-create_symlinks
-install_needed
-
-pretty_pacmanconf
-refreshkeys 
-update_system
-install_packages
-install_aur_packages
-configure_video
-finishing_up
-
-install_msg "Done." 
+# Run main function
+main "$@"
