@@ -9,33 +9,41 @@ xorg-xprop
 arandr
 # desktop common
 alsa-utils
-kitty # terminal
-rofi # program launcher 
-geany # gui text editor
-polybar # status bar
-feh # wallpaper setter
-xfce4-settings
-thunar # filemanager
+# terminal
+kitty
+# program launcherq
+rofi
+# gui text editor
+geany
+# status bar
+polybar
+# wallpaper setter
+feh
+# xfce4-settings # replaced with nwg-look
+# filemanager
+thunar
 thunar-volman
-thunar-archive-plugin 
-udiskie # usb automounter
+thunar-archive-plugin
+# usb automounter
+udiskie
 xarchiver
 zip
 unzip
 zsh
 lua
 thefuck
-maim # screenshot app
+# screenshot app
+maim
 htop
 yad
 xdotool
 libnotify
 lm_sensors
 slock
-mlocate
+plocate
 pacman-contrib
 # theming
-arc-gtk-theme
+adw-gtk-theme
 libertinus-font
 ttf-jetbrains-mono
 noto-fonts
@@ -53,6 +61,14 @@ i3
 # Misc apps
 zathura
 zathura-pdf-mupdf
-#bc highlight fzf mediainfo poppler youtube-dl ffmpeg
+# other command line tools
+mpv
+dunst
+mpd
+mpc
+ncmpcpp
+#
+nwg-look
+#bc highlight fzf mediainfo poppler yt-dlp ffmpeg
 #atool imagemagick python-pillow ffmpegthumbnailer ranger
 #speedtest-cli

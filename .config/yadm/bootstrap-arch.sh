@@ -14,9 +14,8 @@ set -e
 
 readonly SCRIPT_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/yadm"
 readonly ARCH="${1:-arch}"
-readonly INIT_DEFAULT="systemd"
 
-INIT="$INIT_DEFAULT"
+INIT="systemd"
 
 ######################
 ## Utility Functions #
@@ -37,43 +36,9 @@ check_root() {
 ## UI Functions     ##
 ######################
 
-_print_edge() {
-	local title="$1"
-	printf '%*s\n' "${#title}" | tr ' ' '*'
-}
-
-box() {
-	local title=" $1 "
-	local edge
-	edge=$(_print_edge "$title")
-	echo "$edge"
-	echo -e "\e[1;32m$title\e[0m"
-	echo "$edge"
-}
-
-box_top() {
-	local title=" $1 "
-	local edge
-	edge=$(_print_edge "$title")
-	echo "$edge"
-	echo -e "\e[1;32m$title\e[0m"
-}
-
-box_plain() {
-	local title=" $1 "
-	echo -e "\e[1;32m$title\e[0m"
-}
-
-box_bottom() {
-	local title=" $1 "
-	local edge
-	edge=$(_print_edge "$title")
-	echo -e "\e[1;32m$title\e[0m"
-	echo "$edge"
-}
-
 install_msg() {
-	box "$1"
+	local title="$1"
+	echo -e "\e[1;32m$title\e[0m"
 }
 
 ######################
@@ -103,7 +68,7 @@ install_aur_helper() {
 	local tmp_dir="/tmp/$aur_name"
 	[[ -d "$tmp_dir" ]] && rm -rf "$tmp_dir"
 
-	git clone "https://github.com/Jguer/yay.git" "$tmp_dir" || \
+	git clone "https://aur.archlinux.org/yay-bin.git" "$tmp_dir" || \
 		error "Failed to clone $aur_name from GitHub"
 
 	cd "$tmp_dir" || error "Failed to enter $tmp_dir"
@@ -118,22 +83,16 @@ install_packages() {
 
 	# Install packages from list
 	if [[ -f "${SCRIPT_DIR}/pkglist-arch" ]]; then
-		while IFS= read -r pkg || [[ -n "$pkg" ]]; do
-			# Skip comments and empty lines
-			[[ "$pkg" =~ ^[[:space:]]*# ]] && continue
-			[[ -z "${pkg// }" ]] && continue
-			pac_install "$pkg"
-		done < <(sed -e '/^[[:space:]]*#/d' -e 's/#.*//' "${SCRIPT_DIR}/pkglist-arch")
+		mapfile -t PKGS < <(
+            sed \
+                -e 's/#.*//' \
+                -e '/^[[:space:]]*$/d' \
+                "${SCRIPT_DIR}/pkglist-arch"
+        )
+		pac_install "${PKGS[@]}"
 	else
 		error "Package list not found: ${SCRIPT_DIR}/pkglist-arch"
 	fi
-
-	# Install init-system specific packages
-	if [[ "$ARCH" != "obarun" ]]; then
-		pac_install dunst mpd mpc ncmpcpp
-	fi
-
-	pac_install mpv
 }
 
 install_aur_packages() {
@@ -154,6 +113,8 @@ detect_system() {
 			INIT="runit"
 		elif pacman -Qk s6 >/dev/null 2>&1; then
 			INIT="s6"
+		elif pacman -Qk dinit >/dev/null 2>&1; then
+			INIT="dinit"
 		fi
 	fi
 	install_msg "Detected system: $ARCH (init: $INIT)"
@@ -185,11 +146,18 @@ pretty_pacmanconf() {
 	grep -q "^ParallelDownloads" /etc/pacman.conf || \
 		sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
 
-	# Use all CPU cores for compilation
+	CORES=$(nproc)
+
+	if (( CORES <= 4 )); then
+		JOBS=2
+	else
+		JOBS=$CORES
+	fi
+
 	sudo sed -i \
-		-e "s/-j2/-j$(nproc)/" \
-		-e "/^#MAKEFLAGS/s/^#//" \
-		/etc/makepkg.conf
+        -e "s/-j[0-9]\+/-j${JOBS}/" \
+        -e "/^#MAKEFLAGS/s/^#//" \
+        /etc/makepkg.conf
 }
 
 refreshkeys() {
@@ -200,7 +168,7 @@ refreshkeys() {
 		;;
 	*)
 		if [[ "$ARCH" == "artix" ]]; then
-			box "Enabling Arch repositories and updating keyrings..."
+			install_msg "Enabling Arch repositories and updating keyrings..."
 			if [[ -f "${SCRIPT_DIR}/artix_enable_archlinux_repo.sh" ]]; then
 				# shellcheck source=/dev/null
 				. "${SCRIPT_DIR}/artix_enable_archlinux_repo.sh"
@@ -224,57 +192,25 @@ update_system() {
 configure_video() {
 	install_msg "Detecting and configuring video drivers..."
 
-	local ati nvidia intel amd
-
-	# Detect graphics hardware
-	ati=$(lspci 2>/dev/null | grep -i "VGA.*ATI" || true)
-	nvidia=$(lspci 2>/dev/null | grep -i "VGA.*NVIDIA" || true)
-	intel=$(lspci 2>/dev/null | grep -i "VGA.*Intel" || true)
-	amd=$(lspci 2>/dev/null | grep -i "VGA.*AMD" || true)
-
-	# Install appropriate drivers
-	if [[ -n "$ati" ]]; then
-		box_plain "ATI graphics detected"
-		pac_install xf86-video-ati
-	fi
-
-	if [[ -n "$nvidia" ]]; then
-		box_plain "NVIDIA graphics detected"
+	GPU=$(lspci | grep -i "vga")
+	case "$GPU" in
+    *NVIDIA*)
+		install_msg "NVIDIA graphics detected"
 		pac_install xf86-video-nouveau
-	fi
-
-	if [[ -n "$intel" ]]; then
-		box_plain "Intel graphics detected"
-		pac_install xf86-video-intel libva-intel-driver
-		_configure_intel_xorg
-	fi
-
-	if [[ -n "$amd" ]]; then
-		box_plain "AMD graphics detected"
-		pac_install xf86-video-amdgpu
-	fi
-}
-
-_configure_intel_xorg() {
-	# Configure Intel graphics to prevent screen tearing
-	local xorg_dir="/usr/share/X11/xorg.conf.d"
-	local xorg_conf="${xorg_dir}/20-intel.conf"
-
-	sudo mkdir -p "$xorg_dir"
-	sudo tee "$xorg_conf" >/dev/null << 'EOF'
-# /usr/share/X11/xorg.conf.d/20-intel.conf
-# Prevents screen tearing when not using a compositor with vsync
-
-Section "Device"
-   Identifier  "Intel Graphics"
-   Driver      "intel"
-   Option      "TearFree"     "true"
-EndSection
-EOF
+		;;
+    *Intel*)
+		install_msg "Intel graphics detected"
+		pac_install mesa mesa-utils
+		;;
+    *AMD*)
+		install_msg "AMD graphics detected"
+		pac_install mesa mesa-utils
+		;;
+	esac
 }
 
 finishing_up() {
-	box "Applying final system tweaks..."
+	install_msg "Applying final system tweaks..."
 
 	# Disable PC speaker beep
 	echo "blacklist pcspkr" | sudo tee /etc/modprobe.d/nobeep.conf >/dev/null
@@ -282,10 +218,14 @@ finishing_up() {
 	# Generate dbus UUID (required for Artix runit)
 	local dbus_dir="/var/lib/dbus"
 	[[ -d "$dbus_dir" ]] || sudo mkdir -p "$dbus_dir"
-	dbus-uuidgen | sudo tee "${dbus_dir}/machine-id" >/dev/null
+	[[ -f "${dbus_dir}/machine-id" ]] || \
+        dbus-uuidgen | sudo tee "${dbus_dir}/machine-id" >/dev/null
 
 	# Configure dbus for system notifications (Artix + Brave)
-	echo 'export $(dbus-launch)' | sudo tee /etc/profile.d/dbus.sh >/dev/null
+	if [[ "$ARCH" == "artix" ]]; then
+		echo 'export $(dbus-launch)' \
+            | sudo tee /etc/profile.d/dbus.sh >/dev/null
+	fi
 }
 
 ######################
@@ -295,16 +235,18 @@ finishing_up() {
 main() {
 	check_root
 	detect_system
-	create_symlinks
 	install_needed
 
 	pretty_pacmanconf
+
 	refreshkeys
 	update_system
 	install_packages
 	install_aur_packages
 	configure_video
 	finishing_up
+
+	create_symlinks
 
 	install_msg "Bootstrap complete!"
 }
