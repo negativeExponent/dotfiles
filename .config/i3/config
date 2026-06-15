@@ -5,7 +5,7 @@ set $menu               ~/.local/bin/rofi-appmenu
 set $menufallback       dmenu_run
 set $term               i3-sensible-terminal
 set $themechanger       rofi-theme 
-set $backgroundchanger  nitrogen
+set $backgroundchanger  "feh ~/Pictures/Wallpapers"
 set $screenshot_full    "screenshot full"
 set $screenshot_area     "screenshot window"
 set $compositor         "launch_picom toggle"
