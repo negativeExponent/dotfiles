@@ -37,7 +37,7 @@ check_root() {
 ######################
 
 install_msg() {
-	local title="$1"
+	local title="==> $1"
 	echo -e "\e[1;32m$title\e[0m"
 }
 
@@ -248,7 +248,7 @@ main() {
 
 	create_symlinks
 
-	install_msg "Bootstrap complete!"
+	install_msg "Done,"
 }
 
 # Run main function

@@ -25,7 +25,7 @@ thunar
 thunar-volman
 thunar-archive-plugin
 # usb automounter
-udiskie
+# udiskie
 xarchiver
 zip
 unzip
@@ -53,15 +53,13 @@ papirus-icon-theme
 meld
 ghex
 gnome-calculator
-# system essentials
-polkit-gnome
-gnome-keyring
 # window manager
-#bspwm sxhkd
+# bspwm
+# sxhkd
 i3
 # Misc apps
-zathura
-zathura-pdf-mupdf
+# zathura
+# zathura-pdf-mupdf
 # other command line tools
 mpv
 dunst
@@ -70,6 +68,10 @@ mpc
 ncmpcpp
 #
 nwg-look
+gvfs
+gvfs-mtp
+gvfs-smb
+gvfs-gphoto2
 #bc highlight fzf mediainfo poppler yt-dlp ffmpeg
 #atool imagemagick python-pillow ffmpegthumbnailer ranger
 #speedtest-cli

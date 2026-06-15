@@ -1,38 +1,35 @@
-#!/bin/env bash
-set -e
+#!/usr/bin/env bash
 
-is_artix() {
-    [[ -f /etc/artix-release ]] || return 1
-}
+set -euo pipefail
 
-enable_repo_if_missing() {
-    local repo="$1"
+# Only run on Artix Linux
+grep -qi '^ID=artix$' /etc/os-release || exit 0
 
-    if ! grep -q "^\[$repo\]" /etc/pacman.conf; then
-        echo "Enabling [$repo] repository..."
-        echo "
-[$repo]
-Include = /etc/pacman.d/mirrorlist-arch" | sudo tee -a /etc/pacman.conf >/dev/null
+PACMAN_CONF="/etc/pacman.conf"
+
+echo "==> Enabling Arch Linux repositories..."
+
+# Install required support packages
+sudo pacman -Sy --noconfirm --needed \
+    artix-keyring \
+    artix-archlinux-support \
+    >/dev/null
+
+# Add missing repositories
+for repo in extra multilib; do
+    if ! grep -qE "^\[$repo\]" "$PACMAN_CONF"; then
+        printf '\n[%s]\nInclude = /etc/pacman.d/mirrorlist-arch\n' "$repo" |
+            sudo tee -a "$PACMAN_CONF" >/dev/null
+
+        echo "  • Added [$repo]"
     fi
-}
+done
 
-main() {
-    # 1. Must be Artix
-    is_artix || {
-        echo "Error: This script requires Artix Linux." >&2
-        exit 1
-    }
+# Refresh package databases
+sudo pacman -Sy >/dev/null
 
-    # 2. Ensure support package exists
-    sudo pacman --noconfirm --needed -S artix-keyring artix-archlinux-support
+# Import Arch Linux signing keys
+sudo pacman-key --populate archlinux >/dev/null
 
-    # 3. Enable required repos if missing
-    enable_repo_if_missing extra
-    enable_repo_if_missing multilib
+echo "==> Done."
 
-    # 4. Sync + keyring
-    sudo pacman -Sy
-    sudo pacman-key --populate archlinux
-}
-
-main
