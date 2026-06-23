@@ -9,18 +9,51 @@ xorg-xwininfo
 xorg-xprop
 arandr
 
-alsa-utils # desktop common
+# session / auth
+gnome-keyring
+polkit-gnome
+
+#audio stack
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+pulsemixer
+
+# fonts
+ttf-jetbrains-mono
+noto-fonts
+noto-fonts-emoji
+
 kitty # terminal
 rofi # program launcherq
 geany # gui text editor
 polybar # status bar
 feh # wallpaper setter
+dunst # notification daemon
+
+# essectials
+libnotify
+maim
+xdotool
+
+# window managers
+# bspwm
+# sxhkd
+i3
 
 # xfce4-settings # replaced with nwg-look
 # filemanager
 thunar
+gvfs
+
+#
 thunar-volman
 thunar-archive-plugin
+gvfs-mtp
+gvfs-smb
+gvfs-gphoto2
 
 # usb automounter
 # udiskie
@@ -32,11 +65,8 @@ lua
 thefuck
 
 # screenshot app
-maim
 htop
 yad
-xdotool
-libnotify
 lm_sensors
 slock
 plocate
@@ -45,9 +75,6 @@ pacman-contrib
 # theming
 adw-gtk-theme
 libertinus-font
-ttf-jetbrains-mono
-noto-fonts
-noto-fonts-emoji
 papirus-icon-theme
 
 # gui apps
@@ -55,26 +82,14 @@ meld
 ghex
 gnome-calculator
 
-# window managers
-# bspwm
-# sxhkd
-i3
-
 # Misc apps
 # zathura
 # zathura-pdf-mupdf
 # other command line tools
 mpv
-dunst
 mpd
 mpc
 ncmpcpp
-
-#
-gvfs
-gvfs-mtp
-gvfs-smb
-gvfs-gphoto2
 
 #
 mesa
@@ -87,21 +102,8 @@ amd-ucode
 intel-ucode
 
 #
-gnome-keyring
-polkit-gnome
-
-#audio stack
-alsa-utils
-pipewire
-pipewire-alsa
-pipewire-jack
-pipewire-pulse
-wireplumber
-pavucontrol
-pulsemixer
-
-#
 transmission-cli
+pavucontrol
 
 #bc highlight fzf mediainfo poppler yt-dlp ffmpeg
 #atool imagemagick python-pillow ffmpegthumbnailer ranger
