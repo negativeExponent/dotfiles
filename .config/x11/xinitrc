@@ -13,4 +13,6 @@ else
 	. "$HOME/.xprofile"
 fi
 
-exec i3
+# Activate dbus variables
+dbus-update-activation-environment --all
+dbus-launch ssh-agent i3

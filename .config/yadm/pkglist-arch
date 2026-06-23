@@ -1,29 +1,27 @@
-# X
 xorg-server
 xorg-xinit
+
+# X
 xorg-xrdb
 xorg-xsetroot
 xorg-xset
 xorg-xwininfo
 xorg-xprop
 arandr
-# desktop common
-alsa-utils
-# terminal
-kitty
-# program launcherq
-rofi
-# gui text editor
-geany
-# status bar
-polybar
-# wallpaper setter
-feh
+
+alsa-utils # desktop common
+kitty # terminal
+rofi # program launcherq
+geany # gui text editor
+polybar # status bar
+feh # wallpaper setter
+
 # xfce4-settings # replaced with nwg-look
 # filemanager
 thunar
 thunar-volman
 thunar-archive-plugin
+
 # usb automounter
 # udiskie
 xarchiver
@@ -32,6 +30,7 @@ unzip
 zsh
 lua
 thefuck
+
 # screenshot app
 maim
 htop
@@ -42,6 +41,7 @@ lm_sensors
 slock
 plocate
 pacman-contrib
+
 # theming
 adw-gtk-theme
 libertinus-font
@@ -49,14 +49,17 @@ ttf-jetbrains-mono
 noto-fonts
 noto-fonts-emoji
 papirus-icon-theme
+
 # gui apps
 meld
 ghex
 gnome-calculator
-# window manager
+
+# window managers
 # bspwm
 # sxhkd
 i3
+
 # Misc apps
 # zathura
 # zathura-pdf-mupdf
@@ -66,12 +69,40 @@ dunst
 mpd
 mpc
 ncmpcpp
+
 #
-nwg-look
 gvfs
 gvfs-mtp
 gvfs-smb
 gvfs-gphoto2
+
+#
+mesa
+mesa-utils
+vulkan-radeon
+vulkan-intel
+
+#
+amd-ucode
+intel-ucode
+
+#
+gnome-keyring
+polkit-gnome
+
+#audio stack
+alsa-utils
+pipewire
+pipewire-alsa
+pipewire-jack
+pipewire-pulse
+wireplumber
+pavucontrol
+pulsemixer
+
+#
+transmission-cli
+
 #bc highlight fzf mediainfo poppler yt-dlp ffmpeg
 #atool imagemagick python-pillow ffmpegthumbnailer ranger
 #speedtest-cli

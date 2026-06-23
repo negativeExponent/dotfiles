@@ -6,7 +6,7 @@
 # USE AT YOUR OWN RISK! I will not be held responsible for any damages or pain from using this
 # config.
 
-set -e
+set -Eeuo pipefail
 
 ######################
 ## Configuration    ##
@@ -38,7 +38,7 @@ check_root() {
 
 install_msg() {
 	local title="==> $1"
-	echo -e "\e[1;32m$title\e[0m"
+	printf '\033[1;32m==> %s\033[0m\n' "$1"
 }
 
 ######################
@@ -65,8 +65,10 @@ install_aur_helper() {
 
 	install_msg "Installing AUR helper: $aur_name..."
 
-	local tmp_dir="/tmp/$aur_name"
-	[[ -d "$tmp_dir" ]] && rm -rf "$tmp_dir"
+	local tmp_dir
+	tmp_dir="$(mktemp -d)"
+
+	trap 'rm -rf "$tmp_dir"' RETURN
 
 	git clone "https://aur.archlinux.org/yay-bin.git" "$tmp_dir" || \
 		error "Failed to clone $aur_name from GitHub"
@@ -83,22 +85,16 @@ install_packages() {
 
 	# Install packages from list
 	if [[ -f "${SCRIPT_DIR}/pkglist-arch" ]]; then
-		mapfile -t PKGS < <(
-            sed \
-                -e 's/#.*//' \
-                -e '/^[[:space:]]*$/d' \
-                "${SCRIPT_DIR}/pkglist-arch"
-        )
+        mapfile -t PKGS < <(
+			sed \
+				-e 's/[[:space:]]*#.*//' \
+				-e '/^[[:space:]]*$/d' \
+				"${SCRIPT_DIR}/pkglist-arch"
+		)
 		pac_install "${PKGS[@]}"
 	else
 		error "Package list not found: ${SCRIPT_DIR}/pkglist-arch"
 	fi
-}
-
-install_aur_packages() {
-	install_msg "Installing AUR packages..."
-	# simple-mtpfs for MTP device access
-	command -v simple-mtpfs >/dev/null 2>&1 || pac_install simple-mtpfs
 }
 
 ######################
@@ -107,24 +103,19 @@ install_aur_packages() {
 
 detect_system() {
 	if [[ "$ARCH" == "artix" ]]; then
-		if pacman -Qk openrc >/dev/null 2>&1; then
-			INIT="openrc"
-		elif pacman -Qk runit >/dev/null 2>&1; then
-			INIT="runit"
-		elif pacman -Qk s6 >/dev/null 2>&1; then
-			INIT="s6"
-		elif pacman -Qk dinit >/dev/null 2>&1; then
-			INIT="dinit"
+		if pacman -Q openrc >/dev/null 2>&1; then INIT="openrc"
+		elif pacman -Q runit >/dev/null 2>&1; then INIT="runit"
+		elif pacman -Q s6 >/dev/null 2>&1; then INIT="s6"
+		elif pacman -Q dinit >/dev/null 2>&1; then INIT="dinit"
 		fi
+		install_msg "Detected system: $ARCH (init: $INIT)"
 	fi
-	install_msg "Detected system: $ARCH (init: $INIT)"
 }
 
 create_symlinks() {
 	install_msg "Creating symlinks to personal directories..."
 
 	if [[ -f "${SCRIPT_DIR}/_symlink.sh" ]]; then
-		# shellcheck source=/dev/null
 		. "${SCRIPT_DIR}/_symlink.sh"
 	else
 		error "Symlink script not found: ${SCRIPT_DIR}/_symlink.sh"
@@ -134,25 +125,13 @@ create_symlinks() {
 pretty_pacmanconf() {
 	install_msg "Configuring pacman (colors, parallel downloads)..."
 
-	# Enable color output
-	grep -q "^Color" /etc/pacman.conf || \
-		sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
-
-	# Add ILoveCandy animation
-	grep -q "ILoveCandy" /etc/pacman.conf || \
-		sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
-
-	# Set parallel downloads
-	grep -q "^ParallelDownloads" /etc/pacman.conf || \
-		sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
+	grep -q "^Color" /etc/pacman.conf || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
+	grep -q "ILoveCandy" /etc/pacman.conf || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+	grep -q "^ParallelDownloads" /etc/pacman.conf || sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
 
 	CORES=$(nproc)
 
-	if (( CORES <= 4 )); then
-		JOBS=2
-	else
-		JOBS=$CORES
-	fi
+	JOBS=$(nproc)
 
 	sudo sed -i \
         -e "s/-j[0-9]\+/-j${JOBS}/" \
@@ -185,30 +164,6 @@ update_system() {
 	sudo pacman -Syu --noconfirm
 }
 
-######################
-## Hardware Setup    ##
-######################
-
-configure_video() {
-	install_msg "Detecting and configuring video drivers..."
-
-	GPU=$(lspci | grep -i "vga")
-	case "$GPU" in
-    *NVIDIA*)
-		install_msg "NVIDIA graphics detected"
-		pac_install xf86-video-nouveau
-		;;
-    *Intel*)
-		install_msg "Intel graphics detected"
-		pac_install mesa mesa-utils
-		;;
-    *AMD*)
-		install_msg "AMD graphics detected"
-		pac_install mesa mesa-utils
-		;;
-	esac
-}
-
 finishing_up() {
 	install_msg "Applying final system tweaks..."
 
@@ -235,21 +190,19 @@ finishing_up() {
 main() {
 	check_root
 	detect_system
-	install_needed
-
-	pretty_pacmanconf
 
 	refreshkeys
 	update_system
+
+	install_needed
+	pretty_pacmanconf
+
 	install_packages
-	install_aur_packages
-	configure_video
-	finishing_up
 
 	create_symlinks
+	finishing_up
 
-	install_msg "Done,"
+	install_msg "Done."
 }
 
-# Run main function
 main "$@"

@@ -6,11 +6,9 @@ AUTOLOCK_TIMEOUT=10 # timeout in minutes
 LOCKSCREEN_CMD="betterlockscreen -l"
 
 run() {
-    if command -v $1 >/dev/null; then
-	    if ! pgrep -x $1 >/dev/null; then
-			echo "$@"
-		    $@&
-	    fi
+    command -v "$1" >/dev/null || return
+    if ! pgrep -x "$1" >/dev/null; then
+        "$@" &
     fi
 }
 
@@ -35,6 +33,10 @@ autotiling &
 run /usr/libexec/polkit-gnome-authentication-agent-1
 run /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1
 eval $(gnome-keyring-daemon -s --components=pkcs11,secrets,ssh,gpg) &
+
+run "pipewire"
+run "xcompmgr"
+run "unclutter"
 
 run "mpd"
 run "udiskie" " --automount --notify --tray"

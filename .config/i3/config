@@ -25,6 +25,11 @@ font pango:monospace 10
 ## Auturun ##
 exec_always --no-startup-id $XDG_CONFIG_HOME/i3/autostart.sh
 
+exec gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
+exec gsettings set org.gnome.desktop.interface icon-theme 'Papirus-Dark'
+exec gsettings set org.gnome.desktop.interface cursor-theme 'Adwaita'
+exec gsettings set org.gnome.desktop.interface font-name 'Sans 10'
+
 include $HOME/.config/i3/keybindings.conf
 include $HOME/.config/i3/theme.conf
 include $HOME/.config/i3/gaps.conf
