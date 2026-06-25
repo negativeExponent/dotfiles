@@ -7,7 +7,7 @@ grep -qi '^ID=artix$' /etc/os-release || exit 0
 
 PACMAN_CONF="/etc/pacman.conf"
 
-echo "==> Enabling Arch Linux repositories..."
+printf "\033[32m==>\033[0m Enabling Arch Linux repositories...\n"
 
 # Install required support packages
 sudo pacman -Sy --noconfirm --needed \
@@ -31,5 +31,4 @@ sudo pacman -Sy >/dev/null
 # Import Arch Linux signing keys
 sudo pacman-key --populate archlinux >/dev/null
 
-echo "==> Done."
-
+#printf "\033[32m==>\033[0m Done.\n"

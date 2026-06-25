@@ -9,36 +9,46 @@
 set -Eeuo pipefail
 
 ######################
-## Configuration    ##
+## Configuration
 ######################
+
+readonly GREEN="\033[32m"
+readonly RED="\033[31m"
+readonly ALL_OFF="\033[0m"
 
 readonly SCRIPT_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/yadm"
-readonly ARCH="${1:-arch}"
+readonly DISTRO="${1:-arch}"
 
-INIT="systemd"
+# arch (systemd)
+# dinit
+# openrc
+# runit
+SYSTEM_INIT="systemd"
 
 ######################
-## Utility Functions #
+## Utility Functions
 ######################
 
 error() {
-	printf "%s\n" "$1" >&2
+	printf "${RED}ERROR:${ALL_OFF} %s${ALL_OFF}\n" "$1" >&2
 	exit 1
 }
 
-check_root() {
-	if [[ "$EUID" -eq 0 ]]; then
-		error "Please do not run this script as root (e.g. using sudo)"
-	fi
+check_permissions() {
+    [[ $EUID -ne 0 ]] \
+        || error "Please do not run this script as root"
+
+    sudo -v \
+        || error "Failed to obtain sudo privileges"
 }
 
 ######################
-## UI Functions     ##
+## UI Functions     
 ######################
 
 install_msg() {
 	local title="==> $1"
-	printf '\033[1;32m==> %s\033[0m\n' "$1"
+	printf "${GREEN}==>${ALL_OFF} %s${ALL_OFF}\n" "$1" ;
 }
 
 ######################
@@ -49,68 +59,119 @@ pac_install() {
 	yay -S --noconfirm --needed "$@"
 }
 
-install_needed() {
-	install_msg "Installing base dependencies..."
-	sudo pacman -S --needed --noconfirm \
-		git wget curl man-db neovim base-devel ccache pciutils
-}
+######################
+## Helper
+######################
 
-install_aur_helper() {
+_install_aur_helper() {
 	local aur_name="yay"
 
-	if command -v "$aur_name" >/dev/null 2>&1; then
-		install_msg "AUR helper already installed: $aur_name"
+	command -v "$aur_name" >/dev/null 2>&1 && {
+		# install_msg "AUR helper already installed: $aur_name"
 		return 0
-	fi
+	}
 
 	install_msg "Installing AUR helper: $aur_name..."
 
-	local tmp_dir
-	tmp_dir="$(mktemp -d)"
+	local tmp_dir=$(mktemp -d) || error "Failed to create temp dir"
 
-	trap 'rm -rf "$tmp_dir"' RETURN
+	git clone https://aur.archlinux.org/yay-bin.git "$tmp_dir" \
+        || error "Failed to clone $aur_name"
 
-	git clone "https://aur.archlinux.org/yay-bin.git" "$tmp_dir" || \
-		error "Failed to clone $aur_name from GitHub"
+	cd "$tmp_dir" || error "Failed to enter temp dir"
 
-	cd "$tmp_dir" || error "Failed to enter $tmp_dir"
-	makepkg -si --noconfirm || error "Failed to build AUR helper: $aur_name"
+	makepkg -si --noconfirm \
+        || error "Failed to build $aur_name"
+
+	cd - >/dev/null 2>&1
+	rm -rf "$tmp_dir"
+}
+
+######################
+## Installation Steps
+######################
+pretty_pacmanconf() {
+	install_msg "Configuring pacman (colors, parallel downloads)..."
+
+	grep -q "^Color" /etc/pacman.conf || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
+	grep -q "ILoveCandy" /etc/pacman.conf || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
+	grep -q "^ParallelDownloads" /etc/pacman.conf || sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
+
+	local jobs
+	jobs=$(nproc)
+
+	sudo sed -i \
+        -e "s/-j[0-9]\+/-j${jobs}/" \
+        -e "/^#MAKEFLAGS/s/^#//" \
+        /etc/makepkg.conf
+}
+
+detect_system() {
+	if [[ "$DISTRO" == "artix" ]]; then
+		if pacman -Q openrc >/dev/null 2>&1; then SYSTEM_INIT="openrc"
+		elif pacman -Q runit >/dev/null 2>&1; then SYSTEM_INIT="runit"
+		elif pacman -Q s6 >/dev/null 2>&1; then SYSTEM_INIT="s6"
+		elif pacman -Q dinit >/dev/null 2>&1; then SYSTEM_INIT="dinit"
+		fi
+		install_msg "Detected system: $DISTRO (init: $SYSTEM_INIT)"
+	fi
+}
+
+prepare_repositories() {
+    case "$DISTRO" in
+        artix)
+            . "${SCRIPT_DIR}/enable_arch_repo.sh"
+            ;;
+        *)
+            install_msg "Refreshing Arch keyring..."
+            sudo pacman -Sy --noconfirm archlinux-keyring >/dev/null
+            ;;
+    esac
+
+    install_msg "Updating system..."
+    sudo pacman -Syu --noconfirm
 }
 
 install_packages() {
+	local base_pkgs=(
+		git
+		wget
+		curl
+		man-db
+		man-pages
+		neovim
+		base-devel
+		ccache
+		pciutils
+	)
+	local extra_pkgs=()
+
 	install_msg "Installing desktop applications..."
 
 	# Ensure AUR helper is available
-	install_aur_helper
+	_install_aur_helper
 
 	# Install packages from list
 	if [[ -f "${SCRIPT_DIR}/pkglist-arch" ]]; then
-        mapfile -t PKGS < <(
+        mapfile -t extra_pkgs < <(
 			sed \
 				-e 's/[[:space:]]*#.*//' \
 				-e '/^[[:space:]]*$/d' \
 				"${SCRIPT_DIR}/pkglist-arch"
 		)
-		pac_install "${PKGS[@]}"
 	else
 		error "Package list not found: ${SCRIPT_DIR}/pkglist-arch"
 	fi
+
+	local pkgs=("${base_pkgs[@]}")
+	pkgs+=("${extra_pkgs[@]}")
+
+	pac_install "${pkgs[@]}"
 }
 
 ######################
 ## System Setup      ##
 ######################
-
-detect_system() {
-	if [[ "$ARCH" == "artix" ]]; then
-		if pacman -Q openrc >/dev/null 2>&1; then INIT="openrc"
-		elif pacman -Q runit >/dev/null 2>&1; then INIT="runit"
-		elif pacman -Q s6 >/dev/null 2>&1; then INIT="s6"
-		elif pacman -Q dinit >/dev/null 2>&1; then INIT="dinit"
-		fi
-		install_msg "Detected system: $ARCH (init: $INIT)"
-	fi
-}
 
 create_symlinks() {
 	install_msg "Creating symlinks to personal directories..."
@@ -120,48 +181,6 @@ create_symlinks() {
 	else
 		error "Symlink script not found: ${SCRIPT_DIR}/_symlink.sh"
 	fi
-}
-
-pretty_pacmanconf() {
-	install_msg "Configuring pacman (colors, parallel downloads)..."
-
-	grep -q "^Color" /etc/pacman.conf || sudo sed -i "s/^#Color$/Color/" /etc/pacman.conf
-	grep -q "ILoveCandy" /etc/pacman.conf || sudo sed -i "/#VerbosePkgLists/a ILoveCandy" /etc/pacman.conf
-	grep -q "^ParallelDownloads" /etc/pacman.conf || sudo sed -i "s/.*ParallelDownloads.*/ParallelDownloads = 5/" /etc/pacman.conf
-
-	CORES=$(nproc)
-
-	JOBS=$(nproc)
-
-	sudo sed -i \
-        -e "s/-j[0-9]\+/-j${JOBS}/" \
-        -e "/^#MAKEFLAGS/s/^#//" \
-        /etc/makepkg.conf
-}
-
-refreshkeys() {
-	case "$(readlink -f /sbin/init)" in
-	*systemd*)
-		install_msg "Refreshing Arch keyring (systemd)..."
-		sudo pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
-		;;
-	*)
-		if [[ "$ARCH" == "artix" ]]; then
-			install_msg "Enabling Arch repositories and updating keyrings..."
-			if [[ -f "${SCRIPT_DIR}/artix_enable_archlinux_repo.sh" ]]; then
-				# shellcheck source=/dev/null
-				. "${SCRIPT_DIR}/artix_enable_archlinux_repo.sh"
-			else
-				error "Artix repo script not found: ${SCRIPT_DIR}/artix_enable_archlinux_repo.sh"
-			fi
-		fi
-		;;
-	esac
-}
-
-update_system() {
-	install_msg "Updating system (this may take a while)..."
-	sudo pacman -Syu --noconfirm
 }
 
 finishing_up() {
@@ -177,7 +196,7 @@ finishing_up() {
         dbus-uuidgen | sudo tee "${dbus_dir}/machine-id" >/dev/null
 
 	# Configure dbus for system notifications (Artix + Brave)
-	if [[ "$ARCH" == "artix" ]]; then
+	if [[ "$DISTRO" == "artix" ]]; then
 		echo 'export $(dbus-launch)' \
             | sudo tee /etc/profile.d/dbus.sh >/dev/null
 	fi
@@ -188,17 +207,12 @@ finishing_up() {
 ######################
 
 main() {
-	check_root
-	detect_system
+	check_permissions
 
-	refreshkeys
-	update_system
-
-	install_needed
 	pretty_pacmanconf
-
+	detect_system
+	prepare_repositories
 	install_packages
-
 	create_symlinks
 	finishing_up
 

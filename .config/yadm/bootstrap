@@ -13,9 +13,7 @@ fi
 if [ -f "/etc/artix-release" ]; then
     system_type="artix"
 elif [ -f "/etc/os-release" ]; then
-	if grep -q "obarun" "/etc/os-release" >/dev/null; then
-		system_type="obarun"
-    elif grep -q "void" "/etc/os-release" >/dev/null; then 
+	if grep -q "void" "/etc/os-release" >/dev/null; then 
         system_type="void"
     elif grep -q "arch" "/etc/os-release" >/dev/null; then 
         system_type="arch"
@@ -34,7 +32,7 @@ case "$system_type" in
     "void")
         scriptfile="$HOME/.config/yadm/bootstrap-void.sh"
         ;;
-    "arch"|"artix"|"obarun")
+    "arch"|"artix")
         scriptfile="$HOME/.config/yadm/bootstrap-arch.sh"
         ;;
     *)
