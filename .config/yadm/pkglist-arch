@@ -1,110 +1,148 @@
+# ============================================================================
+# CORE DESKTOP (Required)
+# Without these you don't really have a usable X11 desktop.
+# ============================================================================
+
+# Xorg
 xorg-server
 xorg-xinit
 
-# X
-xorg-xrdb
-xorg-xsetroot
-xorg-xset
-xorg-xwininfo
-xorg-xprop
-arandr
+# Window manager
+# bspwm
+# sxhkd
+i3-wm
 
-# session / auth
-gnome-keyring
+# Authentication
 polkit-gnome
 
-#audio stack
+# Audio
 pipewire
 pipewire-alsa
 pipewire-jack
 pipewire-pulse
 wireplumber
-pulsemixer
 
-# fonts
+# Terminal
+kitty
+
+# Launcher
+rofi
+
+# Status bar
+polybar
+
+# Notifications
+dunst
+libnotify
+
+# Fonts
 ttf-jetbrains-mono
-noto-fonts
 noto-fonts-emoji
 
-kitty # terminal
-rofi # program launcherq
-geany # gui text editor
-polybar # status bar
-feh # wallpaper setter
-dunst # notification daemon
+# GUI Text Editor
+geany
 
-# essectials
-libnotify
-maim
-xdotool
+# ============================================================================
+# DESKTOP SUPPORT (Strongly recommended)
+# Things you'll probably miss immediately if omitted.
+# ============================================================================
 
-# window managers
-# bspwm
-# sxhkd
-i3
+feh                 # wallpaper
+picom               # compositor
+xdotool             # automation / scripting
+maim                # screenshots
+pulsemixer          # terminal volume mixer
+betterlockscreen    # screen locker
+htop                # process viewer
 
-# xfce4-settings # replaced with nwg-look
-# filemanager
-thunar
-gvfs
 
-#
-thunar-volman
-thunar-archive-plugin
-gvfs-mtp
-gvfs-smb
-gvfs-gphoto2
+# ============================================================================
+# COMPATIBILITY / FALLBACK
+# Useful because lots of scripts still assume they're installed.
+# ============================================================================
 
-# usb automounter
-# udiskie
-xarchiver
+dmenu               # simple launcher (many scripts still depend on it)
+
+
+# ============================================================================
+# NICE TO HAVE (I'd probably install these too)
+# Not required for a functioning desktop, but they save time later.
+# ============================================================================
+
+pavucontrol         # graphical PipeWire/PulseAudio control
+mesa-utils          # glxinfo, glxgears (graphics debugging)
+xorg-xprop          # inspect X windows
+xorg-xwininfo       # window information
+xorg-xset           # DPMS, keyboard repeat, screen blanking
+xorg-xsetroot       # root cursor/background
+xorg-xrdb           # Xresources loader
+
+
+# ============================================================================
+# SHOULD PROBABLY BE INSTALLED
+# These aren't part of "the desktop", but almost every Arch install ends up
+# needing them eventually.
+# ============================================================================
+
 zip
 unzip
-zsh
-lua
-thefuck
-
-# screenshot app
-htop
-yad
-lm_sensors
-slock
 plocate
 pacman-contrib
+lm_sensors
+bc
+fzf
+mediainfo
+ffmpeg
+yt-dlp
+man-db
+curl
+wget
+git
+base-devel
+ccache
 
-# theming
-adw-gtk-theme
-libertinus-font
-papirus-icon-theme
-
-# gui apps
-meld
-ghex
-gnome-calculator
-
-# Misc apps
-# zathura
-# zathura-pdf-mupdf
-# other command line tools
+# others that dont belong to list
 mpv
 mpd
 mpc
 ncmpcpp
 
-#
-mesa
-mesa-utils
-vulkan-radeon
-vulkan-intel
+thunar
+thunar-volman
+thunar-archive-plugin
 
-#
-amd-ucode
-intel-ucode
+gvfs
+gvfs-mtp
+gvfs-smb
+gvfs-gphoto2
 
-#
+xarchiver
+
+lua
+thefuck
+
+yad
+slock
+
+adw-gtk-theme
+libertinus-font
+papirus-icon-theme
+
+meld
+ghex
+gnome-calculator
+
+# vulkan-radeon
+# vulkan-intel
+
 transmission-cli
-pavucontrol
 
-#bc highlight fzf mediainfo poppler yt-dlp ffmpeg
+arandr
+
+bc
+yt-dlp
+ffmpeg
+
+# highlight fzf mediainfo poppler
 #atool imagemagick python-pillow ffmpegthumbnailer ranger
 #speedtest-cli
