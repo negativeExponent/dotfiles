@@ -200,6 +200,13 @@ finishing_up() {
 		echo 'export $(dbus-launch)' \
             | sudo tee /etc/profile.d/dbus.sh >/dev/null
 	fi
+
+	install_msg "Set initial desktop wallpaper..."
+	cat > "${HOME}/.fehbg" << EOF
+#!/bin/sh
+feh --no-fehbg --bg-fill ${HOME}/.config/wall.png
+EOF
+	chmod +x "${HOME}/.fehbg"
 }
 
 ######################
